@@ -29,8 +29,9 @@ const ADD_VARIANT_MUTATION = `
 const UPDATE_VARIANT_PRICES_MUTATION = `
   mutation UpdateVariantPrices($input: UpdateVariantPricesInput!) {
     updateVariantPrices(input: $input) {
-      isSuccess
-      errorInputs { priceListId productId variantId }
+      errors {
+        errorCode
+      }
     }
   }
 `;
@@ -38,8 +39,9 @@ const UPDATE_VARIANT_PRICES_MUTATION = `
 const SAVE_VARIANT_STOCKS_MUTATION = `
   mutation SaveVariantStocks($input: SaveVariantStocksInput!) {
     saveVariantStocks(input: $input) {
-      isSuccess
-      errorInputs { variantId productId }
+      errors {
+        errorCode
+      }
     }
   }
 `;
@@ -92,16 +94,20 @@ async function saveVariantStock({ productId, variantId, stockCount, stockLocatio
         productId,
         variantId,
         stockLocationId: locationId,
-        stockCount,
+        stockCount: Number(stockCount),
       }],
     },
   });
 
-  if (!data.saveVariantStocks?.isSuccess) {
-    throw new Error('ikas stok güncelleme başarısız.');
+  const result = data.saveVariantStocks;
+  if (result?.errors?.length) {
+    const errors = result.errors
+      .map((entry) => entry.errorCode || JSON.stringify(entry))
+      .join(', ');
+    throw new Error(`ikas stok güncellenemedi (${errors}).`);
   }
 
-  return data.saveVariantStocks;
+  return result;
 }
 
 function buildVariantInput({ sku, sellPrice, currency = 'TRY', isActive = true, variantValues = [], barcodeList = [] }) {
@@ -156,16 +162,12 @@ async function createBasicProduct({
     }
 
     if (stockCount !== undefined && stockCount !== null) {
-      try {
-        await saveVariantStock({
-          productId: product.id,
-          variantId: variant.id,
-          stockCount,
-          stockLocationId,
-        });
-      } catch (error) {
-        console.error('ikas stok güncelleme başarısız:', error.message);
-      }
+      await saveVariantStock({
+        productId: product.id,
+        variantId: variant.id,
+        stockCount,
+        stockLocationId,
+      });
     }
 
     if (imageUrl) {
@@ -199,16 +201,12 @@ async function addVariantToProduct({ productId, sku, sellPrice, currency = 'TRY'
   });
 
   if (stockCount !== undefined && stockCount !== null) {
-    try {
-      await saveVariantStock({
-        productId,
-        variantId: data.addVariantToProduct,
-        stockCount,
-        stockLocationId,
-      });
-    } catch (error) {
-      console.error('ikas stok güncelleme başarısız:', error.message);
-    }
+    await saveVariantStock({
+      productId,
+      variantId: data.addVariantToProduct,
+      stockCount,
+      stockLocationId,
+    });
   }
 
   return data.addVariantToProduct;
@@ -226,11 +224,15 @@ async function updateVariantPrices(variantUpdates, { currency = 'TRY', priceList
     input: { priceListId, variantPriceInputs },
   });
 
-  if (!data.updateVariantPrices?.isSuccess) {
-    throw new Error('ikas fiyat güncelleme başarısız.');
+  const result = data.updateVariantPrices;
+  if (result?.errors?.length) {
+    const errors = result.errors
+      .map((entry) => entry.errorCode || JSON.stringify(entry))
+      .join(', ');
+    throw new Error(`ikas fiyat güncellenemedi (${errors}).`);
   }
 
-  return data.updateVariantPrices;
+  return result;
 }
 
 module.exports = {
