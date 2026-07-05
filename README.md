@@ -45,5 +45,7 @@ npm run admin:create -- kullanici sifre   # Yeni admin ekle
 ## Fiyat Formülü
 
 ```
-Nihai Fiyat (TL) = (PriceCharting USD × Güncel Dolar Kuru) × 1.86
+Nihai Fiyat (TL) = ⌈(PriceCharting USD × Güncel Dolar Kuru) × 1.86⌉
 ```
+
+Fiyat tam TL'ye yukarı yuvarlanır (ör. 764,68 → 765).

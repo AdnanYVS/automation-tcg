@@ -1,6 +1,6 @@
 function calculateFinalPriceTry(usdPrice, usdTryRate, multiplier = 1.86) {
   const rawPrice = Number(usdPrice) * Number(usdTryRate) * Number(multiplier);
-  return Math.round(rawPrice * 100) / 100;
+  return Math.ceil(rawPrice);
 }
 
 module.exports = { calculateFinalPriceTry };
