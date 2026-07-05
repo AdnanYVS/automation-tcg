@@ -1,0 +1,33 @@
+{
+  "name": "automation-tcg",
+  "version": "1.0.0",
+  "description": "Pokémon TCG kartlarını kartfiyat.com üzerinden ikas mağazasına yükleyen ve fiyatları güncelleyen otomasyon",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "stop": "node scripts/stop-server.js",
+    "restart": "npm run stop && npm start",
+    "sets:sync": "node scripts/sync-set-codes.js",
+    "price:update": "node cron/priceUpdater.js --run-once",
+    "price:check": "node cron/priceChecker.js --run-once",
+    "price:cron": "node cron/priceUpdater.js",
+    "admin:create": "node scripts/create-admin.js"
+  },
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "better-sqlite3": "^11.9.1",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.10.1",
+    "openai": "^4.98.0"
+  },
+  "devDependencies": {
+    "kill-port": "^2.0.1",
+    "nodemon": "^3.1.10"
+  }
+}

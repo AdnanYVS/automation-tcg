@@ -1,0 +1,20 @@
+# Pokémon TCG ikas Otomasyonu Proje Kuralları
+
+## Proje Tanımı
+Bu proje, kartfiyat.com API'sini kullanarak Pokémon TCG kartlarını arayan, seçilen kartı ikas API'si üzerinden e-ticaret sitesine ürün olarak yükleyen ve fiyatlarını 24 saatte bir güncelleyen bir otomasyon sistemidir.
+
+## Teknik Standartlar
+- Backend: Node.js (Express.js) + TypeScript (veya modern JavaScript)
+- Veri Tabanı: SQLite (İkas Variant ID ile kartfiyat Card ID'sini eşleştirmek için)
+- Zamanlayıcı: Node-cron (Her 24 saatte bir fiyat güncellemesi için)
+
+## Kritik İş Kuralları & Formüller
+1. **Fiyatlandırma Mantığı**: Fiyatlar kartfiyat.com'dan PriceCharting dolar ($) bazlı fiyatı olarak çekilir. 
+2. **Formül**: `Nihai Fiyat (TL) = (PriceCharting USD * Güncel Dolar Kuru) * 1.86`
+3. 1.86 çarpanına KDV ve kar marjları dahildir. Hesaplanan fiyat en yakın kuruşa yuvarlanmalıdır.
+4. **Veri Tabanı Eşleşmesi**: İkas'a yeni ürün eklendiğinde dönen `variantId` veya `productId`, veri tabanında kartfiyat'ın benzersiz kart ID'si ile mutlaka ilişkilendirilmelidir.
+
+## Kodlama Kuralları
+- API isteklerinde hata yönetimi (try-catch) her zaman yapılmalı ve loglanmalıdır.
+- İkas API limitlerine (rate limits) dikkat edilmeli, bulk (toplu) endpointler tercih edilmelidir.
+- Kodlar modüler olmalı; ikas servisleri, kartfiyat servisleri ve veri tabanı işlemleri ayrı dosyalarda tutulmalıdır.

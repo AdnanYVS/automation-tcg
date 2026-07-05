@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Dünyası · ikas Otomasyon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c0f14;
+      --bg-elevated: #141a24;
+      --surface: #1a2230;
+      --surface-hover: #212b3c;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --text: #f0f4f8;
+      --muted: #8b9cb3;
+      --accent: #ffcb05;
+      --accent-dim: #e6b800;
+      --accent-text: #1a1400;
+      --blue: #3b82f6;
+      --success: #34d399;
+      --error: #f87171;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      --glow: 0 0 40px rgba(255, 203, 5, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 203, 5, 0.08), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(59, 130, 246, 0.06), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent), #ff9500);
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+      box-shadow: var(--glow);
+    }
+
+    .brand h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .brand p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(52, 211, 153, 0.12);
+      border: 1px solid rgba(52, 211, 153, 0.25);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--success);
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+      background: var(--surface-hover);
+    }
+
+    .nav-link.has-pending {
+      color: var(--accent);
+      border-color: rgba(255, 203, 5, 0.35);
+      background: rgba(255, 203, 5, 0.08);
+    }
+
+    .nav-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      background: var(--accent);
+      color: var(--accent-text);
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    .user-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .user-badge strong { color: var(--text); }
+
+    .logout-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+      background: var(--surface-hover);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Search */
+    .search-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .search-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-input-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-input-wrap svg {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px 14px 46px;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input::placeholder { color: #5a6a82; }
+
+    .search-input:focus {
+      border-color: rgba(255, 203, 5, 0.4);
+      box-shadow: 0 0 0 3px rgba(255, 203, 5, 0.1);
+    }
+
+    .search-btn {
+      background: linear-gradient(135deg, var(--accent), #ffb800);
+      color: var(--accent-text);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0 28px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+
+    .search-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(255, 203, 5, 0.3);
+    }
+
+    .search-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .search-hints {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .hint-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      align-self: center;
+      margin-right: 4px;
+    }
+
+    .hint-chip {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .hint-chip:hover {
+      border-color: rgba(255, 203, 5, 0.35);
+      color: var(--accent);
+      background: rgba(255, 203, 5, 0.06);
+    }
+
+    /* Status toast */
+    .toast {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      animation: slideIn 0.25s ease;
+    }
+
+    .toast.visible { display: flex; }
+    .toast.info { background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.25); color: #93c5fd; }
+    .toast.success { background: rgba(52, 211, 153, 0.12); border: 1px solid rgba(52, 211, 153, 0.25); color: var(--success); }
+    .toast.error { background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.25); color: var(--error); }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Welcome state */
+    .welcome {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .welcome-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      opacity: 0.6;
+    }
+
+    .welcome h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .welcome p { font-size: 0.92rem; max-width: 420px; margin: 0 auto; }
+
+    .welcome-tips {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .welcome-tip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 20px;
+      text-align: left;
+      max-width: 220px;
+    }
+
+    .welcome-tip strong {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .welcome-tip span { font-size: 0.8rem; color: var(--muted); }
+
+    /* Grid */
+    .results-header {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .results-header.visible { display: flex; }
+
+    .results-count {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .results-count strong { color: var(--text); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      animation: cardIn 0.35s ease both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-strong);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-image {
+      aspect-ratio: 3 / 4;
+      background: linear-gradient(160deg, #1e2a3a 0%, #0f1520 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255, 203, 5, 0.04) 50%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover .card-image::after { opacity: 1; }
+
+    .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 14px;
+      transition: transform 0.3s;
+    }
+
+    .card:hover .card-image img { transform: scale(1.03); }
+
+    .card-image .placeholder {
+      color: #4a5a72;
+      font-size: 0.82rem;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .card-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      gap: 8px;
+    }
+
+    .card-code {
+      font-size: 0.72rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .card-price {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .card-action {
+      margin-top: 10px;
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .card-action:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--accent), #ffb800);
+      border-color: transparent;
+      color: var(--accent-text);
+    }
+
+    .card-action:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .card-action.imported {
+      background: rgba(52, 211, 153, 0.15);
+      border-color: rgba(52, 211, 153, 0.3);
+      color: var(--success);
+      cursor: default;
+    }
+
+    .card-action.loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    /* Skeleton */
+    .skeleton {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      animation: shimmer 1.5s infinite;
+    }
+
+    .skeleton-img {
+      aspect-ratio: 3/4;
+      background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--surface-hover) 50%, var(--bg-elevated) 75%);
+      background-size: 200% 100%;
+    }
+
+    .skeleton-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+
+    .skeleton-line {
+      height: 12px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--surface-hover) 50%, var(--bg-elevated) 75%);
+      background-size: 200% 100%;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Empty */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 48px 20px;
+      background: var(--surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius);
+      color: var(--muted);
+    }
+
+    .empty-state span { font-size: 2rem; display: block; margin-bottom: 12px; }
+
+    /* Load more */
+    .load-more-wrap {
+      display: none;
+      justify-content: center;
+      margin-top: 28px;
+    }
+
+    .load-more-wrap.visible { display: flex; }
+
+    .load-more-btn {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 12px 28px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .load-more-btn:hover:not(:disabled) {
+      border-color: rgba(255, 203, 5, 0.4);
+      color: var(--accent);
+    }
+
+    .load-more-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 200;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow);
+      animation: modalIn 0.25s ease;
+      overflow: hidden;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      padding: 20px 24px 0;
+    }
+
+    .modal-header h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .modal-preview {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 16px 24px;
+      padding: 14px;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .modal-preview img {
+      width: 52px;
+      height: 68px;
+      object-fit: contain;
+      border-radius: 6px;
+      background: #0f1520;
+    }
+
+    .modal-preview .no-img {
+      width: 52px;
+      height: 68px;
+      background: #0f1520;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+    }
+
+    .modal-preview-info strong {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+      line-height: 1.3;
+    }
+
+    .modal-preview-info span {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .modal-body { padding: 0 24px 24px; }
+
+    .modal-body label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .modal-body select {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text);
+      outline: none;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    .modal-body select:focus {
+      border-color: rgba(255, 203, 5, 0.4);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+
+    .modal-btn.cancel {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .modal-btn.cancel:hover { color: var(--text); }
+
+    .modal-btn.confirm {
+      background: linear-gradient(135deg, var(--accent), #ffb800);
+      color: var(--accent-text);
+    }
+
+    .modal-btn.confirm:hover:not(:disabled) {
+      box-shadow: 0 4px 16px rgba(255, 203, 5, 0.3);
+    }
+
+    .modal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    @media (max-width: 640px) {
+      .search-form { flex-direction: column; }
+      .search-btn { padding: 14px; }
+      .header { flex-direction: column; }
+      .welcome-tips { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <h1>Card Dünyası</h1>
+          <p>Kartfiyat → ikas otomasyon paneli</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="/prices.html" class="nav-link" id="prices-nav-link">
+          Fiyat Takibi <span class="nav-badge" id="pending-prices-badge" hidden>0</span>
+        </a>
+        <span class="user-badge" id="user-badge" hidden>👤 <strong id="user-name"></strong></span>
+        <button type="button" class="logout-btn" id="logout-btn" hidden>Çıkış</button>
+        <div class="badge">Sistem aktif</div>
+      </div>
+    </header>
+
+    <section class="search-section">
+      <form class="search-form" id="search-form">
+        <div class="search-input-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+          </svg>
+          <input class="search-input" id="search-input" type="search"
+            placeholder="Kart adı, kodu veya Japonca set kodu (MEW-167)..."
+            minlength="2" required autocomplete="off">
+        </div>
+        <button class="search-btn" type="submit" id="search-button">Ara</button>
+      </form>
+      <div class="search-hints">
+        <span class="hint-label">Örnek:</span>
+        <button type="button" class="hint-chip" data-query="charizard">charizard</button>
+        <button type="button" class="hint-chip" data-query="MEW-167">MEW-167</button>
+        <button type="button" class="hint-chip" data-query="PAL-125">PAL-125</button>
+      </div>
+    </section>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <div class="results-header" id="results-header">
+      <span class="results-count" id="results-count"></span>
+    </div>
+
+    <div class="grid" id="results">
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">🃏</div>
+        <h2>Kart aramaya başlayın</h2>
+        <p>Kartfiyat'tan kart bulun, fiyatını görün ve tek tıkla ikas mağazanıza yükleyin.</p>
+        <div class="welcome-tips">
+          <div class="welcome-tip">
+            <strong>İngilizce kartlar</strong>
+            <span>Kart adı veya kodu ile arayın</span>
+          </div>
+          <div class="welcome-tip">
+            <strong>Japonca kartlar</strong>
+            <span>SETKODU-No formatı kullanın (MEW-167)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="load-more-wrap" id="load-more-wrap">
+      <button type="button" class="load-more-btn" id="load-more-button">Daha fazla sonuç yükle</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="import-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">ikas'a Yükle</h2>
+      </div>
+      <div class="modal-preview" id="modal-preview">
+        <div class="no-img">🃏</div>
+        <div class="modal-preview-info">
+          <strong id="modal-card-name">Kart</strong>
+          <span id="modal-card-set">Set bilgisi</span>
+        </div>
+      </div>
+      <div class="modal-body">
+        <label for="stock-location">Stok Lokasyonu</label>
+        <select id="stock-location">
+          <option value="">Yükleniyor...</option>
+        </select>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn cancel" id="modal-cancel">İptal</button>
+          <button type="button" class="modal-btn confirm" id="modal-confirm">Yükle</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const stockLocationSelect = document.getElementById('stock-location');
+    const toastEl = document.getElementById('toast');
+    const resultsEl = document.getElementById('results');
+    const welcomeEl = document.getElementById('welcome');
+    const resultsHeader = document.getElementById('results-header');
+    const resultsCount = document.getElementById('results-count');
+    const loadMoreWrap = document.getElementById('load-more-wrap');
+    const loadMoreButton = document.getElementById('load-more-button');
+    const importModal = document.getElementById('import-modal');
+    const modalCardName = document.getElementById('modal-card-name');
+    const modalCardSet = document.getElementById('modal-card-set');
+    const modalPreview = document.getElementById('modal-preview');
+    const modalCancel = document.getElementById('modal-cancel');
+    const modalConfirm = document.getElementById('modal-confirm');
+
+    const INITIAL_RESULTS = 20;
+    const MAX_RESULTS = 50;
+
+    let currentQuery = '';
+    let currentItems = [];
+    let currentPagination = null;
+    let hasSearched = false;
+    let pendingImport = null;
+
+    function showToast(message, type = 'info') {
+      toastEl.textContent = message;
+      toastEl.className = `toast visible ${type}`;
+    }
+
+    function hideToast() {
+      toastEl.className = 'toast';
+    }
+
+    function updateLoadMoreButton() {
+      const canLoadMore = hasSearched
+        && currentItems.length > 0
+        && currentItems.length < MAX_RESULTS
+        && (currentPagination?.has_more || (currentPagination?.total || 0) > currentItems.length);
+      loadMoreWrap.classList.toggle('visible', canLoadMore);
+    }
+
+    function showSkeletons(count = 8) {
+      welcomeEl?.remove();
+      resultsHeader.classList.add('visible');
+      resultsEl.innerHTML = Array.from({ length: count }, () => `
+        <div class="skeleton">
+          <div class="skeleton-img"></div>
+          <div class="skeleton-body">
+            <div class="skeleton-line" style="width:80%"></div>
+            <div class="skeleton-line" style="width:60%"></div>
+            <div class="skeleton-line" style="width:40%"></div>
+          </div>
+        </div>`).join('');
+    }
+
+    async function fetchSearchResults({ query, page, perPage }) {
+      const params = new URLSearchParams({ query, page: String(page), perPage: String(perPage) });
+      const response = await AUTH.apiFetch(`/api/search-card?${params}`);
+      const payload = await response.json();
+      if (!response.ok || !payload.success) throw new Error(payload.error || 'Arama başarısız.');
+      return payload.data;
+    }
+
+    async function loadStockLocations() {
+      try {
+        const response = await AUTH.apiFetch('/api/stock-locations');
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error();
+        stockLocationSelect.innerHTML = payload.data
+          .map((loc) => `<option value="${loc.id}">${loc.name}</option>`)
+          .join('');
+      } catch {
+        stockLocationSelect.innerHTML = '<option value="">Yüklenemedi</option>';
+      }
+    }
+
+    function formatPrice(card) {
+      return card.priceInfo?.formatted
+        ? `${card.priceInfo.label}: ${card.priceInfo.formatted}`
+        : 'Fiyat yok';
+    }
+
+    function getCardImage(card) {
+      if (!card.images?.length) return null;
+      return [...card.images].sort((a, b) => (a.order || 0) - (b.order || 0))[0].url;
+    }
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function createCardElement(card, index) {
+      const article = document.createElement('article');
+      article.className = 'card';
+      article.style.animationDelay = `${Math.min(index, 12) * 40}ms`;
+      const imageUrl = getCardImage(card);
+      const setName = card.category?.name || 'Set bilgisi yok';
+      const code = card.code || `#${card.id}`;
+
+      article.innerHTML = `
+        <div class="card-image">
+          ${imageUrl
+            ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(card.name)}" loading="lazy">`
+            : '<div class="placeholder">Görsel yok</div>'}
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">${escapeHtml(card.name || 'İsimsiz')}</h2>
+          <p class="card-meta">${escapeHtml(setName)}</p>
+          <div class="card-footer">
+            <span class="card-code">${escapeHtml(code)}</span>
+            <span class="card-price">${escapeHtml(formatPrice(card))}</span>
+          </div>
+          <button type="button" class="card-action">ikas'a Yükle</button>
+        </div>`;
+
+      article.querySelector('.card-action')
+        .addEventListener('click', () => openImportModal(card, article.querySelector('.card-action')));
+      return article;
+    }
+
+    function appendResults(items, startIndex = 0) {
+      items.forEach((card, i) => resultsEl.appendChild(createCardElement(card, startIndex + i)));
+    }
+
+    function renderResults(items) {
+      resultsEl.innerHTML = '';
+      resultsHeader.classList.add('visible');
+
+      if (!items.length) {
+        resultsEl.innerHTML = `
+          <div class="empty-state">
+            <span>🔍</span>
+            Sonuç bulunamadı. Farklı bir arama deneyin.
+          </div>`;
+        resultsCount.innerHTML = '<strong>0</strong> sonuç';
+        loadMoreWrap.classList.remove('visible');
+        return;
+      }
+
+      appendResults(items);
+      resultsCount.innerHTML = `<strong>${items.length}</strong> sonuç gösteriliyor`;
+    }
+
+    async function searchCards(query) {
+      searchButton.disabled = true;
+      hasSearched = true;
+      hideToast();
+      showSkeletons();
+      showToast('Kartlar aranıyor...', 'info');
+
+      try {
+        currentQuery = query;
+        const data = await fetchSearchResults({ query, page: 1, perPage: INITIAL_RESULTS });
+        currentItems = data.items || [];
+        currentPagination = data.pagination || null;
+        renderResults(currentItems);
+
+        if (data.searchMode === 'japanese-set-code') {
+          showToast(`${currentItems.length} sonuç · ${data.setCode}-${data.cardNumber}`, 'success');
+          resultsCount.innerHTML = `<strong>${currentItems.length}</strong> sonuç · <strong>${data.setCode}-${data.cardNumber}</strong>`;
+        } else {
+          showToast(`${currentItems.length} kart bulundu`, 'success');
+        }
+        updateLoadMoreButton();
+      } catch (error) {
+        currentItems = [];
+        resultsEl.innerHTML = `<div class="empty-state"><span>⚠️</span>${escapeHtml(error.message)}</div>`;
+        loadMoreWrap.classList.remove('visible');
+        showToast(error.message, 'error');
+      } finally {
+        searchButton.disabled = false;
+      }
+    }
+
+    async function loadMoreResults() {
+      if (!currentQuery || currentItems.length >= MAX_RESULTS) return;
+      const remaining = MAX_RESULTS - currentItems.length;
+      loadMoreButton.disabled = true;
+      showToast('Daha fazla sonuç yükleniyor...', 'info');
+
+      try {
+        const data = await fetchSearchResults({ query: currentQuery, page: 2, perPage: remaining });
+        const existingIds = new Set(currentItems.map((c) => c.id));
+        const newItems = (data.items || []).filter((c) => !existingIds.has(c.id));
+        const startIdx = currentItems.length;
+        currentItems = [...currentItems, ...newItems];
+        currentPagination = data.pagination || currentPagination;
+        appendResults(newItems, startIdx);
+        resultsCount.innerHTML = `<strong>${currentItems.length}</strong> sonuç gösteriliyor`;
+        showToast(`${currentItems.length} kart listeleniyor`, 'success');
+        updateLoadMoreButton();
+      } catch (error) {
+        showToast(error.message, 'error');
+      } finally {
+        loadMoreButton.disabled = false;
+      }
+    }
+
+    function openImportModal(card, button) {
+      pendingImport = { card, button };
+      modalCardName.textContent = card.name || 'Kart';
+      modalCardSet.textContent = card.category?.name || 'Set bilgisi yok';
+
+      const imageUrl = getCardImage(card);
+      const previewEl = modalPreview.querySelector('img, .no-img');
+      if (previewEl) previewEl.remove();
+
+      if (imageUrl) {
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = card.name;
+        modalPreview.insertBefore(img, modalPreview.firstChild);
+      } else {
+        const div = document.createElement('div');
+        div.className = 'no-img';
+        div.textContent = '🃏';
+        modalPreview.insertBefore(div, modalPreview.firstChild);
+      }
+
+      importModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeImportModal() {
+      importModal.classList.remove('open');
+      document.body.style.overflow = '';
+      pendingImport = null;
+    }
+
+    async function confirmImport() {
+      if (!pendingImport) return;
+      const stockLocationId = stockLocationSelect.value;
+      if (!stockLocationId) {
+        showToast('Stok lokasyonu seçin', 'error');
+        return;
+      }
+
+      const { card, button } = pendingImport;
+      const locationName = stockLocationSelect.options[stockLocationSelect.selectedIndex].text;
+      closeImportModal();
+
+      button.disabled = true;
+      button.classList.add('loading');
+      button.textContent = 'Yükleniyor...';
+      showToast(`"${card.name}" yükleniyor...`, 'info');
+
+      try {
+        const response = await AUTH.apiFetch('/api/import-card', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cardId: card.id,
+            name: card.name,
+            code: card.code,
+            stockLocationId,
+          }),
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || 'Yükleme başarısız.');
+
+        button.textContent = '✓ Yüklendi';
+        button.classList.remove('loading');
+        button.classList.add('imported');
+        showToast(`"${card.name}" → ${locationName} · ${payload.data.sellPrice} TRY`, 'success');
+      } catch (error) {
+        button.disabled = false;
+        button.classList.remove('loading');
+        button.textContent = "ikas'a Yükle";
+        showToast(error.message, 'error');
+      }
+    }
+
+    document.querySelectorAll('.hint-chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        searchInput.value = chip.dataset.query;
+        searchInput.focus();
+        searchCards(chip.dataset.query);
+      });
+    });
+
+    async function loadPendingPriceCount() {
+      const badge = document.getElementById('pending-prices-badge');
+      const navLink = document.getElementById('prices-nav-link');
+      try {
+        const response = await AUTH.apiFetch('/api/price-changes');
+        const payload = await response.json();
+        if (!response.ok || !payload.success) return;
+        const count = payload.data.pendingCount || 0;
+        if (count > 0) {
+          badge.hidden = false;
+          badge.textContent = count;
+          navLink.classList.add('has-pending');
+        }
+      } catch {
+        // sessizce geç
+      }
+    }
+
+    loadStockLocations();
+    loadPendingPriceCount();
+    loadMoreButton.addEventListener('click', loadMoreResults);
+    modalCancel.addEventListener('click', closeImportModal);
+    modalConfirm.addEventListener('click', confirmImport);
+    importModal.addEventListener('click', (e) => { if (e.target === importModal) closeImportModal(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeImportModal();
+    });
+
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const query = searchInput.value.trim();
+      if (query.length < 2) return showToast('En az 2 karakter girin', 'error');
+      searchCards(query);
+    });
+
+    AUTH.requireAuth().then((user) => {
+      if (!user) return;
+      document.getElementById('user-name').textContent = user.displayName || user.username;
+      document.getElementById('user-badge').hidden = false;
+      document.getElementById('logout-btn').hidden = false;
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => AUTH.logout());
+  </script>
+</body>
+</html>

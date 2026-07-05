@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giriş · Card Dünyası Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c0f14;
+      --surface: #1a2230;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f0f4f8;
+      --muted: #8b9cb3;
+      --accent: #ffcb05;
+      --accent-text: #1a1400;
+      --error: #f87171;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 203, 5, 0.08), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(59, 130, 246, 0.06), transparent);
+      pointer-events: none;
+    }
+
+    .card {
+      position: relative;
+      width: min(420px, 100%);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #ff9500);
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-top: 4px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .field { margin-bottom: 16px; }
+
+    input {
+      width: 100%;
+      background: #141a24;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: rgba(255, 203, 5, 0.4);
+      box-shadow: 0 0 0 3px rgba(255, 203, 5, 0.1);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 8px;
+      background: linear-gradient(135deg, var(--accent), #ffb800);
+      color: var(--accent-text);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 13px 18px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .error {
+      display: none;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(248, 113, 113, 0.12);
+      border: 1px solid rgba(248, 113, 113, 0.25);
+      color: var(--error);
+      font-size: 0.88rem;
+    }
+
+    .error.visible { display: block; }
+
+    .hint {
+      margin-top: 18px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">
+      <div class="brand-icon">🔐</div>
+      <div>
+        <h1>Admin Girişi</h1>
+        <p class="subtitle">Card Dünyası · ikas otomasyon paneli</p>
+      </div>
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <form id="login-form">
+      <div class="field">
+        <label for="username">Kullanıcı adı</label>
+        <input id="username" name="username" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="password">Şifre</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" id="submit-btn">Giriş Yap</button>
+    </form>
+
+    <p class="hint">Bu panele yalnızca yetkili kullanıcılar erişebilir.</p>
+  </div>
+
+  <script>
+    const form = document.getElementById('login-form');
+    const errorEl = document.getElementById('error');
+    const submitBtn = document.getElementById('submit-btn');
+    const params = new URLSearchParams(window.location.search);
+    const nextPath = params.get('next') || '/';
+
+    async function redirectIfLoggedIn() {
+      const response = await fetch('/api/auth/me', { credentials: 'same-origin' });
+      if (response.ok) {
+        window.location.href = nextPath.startsWith('/') ? nextPath : '/';
+      }
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      errorEl.classList.remove('visible');
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: form.username.value.trim(),
+            password: form.password.value,
+          }),
+        });
+
+        const payload = await response.json();
+        if (!response.ok || !payload.success) {
+          throw new Error(payload.error || 'Giriş başarısız.');
+        }
+
+        window.location.href = nextPath.startsWith('/') ? nextPath : '/';
+      } catch (error) {
+        errorEl.textContent = error.message;
+        errorEl.classList.add('visible');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    redirectIfLoggedIn();
+  </script>
+</body>
+</html>

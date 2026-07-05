@@ -1,0 +1,5833 @@
+{
+  "updatedAt": "2026-07-04T22:00:36.212Z",
+  "codes": {
+    "M2A": {
+      "setName": "MEGA Dream ex",
+      "categoryId": 509,
+      "categoryName": "Pokemon Japanese Mega Dream ex",
+      "source": "override",
+      "setCode": "M2A"
+    },
+    "m2a": {
+      "setName": "MEGA Dream ex",
+      "categoryId": 509,
+      "categoryName": "Pokemon Japanese Mega Dream ex",
+      "source": "vendortools",
+      "setCode": "m2a"
+    },
+    "M2a": {
+      "setName": "MEGA Dream ex",
+      "categoryId": 509,
+      "categoryName": "Pokemon Japanese Mega Dream ex",
+      "source": "override",
+      "setCode": "M2a"
+    },
+    "M5": {
+      "setName": "Abyss Eye",
+      "categoryId": 1129,
+      "categoryName": "Pokemon Japanese Abyss Eye",
+      "source": "vendortools",
+      "setCode": "M5"
+    },
+    "m5": {
+      "setName": "Abyss Eye",
+      "categoryId": 1129,
+      "categoryName": "Pokemon Japanese Abyss Eye",
+      "source": "vendortools",
+      "setCode": "m5"
+    },
+    "M4": {
+      "setName": "Ninja Spinner",
+      "categoryId": 812,
+      "categoryName": "Pokemon Japanese Ninja Spinner",
+      "source": "vendortools",
+      "setCode": "M4"
+    },
+    "m4": {
+      "setName": "Ninja Spinner",
+      "categoryId": 812,
+      "categoryName": "Pokemon Japanese Ninja Spinner",
+      "source": "vendortools",
+      "setCode": "m4"
+    },
+    "M3": {
+      "setName": "Nihil Zero",
+      "categoryId": 810,
+      "categoryName": "Pokemon Japanese Nihil Zero",
+      "source": "vendortools",
+      "setCode": "M3"
+    },
+    "m3": {
+      "setName": "Nihil Zero",
+      "categoryId": 810,
+      "categoryName": "Pokemon Japanese Nihil Zero",
+      "source": "vendortools",
+      "setCode": "m3"
+    },
+    "M2": {
+      "setName": "Inferno X",
+      "categoryId": 137,
+      "categoryName": "Pokemon Japanese Inferno X",
+      "source": "vendortools",
+      "setCode": "M2"
+    },
+    "m2": {
+      "setName": "Inferno X",
+      "categoryId": 137,
+      "categoryName": "Pokemon Japanese Inferno X",
+      "source": "vendortools",
+      "setCode": "m2"
+    },
+    "M1L": {
+      "setName": "Mega Brave",
+      "categoryId": 146,
+      "categoryName": "Pokemon Japanese Mega Brave",
+      "source": "vendortools",
+      "setCode": "M1L"
+    },
+    "m1l": {
+      "setName": "Mega Brave",
+      "categoryId": 146,
+      "categoryName": "Pokemon Japanese Mega Brave",
+      "source": "vendortools",
+      "setCode": "m1l"
+    },
+    "M1S": {
+      "setName": "Mega Symphonia",
+      "categoryId": 149,
+      "categoryName": "Pokemon Japanese Mega Symphonia",
+      "source": "vendortools",
+      "setCode": "M1S"
+    },
+    "m1s": {
+      "setName": "Mega Symphonia",
+      "categoryId": 149,
+      "categoryName": "Pokemon Japanese Mega Symphonia",
+      "source": "vendortools",
+      "setCode": "m1s"
+    },
+    "SV11B": {
+      "setName": "Black Bolt",
+      "categoryId": 98,
+      "categoryName": "Pokemon Japanese Black Bolt",
+      "source": "vendortools",
+      "setCode": "SV11B"
+    },
+    "sv11b": {
+      "setName": "Black Bolt",
+      "categoryId": 98,
+      "categoryName": "Pokemon Japanese Black Bolt",
+      "source": "vendortools",
+      "setCode": "sv11b"
+    },
+    "SV11W": {
+      "setName": "White Flare",
+      "categoryId": 202,
+      "categoryName": "Pokemon Japanese White Flare",
+      "source": "vendortools",
+      "setCode": "SV11W"
+    },
+    "sv11w": {
+      "setName": "White Flare",
+      "categoryId": 202,
+      "categoryName": "Pokemon Japanese White Flare",
+      "source": "vendortools",
+      "setCode": "sv11w"
+    },
+    "SV10": {
+      "setName": "Glory of Team Rocket",
+      "categoryId": 129,
+      "categoryName": "Pokemon Japanese Glory of Team Rocket",
+      "source": "vendortools",
+      "setCode": "SV10"
+    },
+    "sv10": {
+      "setName": "Glory of Team Rocket",
+      "categoryId": 129,
+      "categoryName": "Pokemon Japanese Glory of Team Rocket",
+      "source": "vendortools",
+      "setCode": "sv10"
+    },
+    "SV9": {
+      "setName": "Battle Partners",
+      "categoryId": 95,
+      "categoryName": "Pokemon Japanese Battle Partners",
+      "source": "vendortools",
+      "setCode": "SV9"
+    },
+    "sv9": {
+      "setName": "Battle Partners",
+      "categoryId": 95,
+      "categoryName": "Pokemon Japanese Battle Partners",
+      "source": "vendortools",
+      "setCode": "sv9"
+    },
+    "SV8A": {
+      "setName": "Terastal Festival ex",
+      "categoryId": 191,
+      "categoryName": "Pokemon Japanese Terastal Festival",
+      "source": "vendortools",
+      "setCode": "SV8A"
+    },
+    "sv8a": {
+      "setName": "Terastal Festival ex",
+      "categoryId": 191,
+      "categoryName": "Pokemon Japanese Terastal Festival",
+      "source": "vendortools",
+      "setCode": "sv8a"
+    },
+    "SV8": {
+      "setName": "Super Electric Breaker",
+      "categoryId": 187,
+      "categoryName": "Pokemon Japanese Super Electric Breaker",
+      "source": "vendortools",
+      "setCode": "SV8"
+    },
+    "sv8": {
+      "setName": "Super Electric Breaker",
+      "categoryId": 187,
+      "categoryName": "Pokemon Japanese Super Electric Breaker",
+      "source": "vendortools",
+      "setCode": "sv8"
+    },
+    "SV7A": {
+      "setName": "Paradise Dragona",
+      "categoryId": 158,
+      "categoryName": "Pokemon Japanese Paradise Dragona",
+      "source": "vendortools",
+      "setCode": "SV7A"
+    },
+    "sv7a": {
+      "setName": "Paradise Dragona",
+      "categoryId": 158,
+      "categoryName": "Pokemon Japanese Paradise Dragona",
+      "source": "vendortools",
+      "setCode": "sv7a"
+    },
+    "SV7": {
+      "setName": "Stellar Miracle",
+      "categoryId": 186,
+      "categoryName": "Pokemon Japanese Stellar Miracle",
+      "source": "vendortools",
+      "setCode": "SV7"
+    },
+    "sv7": {
+      "setName": "Stellar Miracle",
+      "categoryId": 186,
+      "categoryName": "Pokemon Japanese Stellar Miracle",
+      "source": "vendortools",
+      "setCode": "sv7"
+    },
+    "SV6A": {
+      "setName": "Night Wanderer",
+      "categoryId": 154,
+      "categoryName": "Pokemon Japanese Night Wanderer",
+      "source": "vendortools",
+      "setCode": "SV6A"
+    },
+    "sv6a": {
+      "setName": "Night Wanderer",
+      "categoryId": 154,
+      "categoryName": "Pokemon Japanese Night Wanderer",
+      "source": "vendortools",
+      "setCode": "sv6a"
+    },
+    "SV6": {
+      "setName": "Mask of Change",
+      "categoryId": 144,
+      "categoryName": "Pokemon Japanese Mask of Change",
+      "source": "vendortools",
+      "setCode": "SV6"
+    },
+    "sv6": {
+      "setName": "Mask of Change",
+      "categoryId": 144,
+      "categoryName": "Pokemon Japanese Mask of Change",
+      "source": "vendortools",
+      "setCode": "sv6"
+    },
+    "SV5A": {
+      "setName": "Crimson Haze",
+      "categoryId": 108,
+      "categoryName": "Pokemon Japanese Crimson Haze",
+      "source": "vendortools",
+      "setCode": "SV5A"
+    },
+    "sv5a": {
+      "setName": "Crimson Haze",
+      "categoryId": 108,
+      "categoryName": "Pokemon Japanese Crimson Haze",
+      "source": "vendortools",
+      "setCode": "sv5a"
+    },
+    "SV5M": {
+      "setName": "Cyber Judge",
+      "categoryId": 110,
+      "categoryName": "Pokemon Japanese Cyber Judge",
+      "source": "vendortools",
+      "setCode": "SV5M"
+    },
+    "sv5m": {
+      "setName": "Cyber Judge",
+      "categoryId": 110,
+      "categoryName": "Pokemon Japanese Cyber Judge",
+      "source": "vendortools",
+      "setCode": "sv5m"
+    },
+    "SV5K": {
+      "setName": "Wild Force",
+      "categoryId": 204,
+      "categoryName": "Pokemon Japanese Wild Force",
+      "source": "vendortools",
+      "setCode": "SV5K"
+    },
+    "sv5k": {
+      "setName": "Wild Force",
+      "categoryId": 204,
+      "categoryName": "Pokemon Japanese Wild Force",
+      "source": "vendortools",
+      "setCode": "sv5k"
+    },
+    "SV4A": {
+      "setName": "Shiny Treasure ex",
+      "categoryId": 177,
+      "categoryName": "Pokemon Japanese Shiny Treasure ex",
+      "source": "vendortools",
+      "setCode": "SV4A"
+    },
+    "sv4a": {
+      "setName": "Shiny Treasure ex",
+      "categoryId": 177,
+      "categoryName": "Pokemon Japanese Shiny Treasure ex",
+      "source": "vendortools",
+      "setCode": "sv4a"
+    },
+    "SV4K": {
+      "setName": "Ancient Roar",
+      "categoryId": 91,
+      "categoryName": "Pokemon Japanese Ancient Roar",
+      "source": "vendortools",
+      "setCode": "SV4K"
+    },
+    "sv4k": {
+      "setName": "Ancient Roar",
+      "categoryId": 91,
+      "categoryName": "Pokemon Japanese Ancient Roar",
+      "source": "vendortools",
+      "setCode": "sv4k"
+    },
+    "SV4M": {
+      "setName": "Future Flash",
+      "categoryId": 124,
+      "categoryName": "Pokemon Japanese Future Flash",
+      "source": "vendortools",
+      "setCode": "SV4M"
+    },
+    "sv4m": {
+      "setName": "Future Flash",
+      "categoryId": 124,
+      "categoryName": "Pokemon Japanese Future Flash",
+      "source": "vendortools",
+      "setCode": "sv4m"
+    },
+    "SV3A": {
+      "setName": "Raging Surf",
+      "categoryId": 164,
+      "categoryName": "Pokemon Japanese Raging Surf",
+      "source": "vendortools",
+      "setCode": "SV3A"
+    },
+    "sv3a": {
+      "setName": "Raging Surf",
+      "categoryId": 164,
+      "categoryName": "Pokemon Japanese Raging Surf",
+      "source": "vendortools",
+      "setCode": "sv3a"
+    },
+    "SV3": {
+      "setName": "Ruler of the Black Flame",
+      "categoryId": 169,
+      "categoryName": "Pokemon Japanese Ruler of the Black Flame",
+      "source": "vendortools",
+      "setCode": "SV3"
+    },
+    "sv3": {
+      "setName": "Ruler of the Black Flame",
+      "categoryId": 169,
+      "categoryName": "Pokemon Japanese Ruler of the Black Flame",
+      "source": "vendortools",
+      "setCode": "sv3"
+    },
+    "SV2D": {
+      "setName": "Clay Burst",
+      "categoryId": 107,
+      "categoryName": "Pokemon Japanese Clay Burst",
+      "source": "vendortools",
+      "setCode": "SV2D"
+    },
+    "sv2d": {
+      "setName": "Clay Burst",
+      "categoryId": 107,
+      "categoryName": "Pokemon Japanese Clay Burst",
+      "source": "vendortools",
+      "setCode": "sv2d"
+    },
+    "SV2P": {
+      "setName": "Snow Hazard",
+      "categoryId": 179,
+      "categoryName": "Pokemon Japanese Snow Hazard",
+      "source": "vendortools",
+      "setCode": "SV2P"
+    },
+    "sv2p": {
+      "setName": "Snow Hazard",
+      "categoryId": 179,
+      "categoryName": "Pokemon Japanese Snow Hazard",
+      "source": "vendortools",
+      "setCode": "sv2p"
+    },
+    "SV1A": {
+      "setName": "Triplet Beat",
+      "categoryId": 195,
+      "categoryName": "Pokemon Japanese Triplet Beat",
+      "source": "vendortools",
+      "setCode": "SV1A"
+    },
+    "sv1a": {
+      "setName": "Triplet Beat",
+      "categoryId": 195,
+      "categoryName": "Pokemon Japanese Triplet Beat",
+      "source": "vendortools",
+      "setCode": "sv1a"
+    },
+    "SV1S": {
+      "setName": "Scarlet ex",
+      "categoryId": 172,
+      "categoryName": "Pokemon Japanese Scarlet Ex",
+      "source": "vendortools",
+      "setCode": "SV1S"
+    },
+    "sv1s": {
+      "setName": "Scarlet ex",
+      "categoryId": 172,
+      "categoryName": "Pokemon Japanese Scarlet Ex",
+      "source": "vendortools",
+      "setCode": "sv1s"
+    },
+    "SV1V": {
+      "setName": "Violet ex",
+      "categoryId": 200,
+      "categoryName": "Pokemon Japanese Violet Ex",
+      "source": "vendortools",
+      "setCode": "SV1V"
+    },
+    "sv1v": {
+      "setName": "Violet ex",
+      "categoryId": 200,
+      "categoryName": "Pokemon Japanese Violet Ex",
+      "source": "vendortools",
+      "setCode": "sv1v"
+    },
+    "SWSH12A": {
+      "setName": "VSTAR Universe",
+      "categoryId": 198,
+      "categoryName": "Pokemon Japanese VSTAR Universe",
+      "source": "vendortools",
+      "setCode": "SWSH12A"
+    },
+    "swsh12a": {
+      "setName": "VSTAR Universe",
+      "categoryId": 198,
+      "categoryName": "Pokemon Japanese VSTAR Universe",
+      "source": "vendortools",
+      "setCode": "swsh12a"
+    },
+    "SWSH12": {
+      "setName": "Paradigm Trigger",
+      "categoryId": 157,
+      "categoryName": "Pokemon Japanese Paradigm Trigger",
+      "source": "vendortools",
+      "setCode": "SWSH12"
+    },
+    "swsh12": {
+      "setName": "Paradigm Trigger",
+      "categoryId": 157,
+      "categoryName": "Pokemon Japanese Paradigm Trigger",
+      "source": "vendortools",
+      "setCode": "swsh12"
+    },
+    "SWSH11A": {
+      "setName": "Incandescent Arcana",
+      "categoryId": 136,
+      "categoryName": "Pokemon Japanese Incandescent Arcana",
+      "source": "vendortools",
+      "setCode": "SWSH11A"
+    },
+    "swsh11a": {
+      "setName": "Incandescent Arcana",
+      "categoryId": 136,
+      "categoryName": "Pokemon Japanese Incandescent Arcana",
+      "source": "vendortools",
+      "setCode": "swsh11a"
+    },
+    "SWSH11": {
+      "setName": "Lost Abyss",
+      "categoryId": 142,
+      "categoryName": "Pokemon Japanese Lost Abyss",
+      "source": "vendortools",
+      "setCode": "SWSH11"
+    },
+    "swsh11": {
+      "setName": "Lost Abyss",
+      "categoryId": 142,
+      "categoryName": "Pokemon Japanese Lost Abyss",
+      "source": "vendortools",
+      "setCode": "swsh11"
+    },
+    "SWSH10B": {
+      "setName": "Pokémon GO",
+      "categoryId": 513,
+      "categoryName": "Pokemon Japanese Melee Pokemon Scramble",
+      "source": "vendortools",
+      "setCode": "SWSH10B"
+    },
+    "swsh10b": {
+      "setName": "Pokémon GO",
+      "categoryId": 513,
+      "categoryName": "Pokemon Japanese Melee Pokemon Scramble",
+      "source": "vendortools",
+      "setCode": "swsh10b"
+    },
+    "SWSH10A": {
+      "setName": "Dark Phantasma",
+      "categoryId": 111,
+      "categoryName": "Pokemon Japanese Dark Phantasma",
+      "source": "vendortools",
+      "setCode": "SWSH10A"
+    },
+    "swsh10a": {
+      "setName": "Dark Phantasma",
+      "categoryId": 111,
+      "categoryName": "Pokemon Japanese Dark Phantasma",
+      "source": "vendortools",
+      "setCode": "swsh10a"
+    },
+    "SWSH10P": {
+      "setName": "Space Juggler",
+      "categoryId": 181,
+      "categoryName": "Pokemon Japanese Space Juggler",
+      "source": "vendortools",
+      "setCode": "SWSH10P"
+    },
+    "swsh10p": {
+      "setName": "Space Juggler",
+      "categoryId": 181,
+      "categoryName": "Pokemon Japanese Space Juggler",
+      "source": "vendortools",
+      "setCode": "swsh10p"
+    },
+    "SWSH10D": {
+      "setName": "Time Gazer",
+      "categoryId": 193,
+      "categoryName": "Pokemon Japanese Time Gazer",
+      "source": "vendortools",
+      "setCode": "SWSH10D"
+    },
+    "swsh10d": {
+      "setName": "Time Gazer",
+      "categoryId": 193,
+      "categoryName": "Pokemon Japanese Time Gazer",
+      "source": "vendortools",
+      "setCode": "swsh10d"
+    },
+    "SWSH9A": {
+      "setName": "Battle Region",
+      "categoryId": 96,
+      "categoryName": "Pokemon Japanese Battle Region",
+      "source": "vendortools",
+      "setCode": "SWSH9A"
+    },
+    "swsh9a": {
+      "setName": "Battle Region",
+      "categoryId": 96,
+      "categoryName": "Pokemon Japanese Battle Region",
+      "source": "vendortools",
+      "setCode": "swsh9a"
+    },
+    "SWSH9": {
+      "setName": "Star Birth",
+      "categoryId": 184,
+      "categoryName": "Pokemon Japanese Star Birth",
+      "source": "vendortools",
+      "setCode": "SWSH9"
+    },
+    "swsh9": {
+      "setName": "Star Birth",
+      "categoryId": 184,
+      "categoryName": "Pokemon Japanese Star Birth",
+      "source": "vendortools",
+      "setCode": "swsh9"
+    },
+    "SWSH8A": {
+      "setName": "25th Anniversary Collection",
+      "categoryId": 86,
+      "categoryName": "Pokemon Japanese 25th Anniversary Collection",
+      "source": "vendortools",
+      "setCode": "SWSH8A"
+    },
+    "swsh8a": {
+      "setName": "25th Anniversary Collection",
+      "categoryId": 86,
+      "categoryName": "Pokemon Japanese 25th Anniversary Collection",
+      "source": "vendortools",
+      "setCode": "swsh8a"
+    },
+    "SWSH8": {
+      "setName": "Fusion Arts",
+      "categoryId": 123,
+      "categoryName": "Pokemon Japanese Fusion Arts",
+      "source": "vendortools",
+      "setCode": "SWSH8"
+    },
+    "swsh8": {
+      "setName": "Fusion Arts",
+      "categoryId": 123,
+      "categoryName": "Pokemon Japanese Fusion Arts",
+      "source": "vendortools",
+      "setCode": "swsh8"
+    },
+    "SWSH7R": {
+      "setName": "Blue Sky Stream",
+      "categoryId": 99,
+      "categoryName": "Pokemon Japanese Blue Sky Stream",
+      "source": "vendortools",
+      "setCode": "SWSH7R"
+    },
+    "swsh7r": {
+      "setName": "Blue Sky Stream",
+      "categoryId": 99,
+      "categoryName": "Pokemon Japanese Blue Sky Stream",
+      "source": "vendortools",
+      "setCode": "swsh7r"
+    },
+    "SWSH7D": {
+      "setName": "Skyscraping Perfection",
+      "categoryId": 563,
+      "categoryName": "Pokemon Japanese Skyscraping Perfection",
+      "source": "vendortools",
+      "setCode": "SWSH7D"
+    },
+    "swsh7d": {
+      "setName": "Skyscraping Perfection",
+      "categoryId": 563,
+      "categoryName": "Pokemon Japanese Skyscraping Perfection",
+      "source": "vendortools",
+      "setCode": "swsh7d"
+    },
+    "SWSH6A": {
+      "setName": "Eevee Heroes",
+      "categoryId": 119,
+      "categoryName": "Pokemon Japanese Eevee Heroes",
+      "source": "vendortools",
+      "setCode": "SWSH6A"
+    },
+    "swsh6a": {
+      "setName": "Eevee Heroes",
+      "categoryId": 119,
+      "categoryName": "Pokemon Japanese Eevee Heroes",
+      "source": "vendortools",
+      "setCode": "swsh6a"
+    },
+    "SWSH6K": {
+      "setName": "Jet-Black Spirit",
+      "categoryId": 495,
+      "categoryName": "Pokemon Japanese Jet-Black Spirit",
+      "source": "vendortools",
+      "setCode": "SWSH6K"
+    },
+    "swsh6k": {
+      "setName": "Jet-Black Spirit",
+      "categoryId": 495,
+      "categoryName": "Pokemon Japanese Jet-Black Spirit",
+      "source": "vendortools",
+      "setCode": "swsh6k"
+    },
+    "SWSH6H": {
+      "setName": "Silver Lance",
+      "categoryId": 560,
+      "categoryName": "Pokemon Japanese Silver Lance",
+      "source": "vendortools",
+      "setCode": "SWSH6H"
+    },
+    "swsh6h": {
+      "setName": "Silver Lance",
+      "categoryId": 560,
+      "categoryName": "Pokemon Japanese Silver Lance",
+      "source": "vendortools",
+      "setCode": "swsh6h"
+    },
+    "SWSH5R": {
+      "setName": "Rapid Strike Master",
+      "categoryId": 535,
+      "categoryName": "Pokemon Japanese Rapid Strike Master",
+      "source": "vendortools",
+      "setCode": "SWSH5R"
+    },
+    "swsh5r": {
+      "setName": "Rapid Strike Master",
+      "categoryId": 535,
+      "categoryName": "Pokemon Japanese Rapid Strike Master",
+      "source": "vendortools",
+      "setCode": "swsh5r"
+    },
+    "SWSH5I": {
+      "setName": "Single Strike Master",
+      "categoryId": 561,
+      "categoryName": "Pokemon Japanese Single Strike Master",
+      "source": "vendortools",
+      "setCode": "SWSH5I"
+    },
+    "swsh5i": {
+      "setName": "Single Strike Master",
+      "categoryId": 561,
+      "categoryName": "Pokemon Japanese Single Strike Master",
+      "source": "vendortools",
+      "setCode": "swsh5i"
+    },
+    "SWSH4A": {
+      "setName": "Shiny Star V",
+      "categoryId": 176,
+      "categoryName": "Pokemon Japanese Shiny Star V",
+      "source": "vendortools",
+      "setCode": "SWSH4A"
+    },
+    "swsh4a": {
+      "setName": "Shiny Star V",
+      "categoryId": 176,
+      "categoryName": "Pokemon Japanese Shiny Star V",
+      "source": "vendortools",
+      "setCode": "swsh4a"
+    },
+    "SWSH4": {
+      "setName": "Amazing Volt Tackle",
+      "categoryId": 90,
+      "categoryName": "Pokemon Japanese Amazing Volt Tackle",
+      "source": "vendortools",
+      "setCode": "SWSH4"
+    },
+    "swsh4": {
+      "setName": "Amazing Volt Tackle",
+      "categoryId": 90,
+      "categoryName": "Pokemon Japanese Amazing Volt Tackle",
+      "source": "vendortools",
+      "setCode": "swsh4"
+    },
+    "SWSH3A": {
+      "setName": "Legendary Heartbeat",
+      "categoryId": 498,
+      "categoryName": "Pokemon Japanese Legendary Heartbeat",
+      "source": "vendortools",
+      "setCode": "SWSH3A"
+    },
+    "swsh3a": {
+      "setName": "Legendary Heartbeat",
+      "categoryId": 498,
+      "categoryName": "Pokemon Japanese Legendary Heartbeat",
+      "source": "vendortools",
+      "setCode": "swsh3a"
+    },
+    "SWSH3": {
+      "setName": "Infinity Zone",
+      "categoryId": 491,
+      "categoryName": "Pokemon Japanese Infinity Zone",
+      "source": "vendortools",
+      "setCode": "SWSH3"
+    },
+    "swsh3": {
+      "setName": "Infinity Zone",
+      "categoryId": 491,
+      "categoryName": "Pokemon Japanese Infinity Zone",
+      "source": "vendortools",
+      "setCode": "swsh3"
+    },
+    "SWSH2A": {
+      "setName": "Explosive Walker",
+      "categoryId": 463,
+      "categoryName": "Pokemon Japanese Explosive Walker",
+      "source": "vendortools",
+      "setCode": "SWSH2A"
+    },
+    "swsh2a": {
+      "setName": "Explosive Walker",
+      "categoryId": 463,
+      "categoryName": "Pokemon Japanese Explosive Walker",
+      "source": "vendortools",
+      "setCode": "swsh2a"
+    },
+    "SWSH1A": {
+      "setName": "VMAX Rising",
+      "categoryId": 607,
+      "categoryName": "Pokemon Japanese VMAX Rising",
+      "source": "vendortools",
+      "setCode": "SWSH1A"
+    },
+    "swsh1a": {
+      "setName": "VMAX Rising",
+      "categoryId": 607,
+      "categoryName": "Pokemon Japanese VMAX Rising",
+      "source": "vendortools",
+      "setCode": "swsh1a"
+    },
+    "SWSH1H": {
+      "setName": "Shield",
+      "categoryId": 557,
+      "categoryName": "Pokemon Japanese Shield",
+      "source": "vendortools",
+      "setCode": "SWSH1H"
+    },
+    "swsh1h": {
+      "setName": "Shield",
+      "categoryId": 557,
+      "categoryName": "Pokemon Japanese Shield",
+      "source": "vendortools",
+      "setCode": "swsh1h"
+    },
+    "SWSH1W": {
+      "setName": "Sword",
+      "categoryId": 583,
+      "categoryName": "Pokemon Japanese Sword",
+      "source": "vendortools",
+      "setCode": "SWSH1W"
+    },
+    "swsh1w": {
+      "setName": "Sword",
+      "categoryId": 583,
+      "categoryName": "Pokemon Japanese Sword",
+      "source": "vendortools",
+      "setCode": "swsh1w"
+    },
+    "SM12A": {
+      "setName": "TAG TEAM GX: Tag All Stars",
+      "categoryId": 188,
+      "categoryName": "Pokemon Japanese Tag All Stars",
+      "source": "vendortools",
+      "setCode": "SM12A"
+    },
+    "sm12a": {
+      "setName": "TAG TEAM GX: Tag All Stars",
+      "categoryId": 188,
+      "categoryName": "Pokemon Japanese Tag All Stars",
+      "source": "vendortools",
+      "setCode": "sm12a"
+    },
+    "SM12": {
+      "setName": "Alter Genesis",
+      "categoryId": 89,
+      "categoryName": "Pokemon Japanese Alter Genesis",
+      "source": "vendortools",
+      "setCode": "SM12"
+    },
+    "sm12": {
+      "setName": "Alter Genesis",
+      "categoryId": 89,
+      "categoryName": "Pokemon Japanese Alter Genesis",
+      "source": "vendortools",
+      "setCode": "sm12"
+    },
+    "SM11B": {
+      "setName": "Dream League",
+      "categoryId": 116,
+      "categoryName": "Pokemon Japanese Dream League",
+      "source": "vendortools",
+      "setCode": "SM11B"
+    },
+    "sm11b": {
+      "setName": "Dream League",
+      "categoryId": 116,
+      "categoryName": "Pokemon Japanese Dream League",
+      "source": "vendortools",
+      "setCode": "sm11b"
+    },
+    "SM11A": {
+      "setName": "Remix Bout",
+      "categoryId": 165,
+      "categoryName": "Pokemon Japanese Remix Bout",
+      "source": "vendortools",
+      "setCode": "SM11A"
+    },
+    "sm11a": {
+      "setName": "Remix Bout",
+      "categoryId": 165,
+      "categoryName": "Pokemon Japanese Remix Bout",
+      "source": "vendortools",
+      "setCode": "sm11a"
+    },
+    "SM11": {
+      "setName": "Miracle Twin",
+      "categoryId": 150,
+      "categoryName": "Pokemon Japanese Miracle Twins",
+      "source": "vendortools",
+      "setCode": "SM11"
+    },
+    "sm11": {
+      "setName": "Miracle Twin",
+      "categoryId": 150,
+      "categoryName": "Pokemon Japanese Miracle Twins",
+      "source": "vendortools",
+      "setCode": "sm11"
+    },
+    "SM10B": {
+      "setName": "Sky Legend",
+      "categoryId": 178,
+      "categoryName": "Pokemon Japanese Sky Legend",
+      "source": "vendortools",
+      "setCode": "SM10B"
+    },
+    "sm10b": {
+      "setName": "Sky Legend",
+      "categoryId": 178,
+      "categoryName": "Pokemon Japanese Sky Legend",
+      "source": "vendortools",
+      "setCode": "sm10b"
+    },
+    "SM10A": {
+      "setName": "GG End",
+      "categoryId": 125,
+      "categoryName": "Pokemon Japanese GG End",
+      "source": "vendortools",
+      "setCode": "SM10A"
+    },
+    "sm10a": {
+      "setName": "GG End",
+      "categoryId": 125,
+      "categoryName": "Pokemon Japanese GG End",
+      "source": "vendortools",
+      "setCode": "sm10a"
+    },
+    "SM10": {
+      "setName": "Double Blaze",
+      "categoryId": 114,
+      "categoryName": "Pokemon Japanese Double Blaze",
+      "source": "vendortools",
+      "setCode": "SM10"
+    },
+    "sm10": {
+      "setName": "Double Blaze",
+      "categoryId": 114,
+      "categoryName": "Pokemon Japanese Double Blaze",
+      "source": "vendortools",
+      "setCode": "sm10"
+    },
+    "SM9B": {
+      "setName": "Full Metal Wall",
+      "categoryId": 474,
+      "categoryName": "Pokemon Japanese Full Metal Wall",
+      "source": "vendortools",
+      "setCode": "SM9B"
+    },
+    "sm9b": {
+      "setName": "Full Metal Wall",
+      "categoryId": 474,
+      "categoryName": "Pokemon Japanese Full Metal Wall",
+      "source": "vendortools",
+      "setCode": "sm9b"
+    },
+    "SM9A": {
+      "setName": "Night Unison",
+      "categoryId": 153,
+      "categoryName": "Pokemon Japanese Night Unison",
+      "source": "vendortools",
+      "setCode": "SM9A"
+    },
+    "sm9a": {
+      "setName": "Night Unison",
+      "categoryId": 153,
+      "categoryName": "Pokemon Japanese Night Unison",
+      "source": "vendortools",
+      "setCode": "sm9a"
+    },
+    "SM9": {
+      "setName": "Tag Bolt",
+      "categoryId": 189,
+      "categoryName": "Pokemon Japanese Tag Bolt",
+      "source": "vendortools",
+      "setCode": "SM9"
+    },
+    "sm9": {
+      "setName": "Tag Bolt",
+      "categoryId": 189,
+      "categoryName": "Pokemon Japanese Tag Bolt",
+      "source": "vendortools",
+      "setCode": "sm9"
+    },
+    "SM8B": {
+      "setName": "GX Ultra Shiny",
+      "categoryId": 127,
+      "categoryName": "Pokemon Japanese GX Ultra Shiny",
+      "source": "vendortools",
+      "setCode": "SM8B"
+    },
+    "sm8b": {
+      "setName": "GX Ultra Shiny",
+      "categoryId": 127,
+      "categoryName": "Pokemon Japanese GX Ultra Shiny",
+      "source": "vendortools",
+      "setCode": "sm8b"
+    },
+    "SM8A": {
+      "setName": "Dark Order",
+      "categoryId": 442,
+      "categoryName": "Pokemon Japanese Dark Order",
+      "source": "vendortools",
+      "setCode": "SM8A"
+    },
+    "sm8a": {
+      "setName": "Dark Order",
+      "categoryId": 442,
+      "categoryName": "Pokemon Japanese Dark Order",
+      "source": "vendortools",
+      "setCode": "sm8a"
+    },
+    "SM8": {
+      "setName": "Super-Burst Impact",
+      "categoryId": 582,
+      "categoryName": "Pokemon Japanese Super-Burst Impact",
+      "source": "vendortools",
+      "setCode": "SM8"
+    },
+    "sm8": {
+      "setName": "Super-Burst Impact",
+      "categoryId": 582,
+      "categoryName": "Pokemon Japanese Super-Burst Impact",
+      "source": "vendortools",
+      "setCode": "sm8"
+    },
+    "SM7B": {
+      "setName": "Fairy Rise",
+      "categoryId": 466,
+      "categoryName": "Pokemon Japanese Fairy Rise",
+      "source": "vendortools",
+      "setCode": "SM7B"
+    },
+    "sm7b": {
+      "setName": "Fairy Rise",
+      "categoryId": 466,
+      "categoryName": "Pokemon Japanese Fairy Rise",
+      "source": "vendortools",
+      "setCode": "sm7b"
+    },
+    "SM7A": {
+      "setName": "Thunderclap Spark",
+      "categoryId": 591,
+      "categoryName": "Pokemon Japanese Thunderclap Spark",
+      "source": "vendortools",
+      "setCode": "SM7A"
+    },
+    "sm7a": {
+      "setName": "Thunderclap Spark",
+      "categoryId": 591,
+      "categoryName": "Pokemon Japanese Thunderclap Spark",
+      "source": "vendortools",
+      "setCode": "sm7a"
+    },
+    "SM7": {
+      "setName": "Sky-Splitting Charisma",
+      "categoryId": 562,
+      "categoryName": "Pokemon Japanese Sky-Splitting Charisma",
+      "source": "vendortools",
+      "setCode": "SM7"
+    },
+    "sm7": {
+      "setName": "Sky-Splitting Charisma",
+      "categoryId": 562,
+      "categoryName": "Pokemon Japanese Sky-Splitting Charisma",
+      "source": "vendortools",
+      "setCode": "sm7"
+    },
+    "SM6B": {
+      "setName": "Champion Road",
+      "categoryId": 430,
+      "categoryName": "Pokemon Japanese Champion Road",
+      "source": "vendortools",
+      "setCode": "SM6B"
+    },
+    "sm6b": {
+      "setName": "Champion Road",
+      "categoryId": 430,
+      "categoryName": "Pokemon Japanese Champion Road",
+      "source": "vendortools",
+      "setCode": "sm6b"
+    },
+    "SM6A": {
+      "setName": "Dragon Storm",
+      "categoryId": 454,
+      "categoryName": "Pokemon Japanese Dragon Storm",
+      "source": "vendortools",
+      "setCode": "SM6A"
+    },
+    "sm6a": {
+      "setName": "Dragon Storm",
+      "categoryId": 454,
+      "categoryName": "Pokemon Japanese Dragon Storm",
+      "source": "vendortools",
+      "setCode": "sm6a"
+    },
+    "SM6": {
+      "setName": "Forbidden Light",
+      "categoryId": 472,
+      "categoryName": "Pokemon Japanese Forbidden Light",
+      "source": "vendortools",
+      "setCode": "SM6"
+    },
+    "sm6": {
+      "setName": "Forbidden Light",
+      "categoryId": 472,
+      "categoryName": "Pokemon Japanese Forbidden Light",
+      "source": "vendortools",
+      "setCode": "sm6"
+    },
+    "SM5P": {
+      "setName": "Ultra Force",
+      "categoryId": 599,
+      "categoryName": "Pokemon Japanese Ultra Force",
+      "source": "vendortools",
+      "setCode": "SM5P"
+    },
+    "sm5p": {
+      "setName": "Ultra Force",
+      "categoryId": 599,
+      "categoryName": "Pokemon Japanese Ultra Force",
+      "source": "vendortools",
+      "setCode": "sm5p"
+    },
+    "SM5M": {
+      "setName": "Ultra Moon",
+      "categoryId": 600,
+      "categoryName": "Pokemon Japanese Ultra Moon",
+      "source": "vendortools",
+      "setCode": "SM5M"
+    },
+    "sm5m": {
+      "setName": "Ultra Moon",
+      "categoryId": 600,
+      "categoryName": "Pokemon Japanese Ultra Moon",
+      "source": "vendortools",
+      "setCode": "sm5m"
+    },
+    "SM5S": {
+      "setName": "Ultra Sun",
+      "categoryId": 601,
+      "categoryName": "Pokemon Japanese Ultra Sun",
+      "source": "vendortools",
+      "setCode": "SM5S"
+    },
+    "sm5s": {
+      "setName": "Ultra Sun",
+      "categoryId": 601,
+      "categoryName": "Pokemon Japanese Ultra Sun",
+      "source": "vendortools",
+      "setCode": "sm5s"
+    },
+    "SM4S": {
+      "setName": "Awakened Heroes",
+      "categoryId": 412,
+      "categoryName": "Pokemon Japanese Awakened Heroes",
+      "source": "vendortools",
+      "setCode": "SM4S"
+    },
+    "sm4s": {
+      "setName": "Awakened Heroes",
+      "categoryId": 412,
+      "categoryName": "Pokemon Japanese Awakened Heroes",
+      "source": "vendortools",
+      "setCode": "sm4s"
+    },
+    "SM4A": {
+      "setName": "Ultradimensional Beasts",
+      "categoryId": 602,
+      "categoryName": "Pokemon Japanese Ultradimensional Beasts",
+      "source": "vendortools",
+      "setCode": "SM4A"
+    },
+    "sm4a": {
+      "setName": "Ultradimensional Beasts",
+      "categoryId": 602,
+      "categoryName": "Pokemon Japanese Ultradimensional Beasts",
+      "source": "vendortools",
+      "setCode": "sm4a"
+    },
+    "SM4P": {
+      "setName": "GX Battle Boost",
+      "categoryId": 126,
+      "categoryName": "Pokemon Japanese GX Battle Boost",
+      "source": "vendortools",
+      "setCode": "SM4P"
+    },
+    "sm4p": {
+      "setName": "GX Battle Boost",
+      "categoryId": 126,
+      "categoryName": "Pokemon Japanese GX Battle Boost",
+      "source": "vendortools",
+      "setCode": "sm4p"
+    },
+    "SM3P": {
+      "setName": "Shining Legends",
+      "categoryId": 174,
+      "categoryName": "Pokemon Japanese Shining Legends",
+      "source": "vendortools",
+      "setCode": "SM3P"
+    },
+    "sm3p": {
+      "setName": "Shining Legends",
+      "categoryId": 174,
+      "categoryName": "Pokemon Japanese Shining Legends",
+      "source": "vendortools",
+      "setCode": "sm3p"
+    },
+    "SM3N": {
+      "setName": "Darkness that Consumes Light",
+      "categoryId": 444,
+      "categoryName": "Pokemon Japanese Darkness that Consumes Light",
+      "source": "vendortools",
+      "setCode": "SM3N"
+    },
+    "sm3n": {
+      "setName": "Darkness that Consumes Light",
+      "categoryId": 444,
+      "categoryName": "Pokemon Japanese Darkness that Consumes Light",
+      "source": "vendortools",
+      "setCode": "sm3n"
+    },
+    "SM2L": {
+      "setName": "Alolan Moonlight",
+      "categoryId": 404,
+      "categoryName": "Pokemon Japanese Alolan Moonlight",
+      "source": "vendortools",
+      "setCode": "SM2L"
+    },
+    "sm2l": {
+      "setName": "Alolan Moonlight",
+      "categoryId": 404,
+      "categoryName": "Pokemon Japanese Alolan Moonlight",
+      "source": "vendortools",
+      "setCode": "sm2l"
+    },
+    "SM2K": {
+      "setName": "Islands Await You",
+      "categoryId": 494,
+      "categoryName": "Pokemon Japanese Islands Await You",
+      "source": "vendortools",
+      "setCode": "SM2K"
+    },
+    "sm2k": {
+      "setName": "Islands Await You",
+      "categoryId": 494,
+      "categoryName": "Pokemon Japanese Islands Await You",
+      "source": "vendortools",
+      "setCode": "sm2k"
+    },
+    "SM2P": {
+      "setName": "Facing a New Trial",
+      "categoryId": 465,
+      "categoryName": "Pokemon Japanese Facing a New Trial",
+      "source": "vendortools",
+      "setCode": "SM2P"
+    },
+    "sm2p": {
+      "setName": "Facing a New Trial",
+      "categoryId": 465,
+      "categoryName": "Pokemon Japanese Facing a New Trial",
+      "source": "vendortools",
+      "setCode": "sm2p"
+    },
+    "SM1P": {
+      "setName": "Strength Expansion Pack Sun &amp; Moon",
+      "categoryId": 625,
+      "categoryName": "Pokemon Japanese sm1",
+      "source": "vendortools",
+      "setCode": "SM1P"
+    },
+    "sm1p": {
+      "setName": "Strength Expansion Pack Sun &amp; Moon",
+      "categoryId": 625,
+      "categoryName": "Pokemon Japanese sm1",
+      "source": "vendortools",
+      "setCode": "sm1p"
+    },
+    "SM1M": {
+      "setName": "Collection Moon",
+      "categoryId": 435,
+      "categoryName": "Pokemon Japanese Collection Moon",
+      "source": "vendortools",
+      "setCode": "SM1M"
+    },
+    "sm1m": {
+      "setName": "Collection Moon",
+      "categoryId": 435,
+      "categoryName": "Pokemon Japanese Collection Moon",
+      "source": "vendortools",
+      "setCode": "sm1m"
+    },
+    "SM1S": {
+      "setName": "Collection Sun",
+      "categoryId": 437,
+      "categoryName": "Pokemon Japanese Collection Sun",
+      "source": "vendortools",
+      "setCode": "SM1S"
+    },
+    "sm1s": {
+      "setName": "Collection Sun",
+      "categoryId": 437,
+      "categoryName": "Pokemon Japanese Collection Sun",
+      "source": "vendortools",
+      "setCode": "sm1s"
+    },
+    "XY": {
+      "setName": "The Best of XY",
+      "categoryId": 97,
+      "categoryName": "Pokemon Japanese Best of XY",
+      "source": "vendortools",
+      "setCode": "XY"
+    },
+    "xy": {
+      "setName": "The Best of XY",
+      "categoryId": 97,
+      "categoryName": "Pokemon Japanese Best of XY",
+      "source": "vendortools",
+      "setCode": "xy"
+    },
+    "XY11C": {
+      "setName": "Cruel Traitor",
+      "categoryId": 440,
+      "categoryName": "Pokemon Japanese Cruel Traitor",
+      "source": "vendortools",
+      "setCode": "XY11C"
+    },
+    "xy11c": {
+      "setName": "Cruel Traitor",
+      "categoryId": 440,
+      "categoryName": "Pokemon Japanese Cruel Traitor",
+      "source": "vendortools",
+      "setCode": "xy11c"
+    },
+    "XY11F": {
+      "setName": "Fever-Burst Fighter",
+      "categoryId": 469,
+      "categoryName": "Pokemon Japanese Fever-Burst Fighter",
+      "source": "vendortools",
+      "setCode": "XY11F"
+    },
+    "xy11f": {
+      "setName": "Fever-Burst Fighter",
+      "categoryId": 469,
+      "categoryName": "Pokemon Japanese Fever-Burst Fighter",
+      "source": "vendortools",
+      "setCode": "xy11f"
+    },
+    "CP4": {
+      "setName": "Premium Champion Pack",
+      "categoryId": 162,
+      "categoryName": "Pokemon Japanese Premium Champion Pack",
+      "source": "vendortools",
+      "setCode": "CP4"
+    },
+    "cp4": {
+      "setName": "Premium Champion Pack",
+      "categoryId": 162,
+      "categoryName": "Pokemon Japanese Premium Champion Pack",
+      "source": "vendortools",
+      "setCode": "cp4"
+    },
+    "XY10": {
+      "setName": "Awakening Psychic King",
+      "categoryId": 93,
+      "categoryName": "Pokemon Japanese Awakening Psychic King",
+      "source": "vendortools",
+      "setCode": "XY10"
+    },
+    "xy10": {
+      "setName": "Awakening Psychic King",
+      "categoryId": 93,
+      "categoryName": "Pokemon Japanese Awakening Psychic King",
+      "source": "vendortools",
+      "setCode": "xy10"
+    },
+    "CP3": {
+      "setName": "PokéKyun Collection",
+      "categoryId": 161,
+      "categoryName": "Pokemon Japanese PokeKyun Collection",
+      "source": "vendortools",
+      "setCode": "CP3"
+    },
+    "cp3": {
+      "setName": "PokéKyun Collection",
+      "categoryId": 161,
+      "categoryName": "Pokemon Japanese PokeKyun Collection",
+      "source": "vendortools",
+      "setCode": "cp3"
+    },
+    "XY9": {
+      "setName": "Rage of the Broken Heavens",
+      "categoryId": 533,
+      "categoryName": "Pokemon Japanese Rage of the Broken Heavens",
+      "source": "vendortools",
+      "setCode": "XY9"
+    },
+    "xy9": {
+      "setName": "Rage of the Broken Heavens",
+      "categoryId": 533,
+      "categoryName": "Pokemon Japanese Rage of the Broken Heavens",
+      "source": "vendortools",
+      "setCode": "xy9"
+    },
+    "XY8B": {
+      "setName": "Blue Shock",
+      "categoryId": 427,
+      "categoryName": "Pokemon Japanese Blue Shock",
+      "source": "vendortools",
+      "setCode": "XY8B"
+    },
+    "xy8b": {
+      "setName": "Blue Shock",
+      "categoryId": 427,
+      "categoryName": "Pokemon Japanese Blue Shock",
+      "source": "vendortools",
+      "setCode": "xy8b"
+    },
+    "XY8R": {
+      "setName": "Red Flash",
+      "categoryId": 541,
+      "categoryName": "Pokemon Japanese Red Flash",
+      "source": "vendortools",
+      "setCode": "XY8R"
+    },
+    "xy8r": {
+      "setName": "Red Flash",
+      "categoryId": 541,
+      "categoryName": "Pokemon Japanese Red Flash",
+      "source": "vendortools",
+      "setCode": "xy8r"
+    },
+    "CP2": {
+      "setName": "Legendary Shine Collection",
+      "categoryId": 141,
+      "categoryName": "Pokemon Japanese Legendary Shine Collection",
+      "source": "vendortools",
+      "setCode": "CP2"
+    },
+    "cp2": {
+      "setName": "Legendary Shine Collection",
+      "categoryId": 141,
+      "categoryName": "Pokemon Japanese Legendary Shine Collection",
+      "source": "vendortools",
+      "setCode": "cp2"
+    },
+    "XY7": {
+      "setName": "Bandit Ring",
+      "categoryId": 94,
+      "categoryName": "Pokemon Japanese Bandit Ring",
+      "source": "vendortools",
+      "setCode": "XY7"
+    },
+    "xy7": {
+      "setName": "Bandit Ring",
+      "categoryId": 94,
+      "categoryName": "Pokemon Japanese Bandit Ring",
+      "source": "vendortools",
+      "setCode": "xy7"
+    },
+    "XY6": {
+      "setName": "Emerald Break",
+      "categoryId": 120,
+      "categoryName": "Pokemon Japanese Emerald Break",
+      "source": "vendortools",
+      "setCode": "XY6"
+    },
+    "xy6": {
+      "setName": "Emerald Break",
+      "categoryId": 120,
+      "categoryName": "Pokemon Japanese Emerald Break",
+      "source": "vendortools",
+      "setCode": "xy6"
+    },
+    "XY5G": {
+      "setName": "Gaia Volcano",
+      "categoryId": 477,
+      "categoryName": "Pokemon Japanese Gaia Volcano",
+      "source": "vendortools",
+      "setCode": "XY5G"
+    },
+    "xy5g": {
+      "setName": "Gaia Volcano",
+      "categoryId": 477,
+      "categoryName": "Pokemon Japanese Gaia Volcano",
+      "source": "vendortools",
+      "setCode": "xy5g"
+    },
+    "XY5T": {
+      "setName": "Tidal Storm",
+      "categoryId": 592,
+      "categoryName": "Pokemon Japanese Tidal Storm",
+      "source": "vendortools",
+      "setCode": "XY5T"
+    },
+    "xy5t": {
+      "setName": "Tidal Storm",
+      "categoryId": 592,
+      "categoryName": "Pokemon Japanese Tidal Storm",
+      "source": "vendortools",
+      "setCode": "xy5t"
+    },
+    "XY4": {
+      "setName": "Phantom Gate",
+      "categoryId": 159,
+      "categoryName": "Pokemon Japanese Phantom Gate",
+      "source": "vendortools",
+      "setCode": "XY4"
+    },
+    "xy4": {
+      "setName": "Phantom Gate",
+      "categoryId": 159,
+      "categoryName": "Pokemon Japanese Phantom Gate",
+      "source": "vendortools",
+      "setCode": "xy4"
+    },
+    "XY3": {
+      "setName": "Rising Fist",
+      "categoryId": 166,
+      "categoryName": "Pokemon Japanese Rising Fist",
+      "source": "vendortools",
+      "setCode": "XY3"
+    },
+    "xy3": {
+      "setName": "Rising Fist",
+      "categoryId": 166,
+      "categoryName": "Pokemon Japanese Rising Fist",
+      "source": "vendortools",
+      "setCode": "xy3"
+    },
+    "XY2": {
+      "setName": "Wild Blaze",
+      "categoryId": 203,
+      "categoryName": "Pokemon Japanese Wild Blaze",
+      "source": "vendortools",
+      "setCode": "XY2"
+    },
+    "xy2": {
+      "setName": "Wild Blaze",
+      "categoryId": 203,
+      "categoryName": "Pokemon Japanese Wild Blaze",
+      "source": "vendortools",
+      "setCode": "xy2"
+    },
+    "XY1X": {
+      "setName": "Collection X",
+      "categoryId": 438,
+      "categoryName": "Pokemon Japanese Collection X",
+      "source": "vendortools",
+      "setCode": "XY1X"
+    },
+    "xy1x": {
+      "setName": "Collection X",
+      "categoryId": 438,
+      "categoryName": "Pokemon Japanese Collection X",
+      "source": "vendortools",
+      "setCode": "xy1x"
+    },
+    "XY1Y": {
+      "setName": "Collection Y",
+      "categoryId": 439,
+      "categoryName": "Pokemon Japanese Collection Y",
+      "source": "vendortools",
+      "setCode": "XY1Y"
+    },
+    "xy1y": {
+      "setName": "Collection Y",
+      "categoryId": 439,
+      "categoryName": "Pokemon Japanese Collection Y",
+      "source": "vendortools",
+      "setCode": "xy1y"
+    },
+    "XYP": {
+      "setName": "XY Promos",
+      "categoryId": 163,
+      "categoryName": "Pokemon Japanese Promo",
+      "source": "vendortools",
+      "setCode": "XYP"
+    },
+    "xyp": {
+      "setName": "XY Promos",
+      "categoryId": 163,
+      "categoryName": "Pokemon Japanese Promo",
+      "source": "vendortools",
+      "setCode": "xyp"
+    },
+    "EBB1": {
+      "setName": "EX Battle Boost",
+      "categoryId": 118,
+      "categoryName": "Pokemon Japanese EX Battle Boost",
+      "source": "vendortools",
+      "setCode": "EBB1"
+    },
+    "ebb1": {
+      "setName": "EX Battle Boost",
+      "categoryId": 118,
+      "categoryName": "Pokemon Japanese EX Battle Boost",
+      "source": "vendortools",
+      "setCode": "ebb1"
+    },
+    "BW9": {
+      "setName": "Megalo Cannon",
+      "categoryId": 510,
+      "categoryName": "Pokemon Japanese Megalo Cannon",
+      "source": "vendortools",
+      "setCode": "BW9"
+    },
+    "bw9": {
+      "setName": "Megalo Cannon",
+      "categoryId": 510,
+      "categoryName": "Pokemon Japanese Megalo Cannon",
+      "source": "vendortools",
+      "setCode": "bw9"
+    },
+    "SC1": {
+      "setName": "Shiny Collection",
+      "categoryId": 175,
+      "categoryName": "Pokemon Japanese Shiny Collection",
+      "source": "vendortools",
+      "setCode": "SC1"
+    },
+    "sc1": {
+      "setName": "Shiny Collection",
+      "categoryId": 175,
+      "categoryName": "Pokemon Japanese Shiny Collection",
+      "source": "vendortools",
+      "setCode": "sc1"
+    },
+    "BW8S": {
+      "setName": "Spiral Force",
+      "categoryId": 566,
+      "categoryName": "Pokemon Japanese Spiral Force",
+      "source": "vendortools",
+      "setCode": "BW8S"
+    },
+    "bw8s": {
+      "setName": "Spiral Force",
+      "categoryId": 566,
+      "categoryName": "Pokemon Japanese Spiral Force",
+      "source": "vendortools",
+      "setCode": "bw8s"
+    },
+    "BW8T": {
+      "setName": "Thunder Knuckle",
+      "categoryId": 589,
+      "categoryName": "Pokemon Japanese Thunder Knuckle",
+      "source": "vendortools",
+      "setCode": "BW8T"
+    },
+    "bw8t": {
+      "setName": "Thunder Knuckle",
+      "categoryId": 589,
+      "categoryName": "Pokemon Japanese Thunder Knuckle",
+      "source": "vendortools",
+      "setCode": "bw8t"
+    },
+    "BW7": {
+      "setName": "Plasma Gale",
+      "categoryId": 530,
+      "categoryName": "Pokemon Japanese Plasma Gale",
+      "source": "vendortools",
+      "setCode": "BW7"
+    },
+    "bw7": {
+      "setName": "Plasma Gale",
+      "categoryId": 530,
+      "categoryName": "Pokemon Japanese Plasma Gale",
+      "source": "vendortools",
+      "setCode": "bw7"
+    },
+    "BW6C": {
+      "setName": "Cold Flare",
+      "categoryId": 434,
+      "categoryName": "Pokemon Japanese Cold Flare",
+      "source": "vendortools",
+      "setCode": "BW6C"
+    },
+    "bw6c": {
+      "setName": "Cold Flare",
+      "categoryId": 434,
+      "categoryName": "Pokemon Japanese Cold Flare",
+      "source": "vendortools",
+      "setCode": "bw6c"
+    },
+    "BW6F": {
+      "setName": "Freeze Bolt",
+      "categoryId": 473,
+      "categoryName": "Pokemon Japanese Freeze Bolt",
+      "source": "vendortools",
+      "setCode": "BW6F"
+    },
+    "bw6f": {
+      "setName": "Freeze Bolt",
+      "categoryId": 473,
+      "categoryName": "Pokemon Japanese Freeze Bolt",
+      "source": "vendortools",
+      "setCode": "bw6f"
+    },
+    "BW5D": {
+      "setName": "Dragon Blade",
+      "categoryId": 451,
+      "categoryName": "Pokemon Japanese Dragon Blade",
+      "source": "vendortools",
+      "setCode": "BW5D"
+    },
+    "bw5d": {
+      "setName": "Dragon Blade",
+      "categoryId": 451,
+      "categoryName": "Pokemon Japanese Dragon Blade",
+      "source": "vendortools",
+      "setCode": "bw5d"
+    },
+    "BW5S": {
+      "setName": "Dragon Blast",
+      "categoryId": 452,
+      "categoryName": "Pokemon Japanese Dragon Blast",
+      "source": "vendortools",
+      "setCode": "BW5S"
+    },
+    "bw5s": {
+      "setName": "Dragon Blast",
+      "categoryId": 452,
+      "categoryName": "Pokemon Japanese Dragon Blast",
+      "source": "vendortools",
+      "setCode": "bw5s"
+    },
+    "DS1": {
+      "setName": "Dragon Selection",
+      "categoryId": 453,
+      "categoryName": "Pokemon Japanese Dragon Selection",
+      "source": "vendortools",
+      "setCode": "DS1"
+    },
+    "ds1": {
+      "setName": "Dragon Selection",
+      "categoryId": 453,
+      "categoryName": "Pokemon Japanese Dragon Selection",
+      "source": "vendortools",
+      "setCode": "ds1"
+    },
+    "BW4": {
+      "setName": "Dark Rush",
+      "categoryId": 443,
+      "categoryName": "Pokemon Japanese Dark Rush",
+      "source": "vendortools",
+      "setCode": "BW4"
+    },
+    "bw4": {
+      "setName": "Dark Rush",
+      "categoryId": 443,
+      "categoryName": "Pokemon Japanese Dark Rush",
+      "source": "vendortools",
+      "setCode": "bw4"
+    },
+    "BW3H": {
+      "setName": "Hail Blizzard",
+      "categoryId": 485,
+      "categoryName": "Pokemon Japanese Hail Blizzard",
+      "source": "vendortools",
+      "setCode": "BW3H"
+    },
+    "bw3h": {
+      "setName": "Hail Blizzard",
+      "categoryId": 485,
+      "categoryName": "Pokemon Japanese Hail Blizzard",
+      "source": "vendortools",
+      "setCode": "bw3h"
+    },
+    "BW3P": {
+      "setName": "Psycho Drive",
+      "categoryId": 532,
+      "categoryName": "Pokemon Japanese Psycho Drive",
+      "source": "vendortools",
+      "setCode": "BW3P"
+    },
+    "bw3p": {
+      "setName": "Psycho Drive",
+      "categoryId": 532,
+      "categoryName": "Pokemon Japanese Psycho Drive",
+      "source": "vendortools",
+      "setCode": "bw3p"
+    },
+    "BW2": {
+      "setName": "Red Collection",
+      "categoryId": 540,
+      "categoryName": "Pokemon Japanese Red Collection",
+      "source": "vendortools",
+      "setCode": "BW2"
+    },
+    "bw2": {
+      "setName": "Red Collection",
+      "categoryId": 540,
+      "categoryName": "Pokemon Japanese Red Collection",
+      "source": "vendortools",
+      "setCode": "bw2"
+    },
+    "BW1B": {
+      "setName": "Black Collection",
+      "categoryId": 422,
+      "categoryName": "Pokemon Japanese Black Collection",
+      "source": "vendortools",
+      "setCode": "BW1B"
+    },
+    "bw1b": {
+      "setName": "Black Collection",
+      "categoryId": 422,
+      "categoryName": "Pokemon Japanese Black Collection",
+      "source": "vendortools",
+      "setCode": "bw1b"
+    },
+    "BW1W": {
+      "setName": "White Collection",
+      "categoryId": 612,
+      "categoryName": "Pokemon Japanese White Collection",
+      "source": "vendortools",
+      "setCode": "BW1W"
+    },
+    "bw1w": {
+      "setName": "White Collection",
+      "categoryId": 612,
+      "categoryName": "Pokemon Japanese White Collection",
+      "source": "vendortools",
+      "setCode": "bw1w"
+    },
+    "L3": {
+      "setName": "Clash at the Summit",
+      "categoryId": 433,
+      "categoryName": "Pokemon Japanese Clash at the Summit",
+      "source": "vendortools",
+      "setCode": "L3"
+    },
+    "l3": {
+      "setName": "Clash at the Summit",
+      "categoryId": 433,
+      "categoryName": "Pokemon Japanese Clash at the Summit",
+      "source": "vendortools",
+      "setCode": "l3"
+    },
+    "LL1": {
+      "setName": "Lost Link",
+      "categoryId": 500,
+      "categoryName": "Pokemon Japanese Lost Link",
+      "source": "vendortools",
+      "setCode": "LL1"
+    },
+    "ll1": {
+      "setName": "Lost Link",
+      "categoryId": 500,
+      "categoryName": "Pokemon Japanese Lost Link",
+      "source": "vendortools",
+      "setCode": "ll1"
+    },
+    "L2": {
+      "setName": "Reviving Legends",
+      "categoryId": 544,
+      "categoryName": "Pokemon Japanese Reviving Legends",
+      "source": "vendortools",
+      "setCode": "L2"
+    },
+    "l2": {
+      "setName": "Reviving Legends",
+      "categoryId": 544,
+      "categoryName": "Pokemon Japanese Reviving Legends",
+      "source": "vendortools",
+      "setCode": "l2"
+    },
+    "L1HG": {
+      "setName": "HeartGold Collection",
+      "categoryId": 487,
+      "categoryName": "Pokemon Japanese HeartGold Collection",
+      "source": "vendortools",
+      "setCode": "L1HG"
+    },
+    "l1hg": {
+      "setName": "HeartGold Collection",
+      "categoryId": 487,
+      "categoryName": "Pokemon Japanese HeartGold Collection",
+      "source": "vendortools",
+      "setCode": "l1hg"
+    },
+    "L1SS": {
+      "setName": "SoulSilver Collection",
+      "categoryId": 565,
+      "categoryName": "Pokemon Japanese SoulSilver Collection",
+      "source": "vendortools",
+      "setCode": "L1SS"
+    },
+    "l1ss": {
+      "setName": "SoulSilver Collection",
+      "categoryId": 565,
+      "categoryName": "Pokemon Japanese SoulSilver Collection",
+      "source": "vendortools",
+      "setCode": "l1ss"
+    },
+    "PT4": {
+      "setName": "Advent of Arceus",
+      "categoryId": 403,
+      "categoryName": "Pokemon Japanese Advent of Arceus",
+      "source": "vendortools",
+      "setCode": "PT4"
+    },
+    "pt4": {
+      "setName": "Advent of Arceus",
+      "categoryId": 403,
+      "categoryName": "Pokemon Japanese Advent of Arceus",
+      "source": "vendortools",
+      "setCode": "pt4"
+    },
+    "PT3": {
+      "setName": "Beat of the Frontier",
+      "categoryId": 419,
+      "categoryName": "Pokemon Japanese Beat of the Frontier",
+      "source": "vendortools",
+      "setCode": "PT3"
+    },
+    "pt3": {
+      "setName": "Beat of the Frontier",
+      "categoryId": 419,
+      "categoryName": "Pokemon Japanese Beat of the Frontier",
+      "source": "vendortools",
+      "setCode": "pt3"
+    },
+    "PT2": {
+      "setName": "Bonds to the End of Time",
+      "categoryId": 428,
+      "categoryName": "Pokemon Japanese Bonds to the End of Time",
+      "source": "vendortools",
+      "setCode": "PT2"
+    },
+    "pt2": {
+      "setName": "Bonds to the End of Time",
+      "categoryId": 428,
+      "categoryName": "Pokemon Japanese Bonds to the End of Time",
+      "source": "vendortools",
+      "setCode": "pt2"
+    },
+    "PT1": {
+      "setName": "Galactic&#x27;s Conquest",
+      "categoryId": 478,
+      "categoryName": "Pokemon Japanese Galactic's Conquest",
+      "source": "vendortools",
+      "setCode": "PT1"
+    },
+    "pt1": {
+      "setName": "Galactic&#x27;s Conquest",
+      "categoryId": 478,
+      "categoryName": "Pokemon Japanese Galactic's Conquest",
+      "source": "vendortools",
+      "setCode": "pt1"
+    },
+    "DP6": {
+      "setName": "Intense Fight in the Destroyed Sky",
+      "categoryId": 138,
+      "categoryName": "Pokemon Japanese Intense Fight in the Destroyed Sky",
+      "source": "vendortools",
+      "setCode": "DP6"
+    },
+    "dp6": {
+      "setName": "Intense Fight in the Destroyed Sky",
+      "categoryId": 138,
+      "categoryName": "Pokemon Japanese Intense Fight in the Destroyed Sky",
+      "source": "vendortools",
+      "setCode": "dp6"
+    },
+    "DP5C": {
+      "setName": "Cry from the Mysterious",
+      "categoryId": 441,
+      "categoryName": "Pokemon Japanese Cry from the Mysterious",
+      "source": "vendortools",
+      "setCode": "DP5C"
+    },
+    "dp5c": {
+      "setName": "Cry from the Mysterious",
+      "categoryId": 441,
+      "categoryName": "Pokemon Japanese Cry from the Mysterious",
+      "source": "vendortools",
+      "setCode": "dp5c"
+    },
+    "DP5T": {
+      "setName": "Temple of Anger",
+      "categoryId": 588,
+      "categoryName": "Pokemon Japanese Temple of Anger",
+      "source": "vendortools",
+      "setCode": "DP5T"
+    },
+    "dp5t": {
+      "setName": "Temple of Anger",
+      "categoryId": 588,
+      "categoryName": "Pokemon Japanese Temple of Anger",
+      "source": "vendortools",
+      "setCode": "dp5t"
+    },
+    "DP4D": {
+      "setName": "Dawn Dash",
+      "categoryId": 446,
+      "categoryName": "Pokemon Japanese Dawn Dash",
+      "source": "vendortools",
+      "setCode": "DP4D"
+    },
+    "dp4d": {
+      "setName": "Dawn Dash",
+      "categoryId": 446,
+      "categoryName": "Pokemon Japanese Dawn Dash",
+      "source": "vendortools",
+      "setCode": "dp4d"
+    },
+    "DP4M": {
+      "setName": "Moonlit Pursuit",
+      "categoryId": 521,
+      "categoryName": "Pokemon Japanese Moonlit Pursuit",
+      "source": "vendortools",
+      "setCode": "DP4M"
+    },
+    "dp4m": {
+      "setName": "Moonlit Pursuit",
+      "categoryId": 521,
+      "categoryName": "Pokemon Japanese Moonlit Pursuit",
+      "source": "vendortools",
+      "setCode": "dp4m"
+    },
+    "DP3": {
+      "setName": "Shining Darkness",
+      "categoryId": 173,
+      "categoryName": "Pokemon Japanese Shining Darkness",
+      "source": "vendortools",
+      "setCode": "DP3"
+    },
+    "dp3": {
+      "setName": "Shining Darkness",
+      "categoryId": 173,
+      "categoryName": "Pokemon Japanese Shining Darkness",
+      "source": "vendortools",
+      "setCode": "dp3"
+    },
+    "DP2": {
+      "setName": "Secret of the Lakes",
+      "categoryId": 556,
+      "categoryName": "Pokemon Japanese Secret of the Lakes",
+      "source": "vendortools",
+      "setCode": "DP2"
+    },
+    "dp2": {
+      "setName": "Secret of the Lakes",
+      "categoryId": 556,
+      "categoryName": "Pokemon Japanese Secret of the Lakes",
+      "source": "vendortools",
+      "setCode": "dp2"
+    },
+    "DP1": {
+      "setName": "Space Time Creation",
+      "categoryId": 182,
+      "categoryName": "Pokemon Japanese Space-Time",
+      "source": "vendortools",
+      "setCode": "DP1"
+    },
+    "dp1": {
+      "setName": "Space Time Creation",
+      "categoryId": 182,
+      "categoryName": "Pokemon Japanese Space-Time",
+      "source": "vendortools",
+      "setCode": "dp1"
+    },
+    "PCG10": {
+      "setName": "World Champions Pack",
+      "categoryId": 614,
+      "categoryName": "Pokemon Japanese World Champions Pack",
+      "source": "vendortools",
+      "setCode": "PCG10"
+    },
+    "pcg10": {
+      "setName": "World Champions Pack",
+      "categoryId": 614,
+      "categoryName": "Pokemon Japanese World Champions Pack",
+      "source": "vendortools",
+      "setCode": "pcg10"
+    },
+    "PCG9": {
+      "setName": "Offense and Defense of the Furthest Ends",
+      "categoryId": 155,
+      "categoryName": "Pokemon Japanese Offense and Defense of the Furthest Ends",
+      "source": "vendortools",
+      "setCode": "PCG9"
+    },
+    "pcg9": {
+      "setName": "Offense and Defense of the Furthest Ends",
+      "categoryId": 155,
+      "categoryName": "Pokemon Japanese Offense and Defense of the Furthest Ends",
+      "source": "vendortools",
+      "setCode": "pcg9"
+    },
+    "PCG8": {
+      "setName": "Miracle Crystal",
+      "categoryId": 517,
+      "categoryName": "Pokemon Japanese Miracle Crystal",
+      "source": "vendortools",
+      "setCode": "PCG8"
+    },
+    "pcg8": {
+      "setName": "Miracle Crystal",
+      "categoryId": 517,
+      "categoryName": "Pokemon Japanese Miracle Crystal",
+      "source": "vendortools",
+      "setCode": "pcg8"
+    },
+    "PCG7": {
+      "setName": "Holon Phantom",
+      "categoryId": 134,
+      "categoryName": "Pokemon Japanese Holon Phantom",
+      "source": "vendortools",
+      "setCode": "PCG7"
+    },
+    "pcg7": {
+      "setName": "Holon Phantom",
+      "categoryId": 134,
+      "categoryName": "Pokemon Japanese Holon Phantom",
+      "source": "vendortools",
+      "setCode": "pcg7"
+    },
+    "PCG6": {
+      "setName": "Holon Research Tower",
+      "categoryId": 135,
+      "categoryName": "Pokemon Japanese Holon Research",
+      "source": "vendortools",
+      "setCode": "PCG6"
+    },
+    "pcg6": {
+      "setName": "Holon Research Tower",
+      "categoryId": 135,
+      "categoryName": "Pokemon Japanese Holon Research",
+      "source": "vendortools",
+      "setCode": "pcg6"
+    },
+    "PCG5": {
+      "setName": "Mirage Forest",
+      "categoryId": 519,
+      "categoryName": "Pokemon Japanese Mirage Forest",
+      "source": "vendortools",
+      "setCode": "PCG5"
+    },
+    "pcg5": {
+      "setName": "Mirage Forest",
+      "categoryId": 519,
+      "categoryName": "Pokemon Japanese Mirage Forest",
+      "source": "vendortools",
+      "setCode": "pcg5"
+    },
+    "PCG4": {
+      "setName": "Golden Sky, Silvery Ocean",
+      "categoryId": 132,
+      "categoryName": "Pokemon Japanese Golden Sky, Silvery Ocean",
+      "source": "vendortools",
+      "setCode": "PCG4"
+    },
+    "pcg4": {
+      "setName": "Golden Sky, Silvery Ocean",
+      "categoryId": 132,
+      "categoryName": "Pokemon Japanese Golden Sky, Silvery Ocean",
+      "source": "vendortools",
+      "setCode": "pcg4"
+    },
+    "PCG3": {
+      "setName": "Rocket Gang Strikes Back",
+      "categoryId": 168,
+      "categoryName": "Pokemon Japanese Rocket Gang Strikes Back",
+      "source": "vendortools",
+      "setCode": "PCG3"
+    },
+    "pcg3": {
+      "setName": "Rocket Gang Strikes Back",
+      "categoryId": 168,
+      "categoryName": "Pokemon Japanese Rocket Gang Strikes Back",
+      "source": "vendortools",
+      "setCode": "pcg3"
+    },
+    "PCG2": {
+      "setName": "Clash of the Blue Sky",
+      "categoryId": 103,
+      "categoryName": "Pokemon Japanese Clash of the Blue Sky",
+      "source": "vendortools",
+      "setCode": "PCG2"
+    },
+    "pcg2": {
+      "setName": "Clash of the Blue Sky",
+      "categoryId": 103,
+      "categoryName": "Pokemon Japanese Clash of the Blue Sky",
+      "source": "vendortools",
+      "setCode": "pcg2"
+    },
+    "PCG1": {
+      "setName": "Flight of Legends",
+      "categoryId": 470,
+      "categoryName": "Pokemon Japanese Flight of Legends",
+      "source": "vendortools",
+      "setCode": "PCG1"
+    },
+    "pcg1": {
+      "setName": "Flight of Legends",
+      "categoryId": 470,
+      "categoryName": "Pokemon Japanese Flight of Legends",
+      "source": "vendortools",
+      "setCode": "pcg1"
+    },
+    "MISCPT": {
+      "setName": "T Promos",
+      "categoryId": 163,
+      "categoryName": "Pokemon Japanese Promo",
+      "source": "vendortools",
+      "setCode": "MISCPT"
+    },
+    "miscpt": {
+      "setName": "T Promos",
+      "categoryId": 163,
+      "categoryName": "Pokemon Japanese Promo",
+      "source": "vendortools",
+      "setCode": "miscpt"
+    },
+    "MISCPJ": {
+      "setName": "J Promos",
+      "categoryId": 163,
+      "categoryName": "Pokemon Japanese Promo",
+      "source": "vendortools",
+      "setCode": "MISCPJ"
+    },
+    "miscpj": {
+      "setName": "J Promos",
+      "categoryId": 163,
+      "categoryName": "Pokemon Japanese Promo",
+      "source": "vendortools",
+      "setCode": "miscpj"
+    },
+    "MISCPP": {
+      "setName": "P Promos",
+      "categoryId": 163,
+      "categoryName": "Pokemon Japanese Promo",
+      "source": "vendortools",
+      "setCode": "MISCPP"
+    },
+    "miscpp": {
+      "setName": "P Promos",
+      "categoryId": 163,
+      "categoryName": "Pokemon Japanese Promo",
+      "source": "vendortools",
+      "setCode": "miscpp"
+    },
+    "ADV5": {
+      "setName": "Undone Seal",
+      "categoryId": 603,
+      "categoryName": "Pokemon Japanese Undone Seal",
+      "source": "vendortools",
+      "setCode": "ADV5"
+    },
+    "adv5": {
+      "setName": "Undone Seal",
+      "categoryId": 603,
+      "categoryName": "Pokemon Japanese Undone Seal",
+      "source": "vendortools",
+      "setCode": "adv5"
+    },
+    "ADV4": {
+      "setName": "Magma vs Aqua: Two Ambitions",
+      "categoryId": 505,
+      "categoryName": "Pokemon Japanese Magma VS Aqua: Two Ambitions",
+      "source": "vendortools",
+      "setCode": "ADV4"
+    },
+    "adv4": {
+      "setName": "Magma vs Aqua: Two Ambitions",
+      "categoryId": 505,
+      "categoryName": "Pokemon Japanese Magma VS Aqua: Two Ambitions",
+      "source": "vendortools",
+      "setCode": "adv4"
+    },
+    "ADV3": {
+      "setName": "Rulers of the Heavens",
+      "categoryId": 547,
+      "categoryName": "Pokemon Japanese Rulers of the Heavens",
+      "source": "vendortools",
+      "setCode": "ADV3"
+    },
+    "adv3": {
+      "setName": "Rulers of the Heavens",
+      "categoryId": 547,
+      "categoryName": "Pokemon Japanese Rulers of the Heavens",
+      "source": "vendortools",
+      "setCode": "adv3"
+    },
+    "ADV2": {
+      "setName": "Miracle of the Desert",
+      "categoryId": 518,
+      "categoryName": "Pokemon Japanese Miracle of the Desert",
+      "source": "vendortools",
+      "setCode": "ADV2"
+    },
+    "adv2": {
+      "setName": "Miracle of the Desert",
+      "categoryId": 518,
+      "categoryName": "Pokemon Japanese Miracle of the Desert",
+      "source": "vendortools",
+      "setCode": "adv2"
+    },
+    "ADV1": {
+      "setName": "ADV Expansion Pack",
+      "categoryId": 121,
+      "categoryName": "Pokemon Japanese Expansion Pack",
+      "source": "vendortools",
+      "setCode": "ADV1"
+    },
+    "adv1": {
+      "setName": "ADV Expansion Pack",
+      "categoryId": 121,
+      "categoryName": "Pokemon Japanese Expansion Pack",
+      "source": "vendortools",
+      "setCode": "adv1"
+    },
+    "ECARD5": {
+      "setName": "Mysterious Mountains",
+      "categoryId": 151,
+      "categoryName": "Pokemon Japanese Mysterious Mountains",
+      "source": "vendortools",
+      "setCode": "ECARD5"
+    },
+    "ecard5": {
+      "setName": "Mysterious Mountains",
+      "categoryId": 151,
+      "categoryName": "Pokemon Japanese Mysterious Mountains",
+      "source": "vendortools",
+      "setCode": "ecard5"
+    },
+    "ECARD4": {
+      "setName": "Split Earth",
+      "categoryId": 183,
+      "categoryName": "Pokemon Japanese Split Earth",
+      "source": "vendortools",
+      "setCode": "ECARD4"
+    },
+    "ecard4": {
+      "setName": "Split Earth",
+      "categoryId": 183,
+      "categoryName": "Pokemon Japanese Split Earth",
+      "source": "vendortools",
+      "setCode": "ecard4"
+    },
+    "ECARD3": {
+      "setName": "Wind from the Sea",
+      "categoryId": 205,
+      "categoryName": "Pokemon Japanese Wind from the Sea",
+      "source": "vendortools",
+      "setCode": "ECARD3"
+    },
+    "ecard3": {
+      "setName": "Wind from the Sea",
+      "categoryId": 205,
+      "categoryName": "Pokemon Japanese Wind from the Sea",
+      "source": "vendortools",
+      "setCode": "ecard3"
+    },
+    "ECARD2": {
+      "setName": "The Town on No Map",
+      "categoryId": 192,
+      "categoryName": "Pokemon Japanese The Town on No Map",
+      "source": "vendortools",
+      "setCode": "ECARD2"
+    },
+    "ecard2": {
+      "setName": "The Town on No Map",
+      "categoryId": 192,
+      "categoryName": "Pokemon Japanese The Town on No Map",
+      "source": "vendortools",
+      "setCode": "ecard2"
+    },
+    "ECARD1": {
+      "setName": "Base Expansion Pack",
+      "categoryId": 121,
+      "categoryName": "Pokemon Japanese Expansion Pack",
+      "source": "vendortools",
+      "setCode": "ECARD1"
+    },
+    "ecard1": {
+      "setName": "Base Expansion Pack",
+      "categoryId": 121,
+      "categoryName": "Pokemon Japanese Expansion Pack",
+      "source": "vendortools",
+      "setCode": "ecard1"
+    },
+    "WEB1": {
+      "setName": "Pokémon Web",
+      "categoryId": 201,
+      "categoryName": "Pokemon Japanese Web",
+      "source": "vendortools",
+      "setCode": "WEB1"
+    },
+    "web1": {
+      "setName": "Pokémon Web",
+      "categoryId": 201,
+      "categoryName": "Pokemon Japanese Web",
+      "source": "vendortools",
+      "setCode": "web1"
+    },
+    "VS1": {
+      "setName": "Pokémon VS",
+      "categoryId": 513,
+      "categoryName": "Pokemon Japanese Melee Pokemon Scramble",
+      "source": "vendortools",
+      "setCode": "VS1"
+    },
+    "vs1": {
+      "setName": "Pokémon VS",
+      "categoryId": 513,
+      "categoryName": "Pokemon Japanese Melee Pokemon Scramble",
+      "source": "vendortools",
+      "setCode": "vs1"
+    },
+    "NEO4": {
+      "setName": "Darkness, and to Light...",
+      "categoryId": 112,
+      "categoryName": "Pokemon Japanese Darkness, and to Light",
+      "source": "vendortools",
+      "setCode": "NEO4"
+    },
+    "neo4": {
+      "setName": "Darkness, and to Light...",
+      "categoryId": 112,
+      "categoryName": "Pokemon Japanese Darkness, and to Light",
+      "source": "vendortools",
+      "setCode": "neo4"
+    },
+    "NEO3": {
+      "setName": "Awakening Legends",
+      "categoryId": 92,
+      "categoryName": "Pokemon Japanese Awakening Legends",
+      "source": "vendortools",
+      "setCode": "NEO3"
+    },
+    "neo3": {
+      "setName": "Awakening Legends",
+      "categoryId": 92,
+      "categoryName": "Pokemon Japanese Awakening Legends",
+      "source": "vendortools",
+      "setCode": "neo3"
+    },
+    "NEO2": {
+      "setName": "Crossing the Ruins...",
+      "categoryId": 109,
+      "categoryName": "Pokemon Japanese Crossing the Ruins",
+      "source": "vendortools",
+      "setCode": "NEO2"
+    },
+    "neo2": {
+      "setName": "Crossing the Ruins...",
+      "categoryId": 109,
+      "categoryName": "Pokemon Japanese Crossing the Ruins",
+      "source": "vendortools",
+      "setCode": "neo2"
+    },
+    "NEO1": {
+      "setName": "Gold, Silver, to a New World...",
+      "categoryId": 131,
+      "categoryName": "Pokemon Japanese Gold, Silver, New World",
+      "source": "vendortools",
+      "setCode": "NEO1"
+    },
+    "neo1": {
+      "setName": "Gold, Silver, to a New World...",
+      "categoryId": 131,
+      "categoryName": "Pokemon Japanese Gold, Silver, New World",
+      "source": "vendortools",
+      "setCode": "neo1"
+    },
+    "GYM2": {
+      "setName": "Challenge from the Darkness",
+      "categoryId": 101,
+      "categoryName": "Pokemon Japanese Challenge from the Darkness",
+      "source": "vendortools",
+      "setCode": "GYM2"
+    },
+    "gym2": {
+      "setName": "Challenge from the Darkness",
+      "categoryId": 101,
+      "categoryName": "Pokemon Japanese Challenge from the Darkness",
+      "source": "vendortools",
+      "setCode": "gym2"
+    },
+    "GYM1": {
+      "setName": "Leaders&#x27; Stadium",
+      "categoryId": 140,
+      "categoryName": "Pokemon Japanese Leaders' Stadium",
+      "source": "vendortools",
+      "setCode": "GYM1"
+    },
+    "gym1": {
+      "setName": "Leaders&#x27; Stadium",
+      "categoryId": 140,
+      "categoryName": "Pokemon Japanese Leaders' Stadium",
+      "source": "vendortools",
+      "setCode": "gym1"
+    },
+    "BASE4": {
+      "setName": "Rocket Gang",
+      "categoryId": 167,
+      "categoryName": "Pokemon Japanese Rocket Gang",
+      "source": "vendortools",
+      "setCode": "BASE4"
+    },
+    "base4": {
+      "setName": "Rocket Gang",
+      "categoryId": 167,
+      "categoryName": "Pokemon Japanese Rocket Gang",
+      "source": "vendortools",
+      "setCode": "base4"
+    },
+    "BASE3": {
+      "setName": "Mystery of the Fossils",
+      "categoryId": 152,
+      "categoryName": "Pokemon Japanese Mystery of the Fossils",
+      "source": "vendortools",
+      "setCode": "BASE3"
+    },
+    "base3": {
+      "setName": "Mystery of the Fossils",
+      "categoryId": 152,
+      "categoryName": "Pokemon Japanese Mystery of the Fossils",
+      "source": "vendortools",
+      "setCode": "base3"
+    },
+    "BASE2": {
+      "setName": "Jungle",
+      "categoryId": 139,
+      "categoryName": "Pokemon Japanese Jungle",
+      "source": "vendortools",
+      "setCode": "BASE2"
+    },
+    "base2": {
+      "setName": "Jungle",
+      "categoryId": 139,
+      "categoryName": "Pokemon Japanese Jungle",
+      "source": "vendortools",
+      "setCode": "base2"
+    },
+    "BASE1": {
+      "setName": "Expansion Pack",
+      "categoryId": 121,
+      "categoryName": "Pokemon Japanese Expansion Pack",
+      "source": "vendortools",
+      "setCode": "BASE1"
+    },
+    "base1": {
+      "setName": "Expansion Pack",
+      "categoryId": 121,
+      "categoryName": "Pokemon Japanese Expansion Pack",
+      "source": "vendortools",
+      "setCode": "base1"
+    },
+    "TOPSUN": {
+      "setName": "Topsun",
+      "categoryId": 194,
+      "categoryName": "Pokemon Japanese Topsun",
+      "source": "vendortools",
+      "setCode": "TOPSUN"
+    },
+    "topsun": {
+      "setName": "Topsun",
+      "categoryId": 194,
+      "categoryName": "Pokemon Japanese Topsun",
+      "source": "vendortools",
+      "setCode": "topsun"
+    },
+    "CP1": {
+      "setName": "マグマ団VSアクア団 ダブルクライシス",
+      "categoryId": 197,
+      "categoryName": "Pokemon Japanese VS",
+      "source": "tcgdex",
+      "setCode": "CP1"
+    },
+    "cp1": {
+      "setName": "マグマ団VSアクア団 ダブルクライシス",
+      "categoryId": 197,
+      "categoryName": "Pokemon Japanese VS",
+      "source": "tcgdex",
+      "setCode": "cp1"
+    },
+    "CP6": {
+      "setName": "ポケットモンスターカードゲーム 拡張パック 20th Anniversary",
+      "categoryId": 85,
+      "categoryName": "Pokemon Japanese 20th Anniversary",
+      "source": "tcgdex",
+      "setCode": "CP6"
+    },
+    "cp6": {
+      "setName": "ポケットモンスターカードゲーム 拡張パック 20th Anniversary",
+      "categoryId": 85,
+      "categoryName": "Pokemon Japanese 20th Anniversary",
+      "source": "tcgdex",
+      "setCode": "cp6"
+    },
+    "S1a": {
+      "setName": "VMAXライジング",
+      "categoryId": 426,
+      "categoryName": "Pokemon Japanese Blastoise VMAX Starter Set",
+      "source": "tcgdex",
+      "setCode": "S1a"
+    },
+    "S1A": {
+      "setName": "VMAXライジング",
+      "categoryId": 426,
+      "categoryName": "Pokemon Japanese Blastoise VMAX Starter Set",
+      "source": "tcgdex",
+      "setCode": "S1A"
+    },
+    "s1a": {
+      "setName": "VMAXライジング",
+      "categoryId": 426,
+      "categoryName": "Pokemon Japanese Blastoise VMAX Starter Set",
+      "source": "tcgdex",
+      "setCode": "s1a"
+    },
+    "S12a": {
+      "setName": "VSTARユニバース",
+      "categoryId": 610,
+      "categoryName": "Pokemon Japanese VStar Premium Trainer SK",
+      "source": "tcgdex",
+      "setCode": "S12a"
+    },
+    "S12A": {
+      "setName": "VSTARユニバース",
+      "categoryId": 610,
+      "categoryName": "Pokemon Japanese VStar Premium Trainer SK",
+      "source": "tcgdex",
+      "setCode": "S12A"
+    },
+    "s12a": {
+      "setName": "VSTARユニバース",
+      "categoryId": 610,
+      "categoryName": "Pokemon Japanese VStar Premium Trainer SK",
+      "source": "tcgdex",
+      "setCode": "s12a"
+    },
+    "SV2a": {
+      "setName": "ポケモンカード151",
+      "categoryId": 171,
+      "categoryName": "Pokemon Japanese Scarlet & Violet 151",
+      "source": "tcgdex",
+      "setCode": "SV2a"
+    },
+    "SV2A": {
+      "setName": "ポケモンカード151",
+      "categoryId": 171,
+      "categoryName": "Pokemon Japanese Scarlet & Violet 151",
+      "source": "tcgdex",
+      "setCode": "SV2A"
+    },
+    "sv2a": {
+      "setName": "ポケモンカード151",
+      "categoryId": 171,
+      "categoryName": "Pokemon Japanese Scarlet & Violet 151",
+      "source": "tcgdex",
+      "setCode": "sv2a"
+    },
+    "SVK": {
+      "setName": "デッキビルドBOX ステラミラクル",
+      "categoryId": 84,
+      "categoryName": "Pokemon Japanese 2005 Gift Box",
+      "source": "tcgdex",
+      "setCode": "SVK"
+    },
+    "svk": {
+      "setName": "デッキビルドBOX ステラミラクル",
+      "categoryId": 84,
+      "categoryName": "Pokemon Japanese 2005 Gift Box",
+      "source": "tcgdex",
+      "setCode": "svk"
+    },
+    "JU": {
+      "setName": "Jungle",
+      "categoryId": 139,
+      "categoryName": "Pokemon Japanese Jungle",
+      "source": "ptcgo",
+      "setCode": "JU"
+    },
+    "ju": {
+      "setName": "Jungle",
+      "categoryId": 139,
+      "categoryName": "Pokemon Japanese Jungle",
+      "source": "ptcgo",
+      "setCode": "ju"
+    },
+    "FO": {
+      "setName": "Fossil",
+      "categoryId": 152,
+      "categoryName": "Pokemon Japanese Mystery of the Fossils",
+      "source": "ptcgo",
+      "setCode": "FO"
+    },
+    "fo": {
+      "setName": "Fossil",
+      "categoryId": 152,
+      "categoryName": "Pokemon Japanese Mystery of the Fossils",
+      "source": "ptcgo",
+      "setCode": "fo"
+    },
+    "TR": {
+      "setName": "Team Rocket",
+      "categoryId": 129,
+      "categoryName": "Pokemon Japanese Glory of Team Rocket",
+      "source": "ptcgo",
+      "setCode": "TR"
+    },
+    "tr": {
+      "setName": "Team Rocket",
+      "categoryId": 129,
+      "categoryName": "Pokemon Japanese Glory of Team Rocket",
+      "source": "ptcgo",
+      "setCode": "tr"
+    },
+    "LC": {
+      "setName": "Legendary Collection",
+      "categoryId": 141,
+      "categoryName": "Pokemon Japanese Legendary Shine Collection",
+      "source": "ptcgo",
+      "setCode": "LC"
+    },
+    "lc": {
+      "setName": "Legendary Collection",
+      "categoryId": 141,
+      "categoryName": "Pokemon Japanese Legendary Shine Collection",
+      "source": "ptcgo",
+      "setCode": "lc"
+    },
+    "RS": {
+      "setName": "Ruby & Sapphire",
+      "categoryId": 458,
+      "categoryName": "Pokemon Japanese EX Ruby & Sapphire Expansion Pack",
+      "source": "ptcgo",
+      "setCode": "RS"
+    },
+    "rs": {
+      "setName": "Ruby & Sapphire",
+      "categoryId": 458,
+      "categoryName": "Pokemon Japanese EX Ruby & Sapphire Expansion Pack",
+      "source": "ptcgo",
+      "setCode": "rs"
+    },
+    "DR": {
+      "setName": "Dragon",
+      "categoryId": 451,
+      "categoryName": "Pokemon Japanese Dragon Blade",
+      "source": "ptcgo",
+      "setCode": "DR"
+    },
+    "dr": {
+      "setName": "Dragon",
+      "categoryId": 451,
+      "categoryName": "Pokemon Japanese Dragon Blade",
+      "source": "ptcgo",
+      "setCode": "dr"
+    },
+    "MA": {
+      "setName": "Team Magma vs Team Aqua",
+      "categoryId": 586,
+      "categoryName": "Pokemon Japanese Team Aqua Deck",
+      "source": "ptcgo",
+      "setCode": "MA"
+    },
+    "ma": {
+      "setName": "Team Magma vs Team Aqua",
+      "categoryId": 586,
+      "categoryName": "Pokemon Japanese Team Aqua Deck",
+      "source": "ptcgo",
+      "setCode": "ma"
+    },
+    "RG": {
+      "setName": "FireRed & LeafGreen",
+      "categoryId": 455,
+      "categoryName": "Pokemon Japanese E-Battle Firered & Leafgreen",
+      "source": "ptcgo",
+      "setCode": "RG"
+    },
+    "rg": {
+      "setName": "FireRed & LeafGreen",
+      "categoryId": 455,
+      "categoryName": "Pokemon Japanese E-Battle Firered & Leafgreen",
+      "source": "ptcgo",
+      "setCode": "rg"
+    },
+    "TRR": {
+      "setName": "Team Rocket Returns",
+      "categoryId": 129,
+      "categoryName": "Pokemon Japanese Glory of Team Rocket",
+      "source": "ptcgo",
+      "setCode": "TRR"
+    },
+    "trr": {
+      "setName": "Team Rocket Returns",
+      "categoryId": 129,
+      "categoryName": "Pokemon Japanese Glory of Team Rocket",
+      "source": "ptcgo",
+      "setCode": "trr"
+    },
+    "DX": {
+      "setName": "Deoxys",
+      "categoryId": 447,
+      "categoryName": "Pokemon Japanese Deoxys Constructed Starter Deck",
+      "source": "ptcgo",
+      "setCode": "DX"
+    },
+    "dx": {
+      "setName": "Deoxys",
+      "categoryId": 447,
+      "categoryName": "Pokemon Japanese Deoxys Constructed Starter Deck",
+      "source": "ptcgo",
+      "setCode": "dx"
+    },
+    "EM": {
+      "setName": "Emerald",
+      "categoryId": 120,
+      "categoryName": "Pokemon Japanese Emerald Break",
+      "source": "ptcgo",
+      "setCode": "EM"
+    },
+    "em": {
+      "setName": "Emerald",
+      "categoryId": 120,
+      "categoryName": "Pokemon Japanese Emerald Break",
+      "source": "ptcgo",
+      "setCode": "em"
+    },
+    "HP": {
+      "setName": "Holon Phantoms",
+      "categoryId": 134,
+      "categoryName": "Pokemon Japanese Holon Phantom",
+      "source": "ptcgo",
+      "setCode": "HP"
+    },
+    "hp": {
+      "setName": "Holon Phantoms",
+      "categoryId": 134,
+      "categoryName": "Pokemon Japanese Holon Phantom",
+      "source": "ptcgo",
+      "setCode": "hp"
+    },
+    "SV": {
+      "setName": "Supreme Victors",
+      "categoryId": 548,
+      "categoryName": "Pokemon Japanese SVC",
+      "source": "ptcgo",
+      "setCode": "SV"
+    },
+    "sv": {
+      "setName": "Supreme Victors",
+      "categoryId": 548,
+      "categoryName": "Pokemon Japanese SVC",
+      "source": "ptcgo",
+      "setCode": "sv"
+    },
+    "AR": {
+      "setName": "Arceus",
+      "categoryId": 403,
+      "categoryName": "Pokemon Japanese Advent of Arceus",
+      "source": "ptcgo",
+      "setCode": "AR"
+    },
+    "ar": {
+      "setName": "Arceus",
+      "categoryId": 403,
+      "categoryName": "Pokemon Japanese Advent of Arceus",
+      "source": "ptcgo",
+      "setCode": "ar"
+    },
+    "LTR": {
+      "setName": "Legendary Treasures",
+      "categoryId": 127,
+      "categoryName": "Pokemon Japanese GX Ultra Shiny",
+      "source": "ptcgo",
+      "setCode": "LTR"
+    },
+    "ltr": {
+      "setName": "Legendary Treasures",
+      "categoryId": 127,
+      "categoryName": "Pokemon Japanese GX Ultra Shiny",
+      "source": "ptcgo",
+      "setCode": "ltr"
+    },
+    "KSS": {
+      "setName": "Kalos Starter Set",
+      "categoryId": 407,
+      "categoryName": "Pokemon Japanese Ampharos ex Starter Set",
+      "source": "ptcgo",
+      "setCode": "KSS"
+    },
+    "kss": {
+      "setName": "Kalos Starter Set",
+      "categoryId": 407,
+      "categoryName": "Pokemon Japanese Ampharos ex Starter Set",
+      "source": "ptcgo",
+      "setCode": "kss"
+    },
+    "DCR": {
+      "setName": "Double Crisis",
+      "categoryId": 115,
+      "categoryName": "Pokemon Japanese Double Crisis",
+      "source": "ptcgo",
+      "setCode": "DCR"
+    },
+    "dcr": {
+      "setName": "Double Crisis",
+      "categoryId": 115,
+      "categoryName": "Pokemon Japanese Double Crisis",
+      "source": "ptcgo",
+      "setCode": "dcr"
+    },
+    "ROS": {
+      "setName": "Roaring Skies",
+      "categoryId": 407,
+      "categoryName": "Pokemon Japanese Ampharos ex Starter Set",
+      "source": "ptcgo",
+      "setCode": "ROS"
+    },
+    "ros": {
+      "setName": "Roaring Skies",
+      "categoryId": 407,
+      "categoryName": "Pokemon Japanese Ampharos ex Starter Set",
+      "source": "ptcgo",
+      "setCode": "ros"
+    },
+    "AOR": {
+      "setName": "Ancient Origins",
+      "categoryId": 621,
+      "categoryName": "Pokemon Japanese Zeraora High Class",
+      "source": "ptcgo",
+      "setCode": "AOR"
+    },
+    "aor": {
+      "setName": "Ancient Origins",
+      "categoryId": 621,
+      "categoryName": "Pokemon Japanese Zeraora High Class",
+      "source": "ptcgo",
+      "setCode": "aor"
+    },
+    "GEN": {
+      "setName": "Generations",
+      "categoryId": 89,
+      "categoryName": "Pokemon Japanese Alter Genesis",
+      "source": "ptcgo",
+      "setCode": "GEN"
+    },
+    "gen": {
+      "setName": "Generations",
+      "categoryId": 89,
+      "categoryName": "Pokemon Japanese Alter Genesis",
+      "source": "ptcgo",
+      "setCode": "gen"
+    },
+    "STS": {
+      "setName": "Steam Siege",
+      "categoryId": 602,
+      "categoryName": "Pokemon Japanese Ultradimensional Beasts",
+      "source": "ptcgo",
+      "setCode": "STS"
+    },
+    "sts": {
+      "setName": "Steam Siege",
+      "categoryId": 602,
+      "categoryName": "Pokemon Japanese Ultradimensional Beasts",
+      "source": "ptcgo",
+      "setCode": "sts"
+    },
+    "EVO": {
+      "setName": "Evolutions",
+      "categoryId": 482,
+      "categoryName": "Pokemon Japanese Gardevoir Deck",
+      "source": "ptcgo",
+      "setCode": "EVO"
+    },
+    "evo": {
+      "setName": "Evolutions",
+      "categoryId": 482,
+      "categoryName": "Pokemon Japanese Gardevoir Deck",
+      "source": "ptcgo",
+      "setCode": "evo"
+    },
+    "SUM": {
+      "setName": "Sun & Moon",
+      "categoryId": 579,
+      "categoryName": "Pokemon Japanese Sun & Moon",
+      "source": "ptcgo",
+      "setCode": "SUM"
+    },
+    "sum": {
+      "setName": "Sun & Moon",
+      "categoryId": 579,
+      "categoryName": "Pokemon Japanese Sun & Moon",
+      "source": "ptcgo",
+      "setCode": "sum"
+    },
+    "GRI": {
+      "setName": "Guardians Rising",
+      "categoryId": 483,
+      "categoryName": "Pokemon Japanese Grimmsnarl VMAX Starter Set",
+      "source": "ptcgo",
+      "setCode": "GRI"
+    },
+    "gri": {
+      "setName": "Guardians Rising",
+      "categoryId": 483,
+      "categoryName": "Pokemon Japanese Grimmsnarl VMAX Starter Set",
+      "source": "ptcgo",
+      "setCode": "gri"
+    },
+    "SLG": {
+      "setName": "Shining Legends",
+      "categoryId": 174,
+      "categoryName": "Pokemon Japanese Shining Legends",
+      "source": "ptcgo",
+      "setCode": "SLG"
+    },
+    "slg": {
+      "setName": "Shining Legends",
+      "categoryId": 174,
+      "categoryName": "Pokemon Japanese Shining Legends",
+      "source": "ptcgo",
+      "setCode": "slg"
+    },
+    "CIN": {
+      "setName": "Crimson Invasion",
+      "categoryId": 465,
+      "categoryName": "Pokemon Japanese Facing a New Trial",
+      "source": "ptcgo",
+      "setCode": "CIN"
+    },
+    "cin": {
+      "setName": "Crimson Invasion",
+      "categoryId": 465,
+      "categoryName": "Pokemon Japanese Facing a New Trial",
+      "source": "ptcgo",
+      "setCode": "cin"
+    },
+    "FLI": {
+      "setName": "Forbidden Light",
+      "categoryId": 472,
+      "categoryName": "Pokemon Japanese Forbidden Light",
+      "source": "ptcgo",
+      "setCode": "FLI"
+    },
+    "fli": {
+      "setName": "Forbidden Light",
+      "categoryId": 472,
+      "categoryName": "Pokemon Japanese Forbidden Light",
+      "source": "ptcgo",
+      "setCode": "fli"
+    },
+    "TEU": {
+      "setName": "Team Up",
+      "categoryId": 129,
+      "categoryName": "Pokemon Japanese Glory of Team Rocket",
+      "source": "ptcgo",
+      "setCode": "TEU"
+    },
+    "teu": {
+      "setName": "Team Up",
+      "categoryId": 129,
+      "categoryName": "Pokemon Japanese Glory of Team Rocket",
+      "source": "ptcgo",
+      "setCode": "teu"
+    },
+    "DET": {
+      "setName": "Detective Pikachu",
+      "categoryId": 113,
+      "categoryName": "Pokemon Japanese Detective Pikachu",
+      "source": "ptcgo",
+      "setCode": "DET"
+    },
+    "det": {
+      "setName": "Detective Pikachu",
+      "categoryId": 113,
+      "categoryName": "Pokemon Japanese Detective Pikachu",
+      "source": "ptcgo",
+      "setCode": "det"
+    },
+    "SSH": {
+      "setName": "Sword & Shield",
+      "categoryId": 584,
+      "categoryName": "Pokemon Japanese Sword & Shield Family",
+      "source": "ptcgo",
+      "setCode": "SSH"
+    },
+    "ssh": {
+      "setName": "Sword & Shield",
+      "categoryId": 584,
+      "categoryName": "Pokemon Japanese Sword & Shield Family",
+      "source": "ptcgo",
+      "setCode": "ssh"
+    },
+    "RCL": {
+      "setName": "Rebel Clash",
+      "categoryId": 538,
+      "categoryName": "Pokemon Japanese Rebel Clash",
+      "source": "ptcgo",
+      "setCode": "RCL"
+    },
+    "rcl": {
+      "setName": "Rebel Clash",
+      "categoryId": 538,
+      "categoryName": "Pokemon Japanese Rebel Clash",
+      "source": "ptcgo",
+      "setCode": "rcl"
+    },
+    "VIV": {
+      "setName": "Vivid Voltage",
+      "categoryId": 544,
+      "categoryName": "Pokemon Japanese Reviving Legends",
+      "source": "ptcgo",
+      "setCode": "VIV"
+    },
+    "viv": {
+      "setName": "Vivid Voltage",
+      "categoryId": 544,
+      "categoryName": "Pokemon Japanese Reviving Legends",
+      "source": "ptcgo",
+      "setCode": "viv"
+    },
+    "CRE": {
+      "setName": "Chilling Reign",
+      "categoryId": 556,
+      "categoryName": "Pokemon Japanese Secret of the Lakes",
+      "source": "ptcgo",
+      "setCode": "CRE"
+    },
+    "cre": {
+      "setName": "Chilling Reign",
+      "categoryId": 556,
+      "categoryName": "Pokemon Japanese Secret of the Lakes",
+      "source": "ptcgo",
+      "setCode": "cre"
+    },
+    "EVS": {
+      "setName": "Evolving Skies",
+      "categoryId": 197,
+      "categoryName": "Pokemon Japanese VS",
+      "source": "ptcgo",
+      "setCode": "EVS"
+    },
+    "evs": {
+      "setName": "Evolving Skies",
+      "categoryId": 197,
+      "categoryName": "Pokemon Japanese VS",
+      "source": "ptcgo",
+      "setCode": "evs"
+    },
+    "PGO": {
+      "setName": "Pokémon GO",
+      "categoryId": 513,
+      "categoryName": "Pokemon Japanese Melee Pokemon Scramble",
+      "source": "ptcgo",
+      "setCode": "PGO"
+    },
+    "pgo": {
+      "setName": "Pokémon GO",
+      "categoryId": 513,
+      "categoryName": "Pokemon Japanese Melee Pokemon Scramble",
+      "source": "ptcgo",
+      "setCode": "pgo"
+    },
+    "LOR": {
+      "setName": "Lost Origin",
+      "categoryId": 129,
+      "categoryName": "Pokemon Japanese Glory of Team Rocket",
+      "source": "ptcgo",
+      "setCode": "LOR"
+    },
+    "lor": {
+      "setName": "Lost Origin",
+      "categoryId": 129,
+      "categoryName": "Pokemon Japanese Glory of Team Rocket",
+      "source": "ptcgo",
+      "setCode": "lor"
+    },
+    "SVI": {
+      "setName": "Scarlet & Violet",
+      "categoryId": 171,
+      "categoryName": "Pokemon Japanese Scarlet & Violet 151",
+      "source": "ptcgo",
+      "setCode": "SVI"
+    },
+    "svi": {
+      "setName": "Scarlet & Violet",
+      "categoryId": 171,
+      "categoryName": "Pokemon Japanese Scarlet & Violet 151",
+      "source": "ptcgo",
+      "setCode": "svi"
+    },
+    "PAL": {
+      "setName": "Paldea Evolved",
+      "categoryId": 526,
+      "categoryName": "Pokemon Japanese Palkia Half Deck",
+      "source": "ptcgo",
+      "setCode": "PAL"
+    },
+    "pal": {
+      "setName": "Paldea Evolved",
+      "categoryId": 526,
+      "categoryName": "Pokemon Japanese Palkia Half Deck",
+      "source": "ptcgo",
+      "setCode": "pal"
+    },
+    "SVE": {
+      "setName": "Scarlet & Violet Energies",
+      "categoryId": 171,
+      "categoryName": "Pokemon Japanese Scarlet & Violet 151",
+      "source": "ptcgo",
+      "setCode": "SVE"
+    },
+    "sve": {
+      "setName": "Scarlet & Violet Energies",
+      "categoryId": 171,
+      "categoryName": "Pokemon Japanese Scarlet & Violet 151",
+      "source": "ptcgo",
+      "setCode": "sve"
+    },
+    "MEW": {
+      "setName": "151",
+      "categoryId": 171,
+      "categoryName": "Pokemon Japanese Scarlet & Violet 151",
+      "source": "ptcgo",
+      "setCode": "MEW"
+    },
+    "mew": {
+      "setName": "151",
+      "categoryId": 171,
+      "categoryName": "Pokemon Japanese Scarlet & Violet 151",
+      "source": "ptcgo",
+      "setCode": "mew"
+    },
+    "PAR": {
+      "setName": "Paradox Rift",
+      "categoryId": 95,
+      "categoryName": "Pokemon Japanese Battle Partners",
+      "source": "ptcgo",
+      "setCode": "PAR"
+    },
+    "par": {
+      "setName": "Paradox Rift",
+      "categoryId": 95,
+      "categoryName": "Pokemon Japanese Battle Partners",
+      "source": "ptcgo",
+      "setCode": "par"
+    },
+    "SCR": {
+      "setName": "Stellar Crown",
+      "categoryId": 513,
+      "categoryName": "Pokemon Japanese Melee Pokemon Scramble",
+      "source": "ptcgo",
+      "setCode": "SCR"
+    },
+    "scr": {
+      "setName": "Stellar Crown",
+      "categoryId": 513,
+      "categoryName": "Pokemon Japanese Melee Pokemon Scramble",
+      "source": "ptcgo",
+      "setCode": "scr"
+    },
+    "PRE": {
+      "setName": "Prismatic Evolutions",
+      "categoryId": 162,
+      "categoryName": "Pokemon Japanese Premium Champion Pack",
+      "source": "ptcgo",
+      "setCode": "PRE"
+    },
+    "pre": {
+      "setName": "Prismatic Evolutions",
+      "categoryId": 162,
+      "categoryName": "Pokemon Japanese Premium Champion Pack",
+      "source": "ptcgo",
+      "setCode": "pre"
+    },
+    "JTG": {
+      "setName": "Journey Together",
+      "categoryId": 496,
+      "categoryName": "Pokemon Japanese Journey Together Collection Sheet",
+      "source": "ptcgo",
+      "setCode": "JTG"
+    },
+    "jtg": {
+      "setName": "Journey Together",
+      "categoryId": 496,
+      "categoryName": "Pokemon Japanese Journey Together Collection Sheet",
+      "source": "ptcgo",
+      "setCode": "jtg"
+    },
+    "DRI": {
+      "setName": "Destined Rivals",
+      "categoryId": 532,
+      "categoryName": "Pokemon Japanese Psycho Drive",
+      "source": "ptcgo",
+      "setCode": "DRI"
+    },
+    "dri": {
+      "setName": "Destined Rivals",
+      "categoryId": 532,
+      "categoryName": "Pokemon Japanese Psycho Drive",
+      "source": "ptcgo",
+      "setCode": "dri"
+    },
+    "BLK": {
+      "setName": "Black Bolt",
+      "categoryId": 98,
+      "categoryName": "Pokemon Japanese Black Bolt",
+      "source": "ptcgo",
+      "setCode": "BLK"
+    },
+    "blk": {
+      "setName": "Black Bolt",
+      "categoryId": 98,
+      "categoryName": "Pokemon Japanese Black Bolt",
+      "source": "ptcgo",
+      "setCode": "blk"
+    },
+    "WHT": {
+      "setName": "White Flare",
+      "categoryId": 202,
+      "categoryName": "Pokemon Japanese White Flare",
+      "source": "ptcgo",
+      "setCode": "WHT"
+    },
+    "wht": {
+      "setName": "White Flare",
+      "categoryId": 202,
+      "categoryName": "Pokemon Japanese White Flare",
+      "source": "ptcgo",
+      "setCode": "wht"
+    },
+    "MEG": {
+      "setName": "Mega Evolution",
+      "categoryId": 411,
+      "categoryName": "Pokemon Japanese Audino-EX Mega Battle Deck",
+      "source": "ptcgo",
+      "setCode": "MEG"
+    },
+    "meg": {
+      "setName": "Mega Evolution",
+      "categoryId": 411,
+      "categoryName": "Pokemon Japanese Audino-EX Mega Battle Deck",
+      "source": "ptcgo",
+      "setCode": "meg"
+    },
+    "CRI": {
+      "setName": "Chaos Rising",
+      "categoryId": 108,
+      "categoryName": "Pokemon Japanese Crimson Haze",
+      "source": "ptcgo",
+      "setCode": "CRI"
+    },
+    "cri": {
+      "setName": "Chaos Rising",
+      "categoryId": 108,
+      "categoryName": "Pokemon Japanese Crimson Haze",
+      "source": "ptcgo",
+      "setCode": "cri"
+    },
+    "Family": {
+      "setName": "family",
+      "categoryId": 467,
+      "categoryName": "Pokemon Japanese Family",
+      "source": "name",
+      "setCode": "Family"
+    },
+    "FAMILY": {
+      "setName": "family",
+      "categoryId": 467,
+      "categoryName": "Pokemon Japanese Family",
+      "source": "name",
+      "setCode": "FAMILY"
+    },
+    "family": {
+      "setName": "family",
+      "categoryId": 467,
+      "categoryName": "Pokemon Japanese Family",
+      "source": "name",
+      "setCode": "family"
+    },
+    "Go": {
+      "setName": "go",
+      "categoryId": 130,
+      "categoryName": "Pokemon Japanese Go",
+      "source": "name",
+      "setCode": "Go"
+    },
+    "GO": {
+      "setName": "go",
+      "categoryId": 130,
+      "categoryName": "Pokemon Japanese Go",
+      "source": "name",
+      "setCode": "GO"
+    },
+    "go": {
+      "setName": "go",
+      "categoryId": 130,
+      "categoryName": "Pokemon Japanese Go",
+      "source": "name",
+      "setCode": "go"
+    },
+    "Hanafuda": {
+      "setName": "hanafuda",
+      "categoryId": 486,
+      "categoryName": "Pokemon Japanese Hanafuda",
+      "source": "name",
+      "setCode": "Hanafuda"
+    },
+    "HANAFUDA": {
+      "setName": "hanafuda",
+      "categoryId": 486,
+      "categoryName": "Pokemon Japanese Hanafuda",
+      "source": "name",
+      "setCode": "HANAFUDA"
+    },
+    "hanafuda": {
+      "setName": "hanafuda",
+      "categoryId": 486,
+      "categoryName": "Pokemon Japanese Hanafuda",
+      "source": "name",
+      "setCode": "hanafuda"
+    },
+    "Jungle": {
+      "setName": "jungle",
+      "categoryId": 139,
+      "categoryName": "Pokemon Japanese Jungle",
+      "source": "name",
+      "setCode": "Jungle"
+    },
+    "JUNGLE": {
+      "setName": "jungle",
+      "categoryId": 139,
+      "categoryName": "Pokemon Japanese Jungle",
+      "source": "name",
+      "setCode": "JUNGLE"
+    },
+    "jungle": {
+      "setName": "jungle",
+      "categoryId": 139,
+      "categoryName": "Pokemon Japanese Jungle",
+      "source": "name",
+      "setCode": "jungle"
+    },
+    "Marumiya": {
+      "setName": "marumiya",
+      "categoryId": 506,
+      "categoryName": "Pokemon Japanese Marumiya",
+      "source": "name",
+      "setCode": "Marumiya"
+    },
+    "MARUMIYA": {
+      "setName": "marumiya",
+      "categoryId": 506,
+      "categoryName": "Pokemon Japanese Marumiya",
+      "source": "name",
+      "setCode": "MARUMIYA"
+    },
+    "marumiya": {
+      "setName": "marumiya",
+      "categoryId": 506,
+      "categoryName": "Pokemon Japanese Marumiya",
+      "source": "name",
+      "setCode": "marumiya"
+    },
+    "Promo": {
+      "setName": "promo",
+      "categoryId": 163,
+      "categoryName": "Pokemon Japanese Promo",
+      "source": "name",
+      "setCode": "Promo"
+    },
+    "PROMO": {
+      "setName": "promo",
+      "categoryId": 163,
+      "categoryName": "Pokemon Japanese Promo",
+      "source": "name",
+      "setCode": "PROMO"
+    },
+    "promo": {
+      "setName": "promo",
+      "categoryId": 163,
+      "categoryName": "Pokemon Japanese Promo",
+      "source": "name",
+      "setCode": "promo"
+    },
+    "Shield": {
+      "setName": "shield",
+      "categoryId": 557,
+      "categoryName": "Pokemon Japanese Shield",
+      "source": "name",
+      "setCode": "Shield"
+    },
+    "SHIELD": {
+      "setName": "shield",
+      "categoryId": 557,
+      "categoryName": "Pokemon Japanese Shield",
+      "source": "name",
+      "setCode": "SHIELD"
+    },
+    "shield": {
+      "setName": "shield",
+      "categoryId": 557,
+      "categoryName": "Pokemon Japanese Shield",
+      "source": "name",
+      "setCode": "shield"
+    },
+    "sm1": {
+      "setName": "sm1",
+      "categoryId": 625,
+      "categoryName": "Pokemon Japanese sm1",
+      "source": "name",
+      "setCode": "sm1"
+    },
+    "SM1": {
+      "setName": "sm1",
+      "categoryId": 625,
+      "categoryName": "Pokemon Japanese sm1",
+      "source": "name",
+      "setCode": "SM1"
+    },
+    "sp3": {
+      "setName": "sp3",
+      "categoryId": 626,
+      "categoryName": "Pokemon Japanese sp3",
+      "source": "name",
+      "setCode": "sp3"
+    },
+    "SP3": {
+      "setName": "sp3",
+      "categoryId": 626,
+      "categoryName": "Pokemon Japanese sp3",
+      "source": "name",
+      "setCode": "SP3"
+    },
+    "svAM": {
+      "setName": "svam",
+      "categoryId": 627,
+      "categoryName": "Pokemon Japanese svAM",
+      "source": "name",
+      "setCode": "svAM"
+    },
+    "SVAM": {
+      "setName": "svam",
+      "categoryId": 627,
+      "categoryName": "Pokemon Japanese svAM",
+      "source": "name",
+      "setCode": "SVAM"
+    },
+    "svam": {
+      "setName": "svam",
+      "categoryId": 627,
+      "categoryName": "Pokemon Japanese svAM",
+      "source": "name",
+      "setCode": "svam"
+    },
+    "SVC": {
+      "setName": "svc",
+      "categoryId": 548,
+      "categoryName": "Pokemon Japanese SVC",
+      "source": "name",
+      "setCode": "SVC"
+    },
+    "svc": {
+      "setName": "svc",
+      "categoryId": 548,
+      "categoryName": "Pokemon Japanese SVC",
+      "source": "name",
+      "setCode": "svc"
+    },
+    "Sword": {
+      "setName": "sword",
+      "categoryId": 583,
+      "categoryName": "Pokemon Japanese Sword",
+      "source": "name",
+      "setCode": "Sword"
+    },
+    "SWORD": {
+      "setName": "sword",
+      "categoryId": 583,
+      "categoryName": "Pokemon Japanese Sword",
+      "source": "name",
+      "setCode": "SWORD"
+    },
+    "sword": {
+      "setName": "sword",
+      "categoryId": 583,
+      "categoryName": "Pokemon Japanese Sword",
+      "source": "name",
+      "setCode": "sword"
+    },
+    "Taruka": {
+      "setName": "taruka",
+      "categoryId": 699,
+      "categoryName": "Pokemon Japanese Taruka",
+      "source": "name",
+      "setCode": "Taruka"
+    },
+    "TARUKA": {
+      "setName": "taruka",
+      "categoryId": 699,
+      "categoryName": "Pokemon Japanese Taruka",
+      "source": "name",
+      "setCode": "TARUKA"
+    },
+    "taruka": {
+      "setName": "taruka",
+      "categoryId": 699,
+      "categoryName": "Pokemon Japanese Taruka",
+      "source": "name",
+      "setCode": "taruka"
+    },
+    "Vending": {
+      "setName": "vending",
+      "categoryId": 199,
+      "categoryName": "Pokemon Japanese Vending",
+      "source": "name",
+      "setCode": "Vending"
+    },
+    "VENDING": {
+      "setName": "vending",
+      "categoryId": 199,
+      "categoryName": "Pokemon Japanese Vending",
+      "source": "name",
+      "setCode": "VENDING"
+    },
+    "vending": {
+      "setName": "vending",
+      "categoryId": 199,
+      "categoryName": "Pokemon Japanese Vending",
+      "source": "name",
+      "setCode": "vending"
+    },
+    "VS": {
+      "setName": "vs",
+      "categoryId": 197,
+      "categoryName": "Pokemon Japanese VS",
+      "source": "name",
+      "setCode": "VS"
+    },
+    "vs": {
+      "setName": "vs",
+      "categoryId": 197,
+      "categoryName": "Pokemon Japanese VS",
+      "source": "name",
+      "setCode": "vs"
+    },
+    "Web": {
+      "setName": "web",
+      "categoryId": 201,
+      "categoryName": "Pokemon Japanese Web",
+      "source": "name",
+      "setCode": "Web"
+    },
+    "WEB": {
+      "setName": "web",
+      "categoryId": 201,
+      "categoryName": "Pokemon Japanese Web",
+      "source": "name",
+      "setCode": "WEB"
+    },
+    "web": {
+      "setName": "web",
+      "categoryId": 201,
+      "categoryName": "Pokemon Japanese Web",
+      "source": "name",
+      "setCode": "web"
+    },
+    "1MCP": {
+      "setName": "11th movie commemoration promo",
+      "categoryId": 394,
+      "categoryName": "Pokemon Japanese 11th Movie Commemoration Promo",
+      "source": "slug",
+      "setCode": "1MCP"
+    },
+    "1mcp": {
+      "setName": "11th movie commemoration promo",
+      "categoryId": 394,
+      "categoryName": "Pokemon Japanese 11th Movie Commemoration Promo",
+      "source": "slug",
+      "setCode": "1mcp"
+    },
+    "1CD": {
+      "setName": "1995 combo deck",
+      "categoryId": 395,
+      "categoryName": "Pokemon Japanese 1995 Combo Deck",
+      "source": "slug",
+      "setCode": "1CD"
+    },
+    "1cd": {
+      "setName": "1995 combo deck",
+      "categoryId": 395,
+      "categoryName": "Pokemon Japanese 1995 Combo Deck",
+      "source": "slug",
+      "setCode": "1cd"
+    },
+    "1C": {
+      "setName": "1999 carddass",
+      "categoryId": 397,
+      "categoryName": "Pokemon Japanese 1999 Carddass",
+      "source": "slug",
+      "setCode": "1C"
+    },
+    "1c": {
+      "setName": "1999 carddass",
+      "categoryId": 397,
+      "categoryName": "Pokemon Japanese 1999 Carddass",
+      "source": "slug",
+      "setCode": "1c"
+    },
+    "1M": {
+      "setName": "1999 merlin",
+      "categoryId": 398,
+      "categoryName": "Pokemon Japanese 1999 Merlin",
+      "source": "slug",
+      "setCode": "1M"
+    },
+    "1m": {
+      "setName": "1999 merlin",
+      "categoryId": 398,
+      "categoryName": "Pokemon Japanese 1999 Merlin",
+      "source": "slug",
+      "setCode": "1m"
+    },
+    "2C": {
+      "setName": "2000 carddass",
+      "categoryId": 399,
+      "categoryName": "Pokemon Japanese 2000 Carddass",
+      "source": "slug",
+      "setCode": "2C"
+    },
+    "2c": {
+      "setName": "2000 carddass",
+      "categoryId": 399,
+      "categoryName": "Pokemon Japanese 2000 Carddass",
+      "source": "slug",
+      "setCode": "2c"
+    },
+    "2M": {
+      "setName": "2002 mcdonald s",
+      "categoryId": 83,
+      "categoryName": "Pokemon Japanese 2002 McDonald's",
+      "source": "slug",
+      "setCode": "2M"
+    },
+    "2m": {
+      "setName": "2002 mcdonald s",
+      "categoryId": 83,
+      "categoryName": "Pokemon Japanese 2002 McDonald's",
+      "source": "slug",
+      "setCode": "2m"
+    },
+    "2CZ": {
+      "setName": "2005 carddass zukan",
+      "categoryId": 401,
+      "categoryName": "Pokemon Japanese 2005 Carddass Zukan",
+      "source": "slug",
+      "setCode": "2CZ"
+    },
+    "2cz": {
+      "setName": "2005 carddass zukan",
+      "categoryId": 401,
+      "categoryName": "Pokemon Japanese 2005 Carddass Zukan",
+      "source": "slug",
+      "setCode": "2cz"
+    },
+    "2AGB": {
+      "setName": "25th anniversary golden box",
+      "categoryId": 87,
+      "categoryName": "Pokemon Japanese 25th Anniversary Golden Box",
+      "source": "slug",
+      "setCode": "2AGB"
+    },
+    "2agb": {
+      "setName": "25th anniversary golden box",
+      "categoryId": 87,
+      "categoryName": "Pokemon Japanese 25th Anniversary Golden Box",
+      "source": "slug",
+      "setCode": "2agb"
+    },
+    "2AP": {
+      "setName": "25th anniversary promo",
+      "categoryId": 88,
+      "categoryName": "Pokemon Japanese 25th Anniversary Promo",
+      "source": "slug",
+      "setCode": "2AP"
+    },
+    "2ap": {
+      "setName": "25th anniversary promo",
+      "categoryId": 88,
+      "categoryName": "Pokemon Japanese 25th Anniversary Promo",
+      "source": "slug",
+      "setCode": "2ap"
+    },
+    "AP": {
+      "setName": "alpha playtest",
+      "categoryId": 405,
+      "categoryName": "Pokemon Japanese Alpha Playtest",
+      "source": "slug",
+      "setCode": "AP"
+    },
+    "ap": {
+      "setName": "alpha playtest",
+      "categoryId": 405,
+      "categoryName": "Pokemon Japanese Alpha Playtest",
+      "source": "slug",
+      "setCode": "ap"
+    },
+    "ASD": {
+      "setName": "amada super dx",
+      "categoryId": 406,
+      "categoryName": "Pokemon Japanese Amada Super DX",
+      "source": "slug",
+      "setCode": "ASD"
+    },
+    "asd": {
+      "setName": "amada super dx",
+      "categoryId": 406,
+      "categoryName": "Pokemon Japanese Amada Super DX",
+      "source": "slug",
+      "setCode": "asd"
+    },
+    "AGBP": {
+      "setName": "ana gold boarding pass",
+      "categoryId": 402,
+      "categoryName": "Pokemon Japanese ANA Gold Boarding Pass",
+      "source": "slug",
+      "setCode": "AGBP"
+    },
+    "agbp": {
+      "setName": "ana gold boarding pass",
+      "categoryId": 402,
+      "categoryName": "Pokemon Japanese ANA Gold Boarding Pass",
+      "source": "slug",
+      "setCode": "agbp"
+    },
+    "AKESD": {
+      "setName": "ancient koraidon ex starter deck",
+      "categoryId": 408,
+      "categoryName": "Pokemon Japanese Ancient Koraidon ex Starter Deck",
+      "source": "slug",
+      "setCode": "AKESD"
+    },
+    "akesd": {
+      "setName": "ancient koraidon ex starter deck",
+      "categoryId": 408,
+      "categoryName": "Pokemon Japanese Ancient Koraidon ex Starter Deck",
+      "source": "slug",
+      "setCode": "akesd"
+    },
+    "ALD": {
+      "setName": "arceus lv x deck",
+      "categoryId": 409,
+      "categoryName": "Pokemon Japanese Arceus LV.X Deck",
+      "source": "slug",
+      "setCode": "ALD"
+    },
+    "ald": {
+      "setName": "arceus lv x deck",
+      "categoryId": 409,
+      "categoryName": "Pokemon Japanese Arceus LV.X Deck",
+      "source": "slug",
+      "setCode": "ald"
+    },
+    "AVRDK": {
+      "setName": "ash vs rocket deck kit",
+      "categoryId": 410,
+      "categoryName": "Pokemon Japanese Ash vs Rocket Deck Kit",
+      "source": "slug",
+      "setCode": "AVRDK"
+    },
+    "avrdk": {
+      "setName": "ash vs rocket deck kit",
+      "categoryId": 410,
+      "categoryName": "Pokemon Japanese Ash vs Rocket Deck Kit",
+      "source": "slug",
+      "setCode": "avrdk"
+    },
+    "BK": {
+      "setName": "bandai kids",
+      "categoryId": 413,
+      "categoryName": "Pokemon Japanese Bandai Kids",
+      "source": "slug",
+      "setCode": "BK"
+    },
+    "bk": {
+      "setName": "bandai kids",
+      "categoryId": 413,
+      "categoryName": "Pokemon Japanese Bandai Kids",
+      "source": "slug",
+      "setCode": "bk"
+    },
+    "BA": {
+      "setName": "battle academy",
+      "categoryId": 414,
+      "categoryName": "Pokemon Japanese Battle Academy",
+      "source": "slug",
+      "setCode": "BA"
+    },
+    "ba": {
+      "setName": "battle academy",
+      "categoryId": 414,
+      "categoryName": "Pokemon Japanese Battle Academy",
+      "source": "slug",
+      "setCode": "ba"
+    },
+    "BMCP": {
+      "setName": "battle master chien pao",
+      "categoryId": 415,
+      "categoryName": "Pokemon Japanese Battle Master Chien-Pao",
+      "source": "slug",
+      "setCode": "BMCP"
+    },
+    "bmcp": {
+      "setName": "battle master chien pao",
+      "categoryId": 415,
+      "categoryName": "Pokemon Japanese Battle Master Chien-Pao",
+      "source": "slug",
+      "setCode": "bmcp"
+    },
+    "BMTC": {
+      "setName": "battle master terastal charizard",
+      "categoryId": 416,
+      "categoryName": "Pokemon Japanese Battle Master Terastal Charizard",
+      "source": "slug",
+      "setCode": "BMTC"
+    },
+    "bmtc": {
+      "setName": "battle master terastal charizard",
+      "categoryId": 416,
+      "categoryName": "Pokemon Japanese Battle Master Terastal Charizard",
+      "source": "slug",
+      "setCode": "bmtc"
+    },
+    "BPDBB": {
+      "setName": "battle partners deck build box",
+      "categoryId": 417,
+      "categoryName": "Pokemon Japanese Battle Partners Deck Build Box",
+      "source": "slug",
+      "setCode": "BPDBB"
+    },
+    "bpdbb": {
+      "setName": "battle partners deck build box",
+      "categoryId": 417,
+      "categoryName": "Pokemon Japanese Battle Partners Deck Build Box",
+      "source": "slug",
+      "setCode": "bpdbb"
+    },
+    "BR": {
+      "setName": "battle rainbow",
+      "categoryId": 418,
+      "categoryName": "Pokemon Japanese Battle Rainbow",
+      "source": "slug",
+      "setCode": "BR"
+    },
+    "br": {
+      "setName": "battle rainbow",
+      "categoryId": 418,
+      "categoryName": "Pokemon Japanese Battle Rainbow",
+      "source": "slug",
+      "setCode": "br"
+    },
+    "BSH": {
+      "setName": "beginning set hs",
+      "categoryId": 420,
+      "categoryName": "Pokemon Japanese Beginning Set HS",
+      "source": "slug",
+      "setCode": "BSH"
+    },
+    "bsh": {
+      "setName": "beginning set hs",
+      "categoryId": 420,
+      "categoryName": "Pokemon Japanese Beginning Set HS",
+      "source": "slug",
+      "setCode": "bsh"
+    },
+    "BP": {
+      "setName": "beta playtest",
+      "categoryId": 421,
+      "categoryName": "Pokemon Japanese Beta Playtest",
+      "source": "slug",
+      "setCode": "BP"
+    },
+    "bp": {
+      "setName": "beta playtest",
+      "categoryId": 421,
+      "categoryName": "Pokemon Japanese Beta Playtest",
+      "source": "slug",
+      "setCode": "bp"
+    },
+    "BDK": {
+      "setName": "black deck kit",
+      "categoryId": 423,
+      "categoryName": "Pokemon Japanese Black Deck Kit",
+      "source": "slug",
+      "setCode": "BDK"
+    },
+    "bdk": {
+      "setName": "black deck kit",
+      "categoryId": 423,
+      "categoryName": "Pokemon Japanese Black Deck Kit",
+      "source": "slug",
+      "setCode": "bdk"
+    },
+    "BKEBSD": {
+      "setName": "black kyurem ex battle strength deck",
+      "categoryId": 424,
+      "categoryName": "Pokemon Japanese Black Kyurem EX Battle Strength Deck",
+      "source": "slug",
+      "setCode": "BKEBSD"
+    },
+    "bkebsd": {
+      "setName": "black kyurem ex battle strength deck",
+      "categoryId": 424,
+      "categoryName": "Pokemon Japanese Black Kyurem EX Battle Strength Deck",
+      "source": "slug",
+      "setCode": "bkebsd"
+    },
+    "BKECD": {
+      "setName": "blastoise kyurem ex combo deck",
+      "categoryId": 425,
+      "categoryName": "Pokemon Japanese Blastoise + Kyurem EX Combo Deck",
+      "source": "slug",
+      "setCode": "BKECD"
+    },
+    "bkecd": {
+      "setName": "blastoise kyurem ex combo deck",
+      "categoryId": 425,
+      "categoryName": "Pokemon Japanese Blastoise + Kyurem EX Combo Deck",
+      "source": "slug",
+      "setCode": "bkecd"
+    },
+    "BD": {
+      "setName": "bulbasaur deck",
+      "categoryId": 429,
+      "categoryName": "Pokemon Japanese Bulbasaur Deck",
+      "source": "slug",
+      "setCode": "BD"
+    },
+    "bd": {
+      "setName": "bulbasaur deck",
+      "categoryId": 429,
+      "categoryName": "Pokemon Japanese Bulbasaur Deck",
+      "source": "slug",
+      "setCode": "bd"
+    },
+    "CP": {
+      "setName": "collection pack",
+      "categoryId": 436,
+      "categoryName": "Pokemon Japanese Collection Pack",
+      "source": "slug",
+      "setCode": "CP"
+    },
+    "cp": {
+      "setName": "collection pack",
+      "categoryId": 436,
+      "categoryName": "Pokemon Japanese Collection Pack",
+      "source": "slug",
+      "setCode": "cp"
+    },
+    "CHD": {
+      "setName": "charizard half deck",
+      "categoryId": 431,
+      "categoryName": "Pokemon Japanese Charizard Half Deck",
+      "source": "slug",
+      "setCode": "CHD"
+    },
+    "chd": {
+      "setName": "charizard half deck",
+      "categoryId": 431,
+      "categoryName": "Pokemon Japanese Charizard Half Deck",
+      "source": "slug",
+      "setCode": "chd"
+    },
+    "CR": {
+      "setName": "charizard rayquaza",
+      "categoryId": 432,
+      "categoryName": "Pokemon Japanese Charizard Rayquaza",
+      "source": "slug",
+      "setCode": "CR"
+    },
+    "cr": {
+      "setName": "charizard rayquaza",
+      "categoryId": 432,
+      "categoryName": "Pokemon Japanese Charizard Rayquaza",
+      "source": "slug",
+      "setCode": "cr"
+    },
+    "CVSS": {
+      "setName": "charizard vmax starter set",
+      "categoryId": 102,
+      "categoryName": "Pokemon Japanese Charizard VMAX Starter Set",
+      "source": "slug",
+      "setCode": "CVSS"
+    },
+    "cvss": {
+      "setName": "charizard vmax starter set",
+      "categoryId": 102,
+      "categoryName": "Pokemon Japanese Charizard VMAX Starter Set",
+      "source": "slug",
+      "setCode": "cvss"
+    },
+    "CB": {
+      "setName": "classic blastoise",
+      "categoryId": 104,
+      "categoryName": "Pokemon Japanese Classic: Blastoise",
+      "source": "slug",
+      "setCode": "CB"
+    },
+    "cb": {
+      "setName": "classic blastoise",
+      "categoryId": 104,
+      "categoryName": "Pokemon Japanese Classic: Blastoise",
+      "source": "slug",
+      "setCode": "cb"
+    },
+    "CC": {
+      "setName": "classic charizard",
+      "categoryId": 105,
+      "categoryName": "Pokemon Japanese Classic: Charizard",
+      "source": "slug",
+      "setCode": "CC"
+    },
+    "cc": {
+      "setName": "classic charizard",
+      "categoryId": 105,
+      "categoryName": "Pokemon Japanese Classic: Charizard",
+      "source": "slug",
+      "setCode": "cc"
+    },
+    "CV": {
+      "setName": "classic venusaur",
+      "categoryId": 106,
+      "categoryName": "Pokemon Japanese Classic: Venusaur",
+      "source": "slug",
+      "setCode": "CV"
+    },
+    "cv": {
+      "setName": "classic venusaur",
+      "categoryId": 106,
+      "categoryName": "Pokemon Japanese Classic: Venusaur",
+      "source": "slug",
+      "setCode": "cv"
+    },
+    "DS": {
+      "setName": "darkrai starter",
+      "categoryId": 445,
+      "categoryName": "Pokemon Japanese Darkrai Starter",
+      "source": "slug",
+      "setCode": "DS"
+    },
+    "ds": {
+      "setName": "darkrai starter",
+      "categoryId": 445,
+      "categoryName": "Pokemon Japanese Darkrai Starter",
+      "source": "slug",
+      "setCode": "ds"
+    },
+    "DHD": {
+      "setName": "dialga half deck",
+      "categoryId": 449,
+      "categoryName": "Pokemon Japanese Dialga Half Deck",
+      "source": "slug",
+      "setCode": "DHD"
+    },
+    "dhd": {
+      "setName": "dialga half deck",
+      "categoryId": 449,
+      "categoryName": "Pokemon Japanese Dialga Half Deck",
+      "source": "slug",
+      "setCode": "dhd"
+    },
+    "DHC": {
+      "setName": "deoxys high class",
+      "categoryId": 448,
+      "categoryName": "Pokemon Japanese Deoxys High Class",
+      "source": "slug",
+      "setCode": "DHC"
+    },
+    "dhc": {
+      "setName": "deoxys high class",
+      "categoryId": 448,
+      "categoryName": "Pokemon Japanese Deoxys High Class",
+      "source": "slug",
+      "setCode": "dhc"
+    },
+    "DLCD": {
+      "setName": "dialga lv x constructed deck",
+      "categoryId": 450,
+      "categoryName": "Pokemon Japanese Dialga LV.X Constructed Deck",
+      "source": "slug",
+      "setCode": "DLCD"
+    },
+    "dlcd": {
+      "setName": "dialga lv x constructed deck",
+      "categoryId": 450,
+      "categoryName": "Pokemon Japanese Dialga LV.X Constructed Deck",
+      "source": "slug",
+      "setCode": "dlcd"
+    },
+    "DSC": {
+      "setName": "dream shine collection",
+      "categoryId": 117,
+      "categoryName": "Pokemon Japanese Dream Shine Collection",
+      "source": "slug",
+      "setCode": "DSC"
+    },
+    "dsc": {
+      "setName": "dream shine collection",
+      "categoryId": 117,
+      "categoryName": "Pokemon Japanese Dream Shine Collection",
+      "source": "slug",
+      "setCode": "dsc"
+    },
+    "CS": {
+      "setName": "e card sample",
+      "categoryId": 456,
+      "categoryName": "Pokemon Japanese E-Card Sample",
+      "source": "slug",
+      "setCode": "CS"
+    },
+    "cs": {
+      "setName": "e card sample",
+      "categoryId": 456,
+      "categoryName": "Pokemon Japanese E-Card Sample",
+      "source": "slug",
+      "setCode": "cs"
+    },
+    "SD": {
+      "setName": "squirtle deck",
+      "categoryId": 567,
+      "categoryName": "Pokemon Japanese Squirtle Deck",
+      "source": "slug",
+      "setCode": "SD"
+    },
+    "sd": {
+      "setName": "squirtle deck",
+      "categoryId": 567,
+      "categoryName": "Pokemon Japanese Squirtle Deck",
+      "source": "slug",
+      "setCode": "sd"
+    },
+    "EHS": {
+      "setName": "eevee heroes special",
+      "categoryId": 459,
+      "categoryName": "Pokemon Japanese Eevee Heroes Special",
+      "source": "slug",
+      "setCode": "EHS"
+    },
+    "ehs": {
+      "setName": "eevee heroes special",
+      "categoryId": 459,
+      "categoryName": "Pokemon Japanese Eevee Heroes Special",
+      "source": "slug",
+      "setCode": "ehs"
+    },
+    "EEVTEDK": {
+      "setName": "emboar ex vs togekiss ex deck kit",
+      "categoryId": 460,
+      "categoryName": "Pokemon Japanese Emboar EX vs Togekiss EX Deck Kit",
+      "source": "slug",
+      "setCode": "EEVTEDK"
+    },
+    "eevtedk": {
+      "setName": "emboar ex vs togekiss ex deck kit",
+      "categoryId": 460,
+      "categoryName": "Pokemon Japanese Emboar EX vs Togekiss EX Deck Kit",
+      "source": "slug",
+      "setCode": "eevtedk"
+    },
+    "EHD": {
+      "setName": "emerald half deck",
+      "categoryId": 461,
+      "categoryName": "Pokemon Japanese Emerald Half Deck",
+      "source": "slug",
+      "setCode": "EHD"
+    },
+    "ehd": {
+      "setName": "emerald half deck",
+      "categoryId": 461,
+      "categoryName": "Pokemon Japanese Emerald Half Deck",
+      "source": "slug",
+      "setCode": "ehd"
+    },
+    "EP2": {
+      "setName": "entry pack 2008",
+      "categoryId": 462,
+      "categoryName": "Pokemon Japanese Entry Pack 2008",
+      "source": "slug",
+      "setCode": "EP2"
+    },
+    "ep2": {
+      "setName": "entry pack 2008",
+      "categoryId": 462,
+      "categoryName": "Pokemon Japanese Entry Pack 2008",
+      "source": "slug",
+      "setCode": "ep2"
+    },
+    "ESS": {
+      "setName": "ex special set",
+      "categoryId": 623,
+      "categoryName": "Pokemon Japanese ex Special Set",
+      "source": "slug",
+      "setCode": "ESS"
+    },
+    "ess": {
+      "setName": "ex special set",
+      "categoryId": 623,
+      "categoryName": "Pokemon Japanese ex Special Set",
+      "source": "slug",
+      "setCode": "ess"
+    },
+    "ESD": {
+      "setName": "ex starter decks",
+      "categoryId": 624,
+      "categoryName": "Pokemon Japanese ex Starter Decks",
+      "source": "slug",
+      "setCode": "ESD"
+    },
+    "esd": {
+      "setName": "ex starter decks",
+      "categoryId": 624,
+      "categoryName": "Pokemon Japanese ex Starter Decks",
+      "source": "slug",
+      "setCode": "esd"
+    },
+    "ESSSL": {
+      "setName": "ex starter set sprigatito lucario",
+      "categoryId": 701,
+      "categoryName": "Pokemon Japanese ex Starter Set Sprigatito & Lucario",
+      "source": "slug",
+      "setCode": "ESSSL"
+    },
+    "esssl": {
+      "setName": "ex starter set sprigatito lucario",
+      "categoryId": 701,
+      "categoryName": "Pokemon Japanese ex Starter Set Sprigatito & Lucario",
+      "source": "slug",
+      "setCode": "esssl"
+    },
+    "EEP": {
+      "setName": "expedition expansion pack",
+      "categoryId": 122,
+      "categoryName": "Pokemon Japanese Expedition Expansion Pack",
+      "source": "slug",
+      "setCode": "EEP"
+    },
+    "eep": {
+      "setName": "expedition expansion pack",
+      "categoryId": 122,
+      "categoryName": "Pokemon Japanese Expedition Expansion Pack",
+      "source": "slug",
+      "setCode": "eep"
+    },
+    "ERB": {
+      "setName": "extra regulation box",
+      "categoryId": 464,
+      "categoryName": "Pokemon Japanese Extra Regulation Box",
+      "source": "slug",
+      "setCode": "ERB"
+    },
+    "erb": {
+      "setName": "extra regulation box",
+      "categoryId": 464,
+      "categoryName": "Pokemon Japanese Extra Regulation Box",
+      "source": "slug",
+      "setCode": "erb"
+    },
+    "FSD": {
+      "setName": "flygon starter deck",
+      "categoryId": 471,
+      "categoryName": "Pokemon Japanese Flygon Starter Deck",
+      "source": "slug",
+      "setCode": "FSD"
+    },
+    "fsd": {
+      "setName": "flygon starter deck",
+      "categoryId": 471,
+      "categoryName": "Pokemon Japanese Flygon Starter Deck",
+      "source": "slug",
+      "setCode": "fsd"
+    },
+    "FMESD": {
+      "setName": "future miraidon ex starter deck",
+      "categoryId": 475,
+      "categoryName": "Pokemon Japanese Future Miraidon ex Starter Deck",
+      "source": "slug",
+      "setCode": "FMESD"
+    },
+    "fmesd": {
+      "setName": "future miraidon ex starter deck",
+      "categoryId": 475,
+      "categoryName": "Pokemon Japanese Future Miraidon ex Starter Deck",
+      "source": "slug",
+      "setCode": "fmesd"
+    },
+    "GHD": {
+      "setName": "garchomp half deck",
+      "categoryId": 480,
+      "categoryName": "Pokemon Japanese Garchomp Half Deck",
+      "source": "slug",
+      "setCode": "GHD"
+    },
+    "ghd": {
+      "setName": "garchomp half deck",
+      "categoryId": 480,
+      "categoryName": "Pokemon Japanese Garchomp Half Deck",
+      "source": "slug",
+      "setCode": "ghd"
+    },
+    "GSHD": {
+      "setName": "garchomp sp half deck",
+      "categoryId": 481,
+      "categoryName": "Pokemon Japanese Garchomp SP Half Deck",
+      "source": "slug",
+      "setCode": "GSHD"
+    },
+    "gshd": {
+      "setName": "garchomp sp half deck",
+      "categoryId": 481,
+      "categoryName": "Pokemon Japanese Garchomp SP Half Deck",
+      "source": "slug",
+      "setCode": "gshd"
+    },
+    "GVHC": {
+      "setName": "gengar vmax high class",
+      "categoryId": 128,
+      "categoryName": "Pokemon Japanese Gengar Vmax High-Class",
+      "source": "slug",
+      "setCode": "GVHC"
+    },
+    "gvhc": {
+      "setName": "gengar vmax high class",
+      "categoryId": 128,
+      "categoryName": "Pokemon Japanese Gengar Vmax High-Class",
+      "source": "slug",
+      "setCode": "gvhc"
+    },
+    "GCSD": {
+      "setName": "groudon constructed starter deck",
+      "categoryId": 484,
+      "categoryName": "Pokemon Japanese Groudon Constructed Starter Deck",
+      "source": "slug",
+      "setCode": "GCSD"
+    },
+    "gcsd": {
+      "setName": "groudon constructed starter deck",
+      "categoryId": 484,
+      "categoryName": "Pokemon Japanese Groudon Constructed Starter Deck",
+      "source": "slug",
+      "setCode": "gcsd"
+    },
+    "GSD": {
+      "setName": "gx starter decks",
+      "categoryId": 476,
+      "categoryName": "Pokemon Japanese GX Starter Decks",
+      "source": "slug",
+      "setCode": "GSD"
+    },
+    "gsd": {
+      "setName": "gx starter decks",
+      "categoryId": 476,
+      "categoryName": "Pokemon Japanese GX Starter Decks",
+      "source": "slug",
+      "setCode": "gsd"
+    },
+    "HWA": {
+      "setName": "heat wave arena",
+      "categoryId": 133,
+      "categoryName": "Pokemon Japanese Heat Wave Arena",
+      "source": "slug",
+      "setCode": "HWA"
+    },
+    "hwa": {
+      "setName": "heat wave arena",
+      "categoryId": 133,
+      "categoryName": "Pokemon Japanese Heat Wave Arena",
+      "source": "slug",
+      "setCode": "hwa"
+    },
+    "HHD": {
+      "setName": "heatran half deck",
+      "categoryId": 488,
+      "categoryName": "Pokemon Japanese Heatran Half Deck",
+      "source": "slug",
+      "setCode": "HHD"
+    },
+    "hhd": {
+      "setName": "heatran half deck",
+      "categoryId": 488,
+      "categoryName": "Pokemon Japanese Heatran Half Deck",
+      "source": "slug",
+      "setCode": "hhd"
+    },
+    "HMCD": {
+      "setName": "hyper metal chain deck",
+      "categoryId": 489,
+      "categoryName": "Pokemon Japanese Hyper Metal Chain Deck",
+      "source": "slug",
+      "setCode": "HMCD"
+    },
+    "hmcd": {
+      "setName": "hyper metal chain deck",
+      "categoryId": 489,
+      "categoryName": "Pokemon Japanese Hyper Metal Chain Deck",
+      "source": "slug",
+      "setCode": "hmcd"
+    },
+    "IR": {
+      "setName": "ichigeki rengeki",
+      "categoryId": 695,
+      "categoryName": "Pokemon Japanese Ichigeki Rengeki",
+      "source": "slug",
+      "setCode": "IR"
+    },
+    "ir": {
+      "setName": "ichigeki rengeki",
+      "categoryId": 695,
+      "categoryName": "Pokemon Japanese Ichigeki Rengeki",
+      "source": "slug",
+      "setCode": "ir"
+    },
+    "IHD": {
+      "setName": "infernape half deck",
+      "categoryId": 490,
+      "categoryName": "Pokemon Japanese Infernape Half Deck",
+      "source": "slug",
+      "setCode": "IHD"
+    },
+    "ihd": {
+      "setName": "infernape half deck",
+      "categoryId": 490,
+      "categoryName": "Pokemon Japanese Infernape Half Deck",
+      "source": "slug",
+      "setCode": "ihd"
+    },
+    "IVHC": {
+      "setName": "inteleon vmax high class",
+      "categoryId": 492,
+      "categoryName": "Pokemon Japanese Inteleon Vmax High-Class",
+      "source": "slug",
+      "setCode": "IVHC"
+    },
+    "ivhc": {
+      "setName": "inteleon vmax high class",
+      "categoryId": 492,
+      "categoryName": "Pokemon Japanese Inteleon Vmax High-Class",
+      "source": "slug",
+      "setCode": "ivhc"
+    },
+    "IPN": {
+      "setName": "intro pack neo",
+      "categoryId": 493,
+      "categoryName": "Pokemon Japanese Intro Pack Neo",
+      "source": "slug",
+      "setCode": "IPN"
+    },
+    "ipn": {
+      "setName": "intro pack neo",
+      "categoryId": 493,
+      "categoryName": "Pokemon Japanese Intro Pack Neo",
+      "source": "slug",
+      "setCode": "ipn"
+    },
+    "KBSD": {
+      "setName": "keldeo battle strength deck",
+      "categoryId": 696,
+      "categoryName": "Pokemon Japanese Keldeo Battle Strength Deck",
+      "source": "slug",
+      "setCode": "KBSD"
+    },
+    "kbsd": {
+      "setName": "keldeo battle strength deck",
+      "categoryId": 696,
+      "categoryName": "Pokemon Japanese Keldeo Battle Strength Deck",
+      "source": "slug",
+      "setCode": "kbsd"
+    },
+    "LVMED": {
+      "setName": "leafeon vs metagross expert deck",
+      "categoryId": 497,
+      "categoryName": "Pokemon Japanese Leafeon VS Metagross Expert Deck",
+      "source": "slug",
+      "setCode": "LVMED"
+    },
+    "lvmed": {
+      "setName": "leafeon vs metagross expert deck",
+      "categoryId": 497,
+      "categoryName": "Pokemon Japanese Leafeon VS Metagross Expert Deck",
+      "source": "slug",
+      "setCode": "lvmed"
+    },
+    "LV": {
+      "setName": "limited vs",
+      "categoryId": 499,
+      "categoryName": "Pokemon Japanese Limited VS",
+      "source": "slug",
+      "setCode": "LV"
+    },
+    "lv": {
+      "setName": "limited vs",
+      "categoryId": 499,
+      "categoryName": "Pokemon Japanese Limited VS",
+      "source": "slug",
+      "setCode": "lv"
+    },
+    "LS": {
+      "setName": "lucario starter",
+      "categoryId": 501,
+      "categoryName": "Pokemon Japanese Lucario Starter",
+      "source": "slug",
+      "setCode": "LS"
+    },
+    "ls": {
+      "setName": "lucario starter",
+      "categoryId": 501,
+      "categoryName": "Pokemon Japanese Lucario Starter",
+      "source": "slug",
+      "setCode": "ls"
+    },
+    "CEMBD": {
+      "setName": "m charizard ex mega battle deck",
+      "categoryId": 143,
+      "categoryName": "Pokemon Japanese M Charizard-EX Mega Battle Deck",
+      "source": "slug",
+      "setCode": "CEMBD"
+    },
+    "cembd": {
+      "setName": "m charizard ex mega battle deck",
+      "categoryId": 143,
+      "categoryName": "Pokemon Japanese M Charizard-EX Mega Battle Deck",
+      "source": "slug",
+      "setCode": "cembd"
+    },
+    "MDBB": {
+      "setName": "m master deck build box",
+      "categoryId": 502,
+      "categoryName": "Pokemon Japanese M Master Deck Build Box",
+      "source": "slug",
+      "setCode": "MDBB"
+    },
+    "mdbb": {
+      "setName": "m master deck build box",
+      "categoryId": 502,
+      "categoryName": "Pokemon Japanese M Master Deck Build Box",
+      "source": "slug",
+      "setCode": "mdbb"
+    },
+    "MDBBS": {
+      "setName": "m master deck build box speed",
+      "categoryId": 503,
+      "categoryName": "Pokemon Japanese M Master Deck Build Box Speed",
+      "source": "slug",
+      "setCode": "MDBBS"
+    },
+    "mdbbs": {
+      "setName": "m master deck build box speed",
+      "categoryId": 503,
+      "categoryName": "Pokemon Japanese M Master Deck Build Box Speed",
+      "source": "slug",
+      "setCode": "mdbbs"
+    },
+    "MDK": {
+      "setName": "magma deck kit",
+      "categoryId": 504,
+      "categoryName": "Pokemon Japanese Magma Deck Kit",
+      "source": "slug",
+      "setCode": "MDK"
+    },
+    "mdk": {
+      "setName": "magma deck kit",
+      "categoryId": 504,
+      "categoryName": "Pokemon Japanese Magma Deck Kit",
+      "source": "slug",
+      "setCode": "mdk"
+    },
+    "MDBBE": {
+      "setName": "master deck build box ex",
+      "categoryId": 507,
+      "categoryName": "Pokemon Japanese Master Deck Build Box Ex",
+      "source": "slug",
+      "setCode": "MDBBE"
+    },
+    "mdbbe": {
+      "setName": "master deck build box ex",
+      "categoryId": 507,
+      "categoryName": "Pokemon Japanese Master Deck Build Box Ex",
+      "source": "slug",
+      "setCode": "mdbbe"
+    },
+    "MK": {
+      "setName": "master kit",
+      "categoryId": 508,
+      "categoryName": "Pokemon Japanese Master Kit",
+      "source": "slug",
+      "setCode": "MK"
+    },
+    "mk": {
+      "setName": "master kit",
+      "categoryId": 508,
+      "categoryName": "Pokemon Japanese Master Kit",
+      "source": "slug",
+      "setCode": "mk"
+    },
+    "MF": {
+      "setName": "matchless fighter",
+      "categoryId": 145,
+      "categoryName": "Pokemon Japanese Matchless Fighter",
+      "source": "slug",
+      "setCode": "MF"
+    },
+    "mf": {
+      "setName": "matchless fighter",
+      "categoryId": 145,
+      "categoryName": "Pokemon Japanese Matchless Fighter",
+      "source": "slug",
+      "setCode": "mf"
+    },
+    "MSDDE": {
+      "setName": "mega starter deck diancie ex",
+      "categoryId": 147,
+      "categoryName": "Pokemon Japanese Mega Starter Deck Diancie Ex",
+      "source": "slug",
+      "setCode": "MSDDE"
+    },
+    "msdde": {
+      "setName": "mega starter deck diancie ex",
+      "categoryId": 147,
+      "categoryName": "Pokemon Japanese Mega Starter Deck Diancie Ex",
+      "source": "slug",
+      "setCode": "msdde"
+    },
+    "MSDGE": {
+      "setName": "mega starter deck gengar ex",
+      "categoryId": 148,
+      "categoryName": "Pokemon Japanese Mega Starter Deck Gengar Ex",
+      "source": "slug",
+      "setCode": "MSDGE"
+    },
+    "msdge": {
+      "setName": "mega starter deck gengar ex",
+      "categoryId": 148,
+      "categoryName": "Pokemon Japanese Mega Starter Deck Gengar Ex",
+      "source": "slug",
+      "setCode": "msdge"
+    },
+    "MSD": {
+      "setName": "mudkip starter deck",
+      "categoryId": 523,
+      "categoryName": "Pokemon Japanese Mudkip Starter Deck",
+      "source": "slug",
+      "setCode": "MSD"
+    },
+    "msd": {
+      "setName": "mudkip starter deck",
+      "categoryId": 523,
+      "categoryName": "Pokemon Japanese Mudkip Starter Deck",
+      "source": "slug",
+      "setCode": "msd"
+    },
+    "MP": {
+      "setName": "meiji promo",
+      "categoryId": 512,
+      "categoryName": "Pokemon Japanese Meiji Promo",
+      "source": "slug",
+      "setCode": "MP"
+    },
+    "mp": {
+      "setName": "meiji promo",
+      "categoryId": 512,
+      "categoryName": "Pokemon Japanese Meiji Promo",
+      "source": "slug",
+      "setCode": "mp"
+    },
+    "MCSD": {
+      "setName": "metagross constructed starter deck",
+      "categoryId": 514,
+      "categoryName": "Pokemon Japanese Metagross Constructed Starter Deck",
+      "source": "slug",
+      "setCode": "MCSD"
+    },
+    "mcsd": {
+      "setName": "metagross constructed starter deck",
+      "categoryId": 514,
+      "categoryName": "Pokemon Japanese Metagross Constructed Starter Deck",
+      "source": "slug",
+      "setCode": "mcsd"
+    },
+    "MESD": {
+      "setName": "mewtwo ex starter deck",
+      "categoryId": 515,
+      "categoryName": "Pokemon Japanese Mewtwo ex Starter Deck",
+      "source": "slug",
+      "setCode": "MESD"
+    },
+    "mesd": {
+      "setName": "mewtwo ex starter deck",
+      "categoryId": 515,
+      "categoryName": "Pokemon Japanese Mewtwo ex Starter Deck",
+      "source": "slug",
+      "setCode": "mesd"
+    },
+    "MVG": {
+      "setName": "mewtwo vs genesect",
+      "categoryId": 516,
+      "categoryName": "Pokemon Japanese Mewtwo vs Genesect",
+      "source": "slug",
+      "setCode": "MVG"
+    },
+    "mvg": {
+      "setName": "mewtwo vs genesect",
+      "categoryId": 516,
+      "categoryName": "Pokemon Japanese Mewtwo vs Genesect",
+      "source": "slug",
+      "setCode": "mvg"
+    },
+    "MMCSD": {
+      "setName": "mirage s mew constructed starter deck",
+      "categoryId": 520,
+      "categoryName": "Pokemon Japanese Mirage's Mew Constructed Starter Deck",
+      "source": "slug",
+      "setCode": "MMCSD"
+    },
+    "mmcsd": {
+      "setName": "mirage s mew constructed starter deck",
+      "categoryId": 520,
+      "categoryName": "Pokemon Japanese Mirage's Mew Constructed Starter Deck",
+      "source": "slug",
+      "setCode": "mmcsd"
+    },
+    "MCR": {
+      "setName": "movie commemoration random",
+      "categoryId": 522,
+      "categoryName": "Pokemon Japanese Movie Commemoration Random",
+      "source": "slug",
+      "setCode": "MCR"
+    },
+    "mcr": {
+      "setName": "movie commemoration random",
+      "categoryId": 522,
+      "categoryName": "Pokemon Japanese Movie Commemoration Random",
+      "source": "slug",
+      "setCode": "mcr"
+    },
+    "NB": {
+      "setName": "national beginning",
+      "categoryId": 524,
+      "categoryName": "Pokemon Japanese National Beginning",
+      "source": "slug",
+      "setCode": "NB"
+    },
+    "nb": {
+      "setName": "national beginning",
+      "categoryId": 524,
+      "categoryName": "Pokemon Japanese National Beginning",
+      "source": "slug",
+      "setCode": "nb"
+    },
+    "NCG": {
+      "setName": "navi city gym",
+      "categoryId": 525,
+      "categoryName": "Pokemon Japanese Navi City Gym",
+      "source": "slug",
+      "setCode": "NCG"
+    },
+    "ncg": {
+      "setName": "navi city gym",
+      "categoryId": 525,
+      "categoryName": "Pokemon Japanese Navi City Gym",
+      "source": "slug",
+      "setCode": "ncg"
+    },
+    "OM": {
+      "setName": "old maid",
+      "categoryId": 156,
+      "categoryName": "Pokemon Japanese Old Maid",
+      "source": "slug",
+      "setCode": "OM"
+    },
+    "om": {
+      "setName": "old maid",
+      "categoryId": 156,
+      "categoryName": "Pokemon Japanese Old Maid",
+      "source": "slug",
+      "setCode": "om"
+    },
+    "PLCD": {
+      "setName": "palkia lv x constructed deck",
+      "categoryId": 527,
+      "categoryName": "Pokemon Japanese Palkia LV.X Constructed Deck",
+      "source": "slug",
+      "setCode": "PLCD"
+    },
+    "plcd": {
+      "setName": "palkia lv x constructed deck",
+      "categoryId": 527,
+      "categoryName": "Pokemon Japanese Palkia LV.X Constructed Deck",
+      "source": "slug",
+      "setCode": "plcd"
+    },
+    "PHD": {
+      "setName": "pikachu half deck",
+      "categoryId": 528,
+      "categoryName": "Pokemon Japanese Pikachu Half Deck",
+      "source": "slug",
+      "setCode": "PHD"
+    },
+    "phd": {
+      "setName": "pikachu half deck",
+      "categoryId": 528,
+      "categoryName": "Pokemon Japanese Pikachu Half Deck",
+      "source": "slug",
+      "setCode": "phd"
+    },
+    "PD": {
+      "setName": "pikachu v deck",
+      "categoryId": 529,
+      "categoryName": "Pokemon Japanese Pikachu V Deck",
+      "source": "slug",
+      "setCode": "PD"
+    },
+    "pd": {
+      "setName": "pikachu v deck",
+      "categoryId": 529,
+      "categoryName": "Pokemon Japanese Pikachu V Deck",
+      "source": "slug",
+      "setCode": "pd"
+    },
+    "PC": {
+      "setName": "player s club",
+      "categoryId": 160,
+      "categoryName": "Pokemon Japanese Player's Club",
+      "source": "slug",
+      "setCode": "PC"
+    },
+    "pc": {
+      "setName": "player s club",
+      "categoryId": 160,
+      "categoryName": "Pokemon Japanese Player's Club",
+      "source": "slug",
+      "setCode": "pc"
+    },
+    "PF": {
+      "setName": "pokepark forest",
+      "categoryId": 531,
+      "categoryName": "Pokemon Japanese PokePark Forest",
+      "source": "slug",
+      "setCode": "PF"
+    },
+    "pf": {
+      "setName": "pokepark forest",
+      "categoryId": 531,
+      "categoryName": "Pokemon Japanese PokePark Forest",
+      "source": "slug",
+      "setCode": "pf"
+    },
+    "RI": {
+      "setName": "rainbow island",
+      "categoryId": 534,
+      "categoryName": "Pokemon Japanese Rainbow Island",
+      "source": "slug",
+      "setCode": "RI"
+    },
+    "ri": {
+      "setName": "rainbow island",
+      "categoryId": 534,
+      "categoryName": "Pokemon Japanese Rainbow Island",
+      "source": "slug",
+      "setCode": "ri"
+    },
+    "RCSD": {
+      "setName": "rayquaza constructed starter deck",
+      "categoryId": 536,
+      "categoryName": "Pokemon Japanese Rayquaza Constructed Starter Deck",
+      "source": "slug",
+      "setCode": "RCSD"
+    },
+    "rcsd": {
+      "setName": "rayquaza constructed starter deck",
+      "categoryId": 536,
+      "categoryName": "Pokemon Japanese Rayquaza Constructed Starter Deck",
+      "source": "slug",
+      "setCode": "rcsd"
+    },
+    "REMBD": {
+      "setName": "rayquaza ex mega battle deck",
+      "categoryId": 537,
+      "categoryName": "Pokemon Japanese Rayquaza-EX Mega Battle Deck",
+      "source": "slug",
+      "setCode": "REMBD"
+    },
+    "rembd": {
+      "setName": "rayquaza ex mega battle deck",
+      "categoryId": 537,
+      "categoryName": "Pokemon Japanese Rayquaza-EX Mega Battle Deck",
+      "source": "slug",
+      "setCode": "rembd"
+    },
+    "RGGS": {
+      "setName": "red green gift set",
+      "categoryId": 539,
+      "categoryName": "Pokemon Japanese Red & Green Gift Set",
+      "source": "slug",
+      "setCode": "RGGS"
+    },
+    "rggs": {
+      "setName": "red green gift set",
+      "categoryId": 539,
+      "categoryName": "Pokemon Japanese Red & Green Gift Set",
+      "source": "slug",
+      "setCode": "rggs"
+    },
+    "RHD": {
+      "setName": "regigigas half deck",
+      "categoryId": 542,
+      "categoryName": "Pokemon Japanese Regigigas Half Deck",
+      "source": "slug",
+      "setCode": "RHD"
+    },
+    "rhd": {
+      "setName": "regigigas half deck",
+      "categoryId": 542,
+      "categoryName": "Pokemon Japanese Regigigas Half Deck",
+      "source": "slug",
+      "setCode": "rhd"
+    },
+    "RLC": {
+      "setName": "regigigas lv x collection",
+      "categoryId": 543,
+      "categoryName": "Pokemon Japanese Regigigas LV.X Collection",
+      "source": "slug",
+      "setCode": "RLC"
+    },
+    "rlc": {
+      "setName": "regigigas lv x collection",
+      "categoryId": 543,
+      "categoryName": "Pokemon Japanese Regigigas LV.X Collection",
+      "source": "slug",
+      "setCode": "rlc"
+    },
+    "RFPD": {
+      "setName": "rockruff full power deck",
+      "categoryId": 545,
+      "categoryName": "Pokemon Japanese Rockruff Full Power Deck",
+      "source": "slug",
+      "setCode": "RFPD"
+    },
+    "rfpd": {
+      "setName": "rockruff full power deck",
+      "categoryId": 545,
+      "categoryName": "Pokemon Japanese Rockruff Full Power Deck",
+      "source": "slug",
+      "setCode": "rfpd"
+    },
+    "ROTBFB": {
+      "setName": "rule of the black flame build",
+      "categoryId": 546,
+      "categoryName": "Pokemon Japanese Rule of the Black Flame Build",
+      "source": "slug",
+      "setCode": "ROTBFB"
+    },
+    "rotbfb": {
+      "setName": "rule of the black flame build",
+      "categoryId": 546,
+      "categoryName": "Pokemon Japanese Rule of the Black Flame Build",
+      "source": "slug",
+      "setCode": "rotbfb"
+    },
+    "SSD": {
+      "setName": "shockwave starter deck",
+      "categoryId": 558,
+      "categoryName": "Pokemon Japanese Shockwave Starter Deck",
+      "source": "slug",
+      "setCode": "SSD"
+    },
+    "ssd": {
+      "setName": "shockwave starter deck",
+      "categoryId": 558,
+      "categoryName": "Pokemon Japanese Shockwave Starter Deck",
+      "source": "slug",
+      "setCode": "ssd"
+    },
+    "SVSS": {
+      "setName": "scarlet violet starter set",
+      "categoryId": 550,
+      "categoryName": "Pokemon Japanese Scarlet & Violet Starter Set",
+      "source": "slug",
+      "setCode": "SVSS"
+    },
+    "svss": {
+      "setName": "scarlet violet starter set",
+      "categoryId": 550,
+      "categoryName": "Pokemon Japanese Scarlet & Violet Starter Set",
+      "source": "slug",
+      "setCode": "svss"
+    },
+    "SS": {
+      "setName": "sealdass series 4",
+      "categoryId": 554,
+      "categoryName": "Pokemon Japanese Sealdass Series 4",
+      "source": "slug",
+      "setCode": "SS"
+    },
+    "ss": {
+      "setName": "sealdass series 4",
+      "categoryId": 554,
+      "categoryName": "Pokemon Japanese Sealdass Series 4",
+      "source": "slug",
+      "setCode": "ss"
+    },
+    "SST": {
+      "setName": "sealdass stitch touch",
+      "categoryId": 555,
+      "categoryName": "Pokemon Japanese Sealdass Stitch Touch",
+      "source": "slug",
+      "setCode": "SST"
+    },
+    "sst": {
+      "setName": "sealdass stitch touch",
+      "categoryId": 555,
+      "categoryName": "Pokemon Japanese Sealdass Stitch Touch",
+      "source": "slug",
+      "setCode": "sst"
+    },
+    "SDK": {
+      "setName": "silver deck kit",
+      "categoryId": 559,
+      "categoryName": "Pokemon Japanese Silver Deck Kit",
+      "source": "slug",
+      "setCode": "SDK"
+    },
+    "sdk": {
+      "setName": "silver deck kit",
+      "categoryId": 559,
+      "categoryName": "Pokemon Japanese Silver Deck Kit",
+      "source": "slug",
+      "setCode": "sdk"
+    },
+    "SGLGLS": {
+      "setName": "solgaleo gx lunala gx legendary set",
+      "categoryId": 564,
+      "categoryName": "Pokemon Japanese Solgaleo-GX & Lunala-GX Legendary Set",
+      "source": "slug",
+      "setCode": "SGLGLS"
+    },
+    "sglgls": {
+      "setName": "solgaleo gx lunala gx legendary set",
+      "categoryId": 564,
+      "categoryName": "Pokemon Japanese Solgaleo-GX & Lunala-GX Legendary Set",
+      "source": "slug",
+      "setCode": "sglgls"
+    },
+    "SI": {
+      "setName": "southern island",
+      "categoryId": 180,
+      "categoryName": "Pokemon Japanese Southern Island",
+      "source": "slug",
+      "setCode": "SI"
+    },
+    "si": {
+      "setName": "southern island",
+      "categoryId": 180,
+      "categoryName": "Pokemon Japanese Southern Island",
+      "source": "slug",
+      "setCode": "si"
+    },
+    "SD1": {
+      "setName": "start deck 100",
+      "categoryId": 185,
+      "categoryName": "Pokemon Japanese Start Deck 100",
+      "source": "slug",
+      "setCode": "SD1"
+    },
+    "sd1": {
+      "setName": "start deck 100",
+      "categoryId": 185,
+      "categoryName": "Pokemon Japanese Start Deck 100",
+      "source": "slug",
+      "setCode": "sd1"
+    },
+    "SD1BC": {
+      "setName": "start deck 100 battle collection",
+      "categoryId": 568,
+      "categoryName": "Pokemon Japanese Start Deck 100 Battle Collection",
+      "source": "slug",
+      "setCode": "SD1BC"
+    },
+    "sd1bc": {
+      "setName": "start deck 100 battle collection",
+      "categoryId": 568,
+      "categoryName": "Pokemon Japanese Start Deck 100 Battle Collection",
+      "source": "slug",
+      "setCode": "sd1bc"
+    },
+    "SD1BCC": {
+      "setName": "start deck 100 battle collection corociao",
+      "categoryId": 697,
+      "categoryName": "Pokemon Japanese Start Deck 100 Battle Collection CoroCiao",
+      "source": "slug",
+      "setCode": "SD1BCC"
+    },
+    "sd1bcc": {
+      "setName": "start deck 100 battle collection corociao",
+      "categoryId": 697,
+      "categoryName": "Pokemon Japanese Start Deck 100 Battle Collection CoroCiao",
+      "source": "slug",
+      "setCode": "sd1bcc"
+    },
+    "SD1C": {
+      "setName": "start deck 100 corocoro",
+      "categoryId": 569,
+      "categoryName": "Pokemon Japanese Start Deck 100 Corocoro",
+      "source": "slug",
+      "setCode": "SD1C"
+    },
+    "sd1c": {
+      "setName": "start deck 100 corocoro",
+      "categoryId": 569,
+      "categoryName": "Pokemon Japanese Start Deck 100 Corocoro",
+      "source": "slug",
+      "setCode": "sd1c"
+    },
+    "SDG": {
+      "setName": "starter deck generations",
+      "categoryId": 570,
+      "categoryName": "Pokemon Japanese Starter Deck Generations",
+      "source": "slug",
+      "setCode": "SDG"
+    },
+    "sdg": {
+      "setName": "starter deck generations",
+      "categoryId": 570,
+      "categoryName": "Pokemon Japanese Starter Deck Generations",
+      "source": "slug",
+      "setCode": "sdg"
+    },
+    "SP": {
+      "setName": "starter pack",
+      "categoryId": 571,
+      "categoryName": "Pokemon Japanese Starter Pack",
+      "source": "slug",
+      "setCode": "SP"
+    },
+    "sp": {
+      "setName": "starter pack",
+      "categoryId": 571,
+      "categoryName": "Pokemon Japanese Starter Pack",
+      "source": "slug",
+      "setCode": "sp"
+    },
+    "SSS": {
+      "setName": "v starter set sa",
+      "categoryId": 605,
+      "categoryName": "Pokemon Japanese V Starter Set sA",
+      "source": "slug",
+      "setCode": "SSS"
+    },
+    "sss": {
+      "setName": "v starter set sa",
+      "categoryId": 605,
+      "categoryName": "Pokemon Japanese V Starter Set sA",
+      "source": "slug",
+      "setCode": "sss"
+    },
+    "SCSD": {
+      "setName": "steelix constructed starter deck",
+      "categoryId": 574,
+      "categoryName": "Pokemon Japanese Steelix Constructed Starter Deck",
+      "source": "slug",
+      "setCode": "SCSD"
+    },
+    "scsd": {
+      "setName": "steelix constructed starter deck",
+      "categoryId": 574,
+      "categoryName": "Pokemon Japanese Steelix Constructed Starter Deck",
+      "source": "slug",
+      "setCode": "scsd"
+    },
+    "SMDBB": {
+      "setName": "stellar miracle deck build box",
+      "categoryId": 575,
+      "categoryName": "Pokemon Japanese Stellar Miracle Deck Build Box",
+      "source": "slug",
+      "setCode": "SMDBB"
+    },
+    "smdbb": {
+      "setName": "stellar miracle deck build box",
+      "categoryId": 575,
+      "categoryName": "Pokemon Japanese Stellar Miracle Deck Build Box",
+      "source": "slug",
+      "setCode": "smdbb"
+    },
+    "STSSCE": {
+      "setName": "stellar tera starter set ceruledge ex",
+      "categoryId": 576,
+      "categoryName": "Pokemon Japanese Stellar Tera Starter Set Ceruledge ex",
+      "source": "slug",
+      "setCode": "STSSCE"
+    },
+    "stssce": {
+      "setName": "stellar tera starter set ceruledge ex",
+      "categoryId": 576,
+      "categoryName": "Pokemon Japanese Stellar Tera Starter Set Ceruledge ex",
+      "source": "slug",
+      "setCode": "stssce"
+    },
+    "STSSSE": {
+      "setName": "stellar tera starter set sylveon ex",
+      "categoryId": 577,
+      "categoryName": "Pokemon Japanese Stellar Tera Starter Set Sylveon ex",
+      "source": "slug",
+      "setCode": "STSSSE"
+    },
+    "stssse": {
+      "setName": "stellar tera starter set sylveon ex",
+      "categoryId": 577,
+      "categoryName": "Pokemon Japanese Stellar Tera Starter Set Sylveon ex",
+      "source": "slug",
+      "setCode": "stssse"
+    },
+    "SEPSM": {
+      "setName": "strength expansion pack sun moon",
+      "categoryId": 578,
+      "categoryName": "Pokemon Japanese Strength Expansion Pack Sun & Moon",
+      "source": "slug",
+      "setCode": "SEPSM"
+    },
+    "sepsm": {
+      "setName": "strength expansion pack sun moon",
+      "categoryId": 578,
+      "categoryName": "Pokemon Japanese Strength Expansion Pack Sun & Moon",
+      "source": "slug",
+      "setCode": "sepsm"
+    },
+    "SMNF": {
+      "setName": "sun moon new friends",
+      "categoryId": 580,
+      "categoryName": "Pokemon Japanese Sun & Moon New Friends",
+      "source": "slug",
+      "setCode": "SMNF"
+    },
+    "smnf": {
+      "setName": "sun moon new friends",
+      "categoryId": 580,
+      "categoryName": "Pokemon Japanese Sun & Moon New Friends",
+      "source": "slug",
+      "setCode": "smnf"
+    },
+    "SL": {
+      "setName": "super legend",
+      "categoryId": 581,
+      "categoryName": "Pokemon Japanese Super Legend",
+      "source": "slug",
+      "setCode": "SL"
+    },
+    "sl": {
+      "setName": "super legend",
+      "categoryId": 581,
+      "categoryName": "Pokemon Japanese Super Legend",
+      "source": "slug",
+      "setCode": "sl"
+    },
+    "TTGP": {
+      "setName": "tag team gx premium",
+      "categoryId": 585,
+      "categoryName": "Pokemon Japanese Tag Team GX Premium",
+      "source": "slug",
+      "setCode": "TTGP"
+    },
+    "ttgp": {
+      "setName": "tag team gx premium",
+      "categoryId": 585,
+      "categoryName": "Pokemon Japanese Tag Team GX Premium",
+      "source": "slug",
+      "setCode": "ttgp"
+    },
+    "TTSS": {
+      "setName": "tag team starter set",
+      "categoryId": 190,
+      "categoryName": "Pokemon Japanese Tag Team Starter Set",
+      "source": "slug",
+      "setCode": "TTSS"
+    },
+    "ttss": {
+      "setName": "tag team starter set",
+      "categoryId": 190,
+      "categoryName": "Pokemon Japanese Tag Team Starter Set",
+      "source": "slug",
+      "setCode": "ttss"
+    },
+    "TPBGS": {
+      "setName": "team plasma battle gift set",
+      "categoryId": 587,
+      "categoryName": "Pokemon Japanese Team Plasma Battle Gift Set",
+      "source": "slug",
+      "setCode": "TPBGS"
+    },
+    "tpbgs": {
+      "setName": "team plasma battle gift set",
+      "categoryId": 587,
+      "categoryName": "Pokemon Japanese Team Plasma Battle Gift Set",
+      "source": "slug",
+      "setCode": "tpbgs"
+    },
+    "TSS": {
+      "setName": "thunder starter set",
+      "categoryId": 590,
+      "categoryName": "Pokemon Japanese Thunder Starter Set",
+      "source": "slug",
+      "setCode": "TSS"
+    },
+    "tss": {
+      "setName": "thunder starter set",
+      "categoryId": 590,
+      "categoryName": "Pokemon Japanese Thunder Starter Set",
+      "source": "slug",
+      "setCode": "tss"
+    },
+    "TSD": {
+      "setName": "typhlosion starter deck",
+      "categoryId": 597,
+      "categoryName": "Pokemon Japanese Typhlosion Starter Deck",
+      "source": "slug",
+      "setCode": "TSD"
+    },
+    "tsd": {
+      "setName": "typhlosion starter deck",
+      "categoryId": 597,
+      "categoryName": "Pokemon Japanese Typhlosion Starter Deck",
+      "source": "slug",
+      "setCode": "tsd"
+    },
+    "TM": {
+      "setName": "trainers magazine",
+      "categoryId": 595,
+      "categoryName": "Pokemon Japanese Trainers Magazine",
+      "source": "slug",
+      "setCode": "TM"
+    },
+    "tm": {
+      "setName": "trainers magazine",
+      "categoryId": 595,
+      "categoryName": "Pokemon Japanese Trainers Magazine",
+      "source": "slug",
+      "setCode": "tm"
+    },
+    "TI": {
+      "setName": "tropical island",
+      "categoryId": 596,
+      "categoryName": "Pokemon Japanese Tropical Island",
+      "source": "slug",
+      "setCode": "TI"
+    },
+    "ti": {
+      "setName": "tropical island",
+      "categoryId": 596,
+      "categoryName": "Pokemon Japanese Tropical Island",
+      "source": "slug",
+      "setCode": "ti"
+    },
+    "TCSD": {
+      "setName": "tyranitar constructed starter deck",
+      "categoryId": 598,
+      "categoryName": "Pokemon Japanese Tyranitar Constructed Starter Deck",
+      "source": "slug",
+      "setCode": "TCSD"
+    },
+    "tcsd": {
+      "setName": "tyranitar constructed starter deck",
+      "categoryId": 598,
+      "categoryName": "Pokemon Japanese Tyranitar Constructed Starter Deck",
+      "source": "slug",
+      "setCode": "tcsd"
+    },
+    "SDS": {
+      "setName": "v starter deck sd",
+      "categoryId": 604,
+      "categoryName": "Pokemon Japanese V Starter Deck SD",
+      "source": "slug",
+      "setCode": "SDS"
+    },
+    "sds": {
+      "setName": "v starter deck sd",
+      "categoryId": 604,
+      "categoryName": "Pokemon Japanese V Starter Deck SD",
+      "source": "slug",
+      "setCode": "sds"
+    },
+    "USS": {
+      "setName": "v union special set",
+      "categoryId": 606,
+      "categoryName": "Pokemon Japanese V-Union Special Set",
+      "source": "slug",
+      "setCode": "USS"
+    },
+    "uss": {
+      "setName": "v union special set",
+      "categoryId": 606,
+      "categoryName": "Pokemon Japanese V-Union Special Set",
+      "source": "slug",
+      "setCode": "uss"
+    },
+    "VVSS": {
+      "setName": "venusaur vmax starter set",
+      "categoryId": 611,
+      "categoryName": "Pokemon Japanese Venusaur VMAX Starter Set",
+      "source": "slug",
+      "setCode": "VVSS"
+    },
+    "vvss": {
+      "setName": "venusaur vmax starter set",
+      "categoryId": 611,
+      "categoryName": "Pokemon Japanese Venusaur VMAX Starter Set",
+      "source": "slug",
+      "setCode": "vvss"
+    },
+    "VC": {
+      "setName": "vmax climax",
+      "categoryId": 196,
+      "categoryName": "Pokemon Japanese VMAX Climax",
+      "source": "slug",
+      "setCode": "VC"
+    },
+    "vc": {
+      "setName": "vmax climax",
+      "categoryId": 196,
+      "categoryName": "Pokemon Japanese VMAX Climax",
+      "source": "slug",
+      "setCode": "vc"
+    },
+    "VSS": {
+      "setName": "vstar special set",
+      "categoryId": 609,
+      "categoryName": "Pokemon Japanese VSTAR Special Set",
+      "source": "slug",
+      "setCode": "VSS"
+    },
+    "vss": {
+      "setName": "vstar special set",
+      "categoryId": 609,
+      "categoryName": "Pokemon Japanese VSTAR Special Set",
+      "source": "slug",
+      "setCode": "vss"
+    },
+    "WKEBSD": {
+      "setName": "white kyurem ex battle strength deck",
+      "categoryId": 613,
+      "categoryName": "Pokemon Japanese White Kyurem EX Battle Strength Deck",
+      "source": "slug",
+      "setCode": "WKEBSD"
+    },
+    "wkebsd": {
+      "setName": "white kyurem ex battle strength deck",
+      "categoryId": 613,
+      "categoryName": "Pokemon Japanese White Kyurem EX Battle Strength Deck",
+      "source": "slug",
+      "setCode": "wkebsd"
+    },
+    "WC2": {
+      "setName": "world championships 2023",
+      "categoryId": 206,
+      "categoryName": "Pokemon Japanese World Championships 2023",
+      "source": "slug",
+      "setCode": "WC2"
+    },
+    "wc2": {
+      "setName": "world championships 2023",
+      "categoryId": 206,
+      "categoryName": "Pokemon Japanese World Championships 2023",
+      "source": "slug",
+      "setCode": "wc2"
+    },
+    "WHF": {
+      "setName": "world hobby fair",
+      "categoryId": 615,
+      "categoryName": "Pokemon Japanese World Hobby Fair",
+      "source": "slug",
+      "setCode": "WHF"
+    },
+    "whf": {
+      "setName": "world hobby fair",
+      "categoryId": 615,
+      "categoryName": "Pokemon Japanese World Hobby Fair",
+      "source": "slug",
+      "setCode": "whf"
+    },
+    "XBS": {
+      "setName": "xy beginning set",
+      "categoryId": 616,
+      "categoryName": "Pokemon Japanese XY Beginning Set",
+      "source": "slug",
+      "setCode": "XBS"
+    },
+    "xbs": {
+      "setName": "xy beginning set",
+      "categoryId": 616,
+      "categoryName": "Pokemon Japanese XY Beginning Set",
+      "source": "slug",
+      "setCode": "xbs"
+    },
+    "XBSG": {
+      "setName": "xy beginning set girls",
+      "categoryId": 617,
+      "categoryName": "Pokemon Japanese XY Beginning Set Girls",
+      "source": "slug",
+      "setCode": "XBSG"
+    },
+    "xbsg": {
+      "setName": "xy beginning set girls",
+      "categoryId": 617,
+      "categoryName": "Pokemon Japanese XY Beginning Set Girls",
+      "source": "slug",
+      "setCode": "xbsg"
+    },
+    "YCG": {
+      "setName": "yamabuki city gym",
+      "categoryId": 207,
+      "categoryName": "Pokemon Japanese Yamabuki City Gym",
+      "source": "slug",
+      "setCode": "YCG"
+    },
+    "ycg": {
+      "setName": "yamabuki city gym",
+      "categoryId": 207,
+      "categoryName": "Pokemon Japanese Yamabuki City Gym",
+      "source": "slug",
+      "setCode": "ycg"
+    },
+    "YHD": {
+      "setName": "yveltal half deck",
+      "categoryId": 618,
+      "categoryName": "Pokemon Japanese Yveltal Half Deck",
+      "source": "slug",
+      "setCode": "YHD"
+    },
+    "yhd": {
+      "setName": "yveltal half deck",
+      "categoryId": 618,
+      "categoryName": "Pokemon Japanese Yveltal Half Deck",
+      "source": "slug",
+      "setCode": "yhd"
+    },
+    "ZZB": {
+      "setName": "zacian zamazenta box",
+      "categoryId": 700,
+      "categoryName": "Pokemon Japanese Zacian & Zamazenta Box",
+      "source": "slug",
+      "setCode": "ZZB"
+    },
+    "zzb": {
+      "setName": "zacian zamazenta box",
+      "categoryId": 700,
+      "categoryName": "Pokemon Japanese Zacian & Zamazenta Box",
+      "source": "slug",
+      "setCode": "zzb"
+    },
+    "ZZVESD": {
+      "setName": "zacian zamazenta vs eternatus special deck",
+      "categoryId": 619,
+      "categoryName": "Pokemon Japanese Zacian & Zamazenta VS Eternatus Special Deck",
+      "source": "slug",
+      "setCode": "ZZVESD"
+    },
+    "zzvesd": {
+      "setName": "zacian zamazenta vs eternatus special deck",
+      "categoryId": 619,
+      "categoryName": "Pokemon Japanese Zacian & Zamazenta VS Eternatus Special Deck",
+      "source": "slug",
+      "setCode": "zzvesd"
+    },
+    "ZEBSD": {
+      "setName": "zekrom ex battle strength deck",
+      "categoryId": 620,
+      "categoryName": "Pokemon Japanese Zekrom EX Battle Strength Deck",
+      "source": "slug",
+      "setCode": "ZEBSD"
+    },
+    "zebsd": {
+      "setName": "zekrom ex battle strength deck",
+      "categoryId": 620,
+      "categoryName": "Pokemon Japanese Zekrom EX Battle Strength Deck",
+      "source": "slug",
+      "setCode": "zebsd"
+    },
+    "ZEPBD": {
+      "setName": "zygarde ex perfect battle deck",
+      "categoryId": 622,
+      "categoryName": "Pokemon Japanese Zygarde EX Perfect Battle Deck",
+      "source": "slug",
+      "setCode": "ZEPBD"
+    },
+    "zepbd": {
+      "setName": "zygarde ex perfect battle deck",
+      "categoryId": 622,
+      "categoryName": "Pokemon Japanese Zygarde EX Perfect Battle Deck",
+      "source": "slug",
+      "setCode": "zepbd"
+    }
+  },
+  "unmatched": [
+    {
+      "setCode": "MP",
+      "setName": "Mega Evolution Promos",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "MA",
+      "setName": "MEGA Premium Trainer Box",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "SV9A",
+      "setName": "Hot Air Arena",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "SV2A",
+      "setName": "Pokémon Card 151",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "SVP",
+      "setName": "Scarlet &amp; Violet Promos",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "SWSH5A",
+      "setName": "Peerless Fighters",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "SWSH2",
+      "setName": "Rebellion Crash",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "SWSHP",
+      "setName": "Sword &amp; Shield Promos",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "SM0",
+      "setName": "Pikachu&#x27;s New Friends",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "SM3H",
+      "setName": "To Have Seen the Battle Rainbow",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "SMP",
+      "setName": "Sun &amp; Moon Promos",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "CP6",
+      "setName": "Expansion Pack 20th Anniversary",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "CP5",
+      "setName": "Mythical &amp; Legendary Dream Shine Collection",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "CP1",
+      "setName": "Magma Gang VS Aqua Gang: Double Crisis",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "BWP",
+      "setName": "Black &amp; White Promos",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "LP",
+      "setName": "LEGEND Promos",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "PTP",
+      "setName": "Platinum Promos",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "PLAYP",
+      "setName": "PLAY Promos",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "DPP",
+      "setName": "Diamond &amp; Pearl Promos",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "PCGGB1",
+      "setName": "Mew • Lucario Gift Box (Pokémon ☆)",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "PCGP",
+      "setName": "PCG Promos",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "MISCPPP",
+      "setName": "PPP Promos",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "ADVP",
+      "setName": "ADV Promos",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "NEO3PF",
+      "setName": "Neo Premium File 3",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "NEO2PF",
+      "setName": "Neo Premium File 2",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "NEO1PF",
+      "setName": "Neo Premium File 1",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "VND3",
+      "setName": "Vending Machine Series 3 (Green)",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "VND2",
+      "setName": "Vending Machine Series 2 (Red)",
+      "reason": "vendortools_no_match"
+    },
+    {
+      "setCode": "VND1",
+      "setName": "Vending Machine Series 1 (Blue)",
+      "reason": "vendortools_no_match"
+    }
+  ],
+  "totalCodes": 397,
+  "totalCategories": 373,
+  "coveredCategories": 373,
+  "sources": {
+    "vendortools": 180,
+    "tcgdex": 6,
+    "ptcgo": 49,
+    "override": 1,
+    "name": 16,
+    "slug": 145
+  }
+}
