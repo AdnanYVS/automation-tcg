@@ -148,6 +148,13 @@ async function createBasicProduct({
   const variant = product.variants?.[0];
 
   if (product?.id && variant?.id) {
+    try {
+      await enableProductForSale(product.id);
+    } catch (error) {
+      console.error('ikas satış kanalı güncelleme başarısız:', error.message);
+      throw error;
+    }
+
     if (stockCount !== undefined && stockCount !== null) {
       try {
         await saveVariantStock({
@@ -173,13 +180,6 @@ async function createBasicProduct({
         console.error('ikas görsel yükleme başarısız:', error.message);
         throw error;
       }
-    }
-
-    try {
-      await enableProductForSale(product.id);
-    } catch (error) {
-      console.error('ikas satış kanalı güncelleme başarısız:', error.message);
-      throw error;
     }
   }
 

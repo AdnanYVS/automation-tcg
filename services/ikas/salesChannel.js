@@ -12,7 +12,13 @@ const LIST_SALES_CHANNELS_QUERY = `
 
 const UPDATE_SALES_CHANNEL_STATUS_MUTATION = `
   mutation UpdateProductSalesChannelStatus($input: UpdateSalesChannelStatusInput!) {
-    updateProductSalesChannelStatus(input: $input)
+    updateProductSalesChannelStatus(input: $input) {
+      errors {
+        errorCode
+        inputArrayIndex
+        inputData
+      }
+    }
   }
 `;
 
@@ -49,12 +55,22 @@ async function enableProductForSale(productId) {
 
   const salesChannelId = await getStorefrontSalesChannelId();
 
-  return graphqlRequest(UPDATE_SALES_CHANNEL_STATUS_MUTATION, {
+  const data = await graphqlRequest(UPDATE_SALES_CHANNEL_STATUS_MUTATION, {
     input: {
       salesChannelId,
       data: [{ productId, status: 'VISIBLE' }],
     },
   });
+
+  const result = data.updateProductSalesChannelStatus;
+  if (result?.errors?.length) {
+    const errors = result.errors
+      .map((entry) => entry.errorCode || JSON.stringify(entry))
+      .join(', ');
+    throw new Error(`ikas satış kanalı güncellenemedi (${errors}).`);
+  }
+
+  return result;
 }
 
 module.exports = {
