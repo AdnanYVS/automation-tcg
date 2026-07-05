@@ -15,8 +15,10 @@ const UPDATE_SALES_CHANNEL_STATUS_MUTATION = `
     updateProductSalesChannelStatus(input: $input) {
       errors {
         errorCode
-        inputArrayIndex
-        inputData
+        inputData {
+          productId
+          status
+        }
       }
     }
   }
