@@ -1,7 +1,7 @@
 const express = require('express');
 const { searchCards, getCardById, getPriceChartingUsd, getCardPriceInfo, getCardImageUrl } = require('../../services/kartfiyat');
 const { getSetCodeRegistry } = require('../../services/kartfiyat/setRegistry');
-const { createBasicProduct, listStockLocations, resolveCategoryForCard } = require('../../services/ikas');
+const { createBasicProduct, listStockLocations, resolveCategoryForCard, incrementVariantStock } = require('../../services/ikas');
 const { getUsdTryRate } = require('../../services/exchangeRate');
 const { calculateFinalPriceTry } = require('../../services/pricing');
 const { generateProductBarcode } = require('../../services/barcode');
@@ -100,15 +100,43 @@ router.post('/import-card', async (req, res) => {
     if (!cardId) return res.status(400).json({ success: false, error: 'cardId zorunludur.' });
 
     const kartfiyatCardId = String(cardId);
-    const existing = findByKartfiyatCardId(kartfiyatCardId);
-    if (existing) {
-      return res.status(409).json({
+    const stockLocationId = req.body.stockLocationId;
+    if (!stockLocationId) {
+      return res.status(400).json({
         success: false,
-        error: 'Bu kart zaten ikas mağazasına aktarılmış.',
+        error: 'stockLocationId zorunludur. İstanbul veya İzmir stok lokasyonunu seçin.',
+      });
+    }
+
+    const stockCount = req.body.stockCount !== undefined ? Number(req.body.stockCount) : 1;
+    if (!Number.isFinite(stockCount) || stockCount <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'stockCount pozitif bir sayı olmalıdır.',
+      });
+    }
+
+    const existing = findByKartfiyatCardId(kartfiyatCardId);
+    if (existing?.ikas_product_id && existing?.ikas_variant_id) {
+      const stockResult = await incrementVariantStock({
+        productId: existing.ikas_product_id,
+        variantId: existing.ikas_variant_id,
+        stockLocationId,
+        incrementBy: stockCount,
+      });
+
+      return res.json({
+        success: true,
         data: {
+          action: 'stock_incremented',
           mappingId: existing.id,
+          kartfiyatCardId,
           ikasProductId: existing.ikas_product_id,
           ikasVariantId: existing.ikas_variant_id,
+          stockLocationId,
+          previousStock: stockResult.previousStock,
+          newStock: stockResult.newStock,
+          incrementBy: stockResult.incrementBy,
         },
       });
     }
@@ -118,7 +146,6 @@ router.post('/import-card', async (req, res) => {
     if (!name) return res.status(400).json({ success: false, error: 'Ürün adı bulunamadı.' });
 
     const sku = req.body.code || card.code || `KF-${kartfiyatCardId}`;
-    const stockCount = req.body.stockCount !== undefined ? Number(req.body.stockCount) : 1;
     let sellPrice = req.body.sellPrice !== undefined ? Number(req.body.sellPrice) : null;
 
     if (!Number.isFinite(sellPrice)) {
@@ -134,14 +161,6 @@ router.post('/import-card', async (req, res) => {
         await getUsdTryRate(),
         Number(process.env.FINAL_COST_MULTIPLIER || 1.86),
       );
-    }
-
-    const stockLocationId = req.body.stockLocationId;
-    if (!stockLocationId) {
-      return res.status(400).json({
-        success: false,
-        error: 'stockLocationId zorunludur. İstanbul veya İzmir stok lokasyonunu seçin.',
-      });
     }
 
     const imageUrl = req.body.imageUrl || getCardImageUrl(card);
@@ -185,6 +204,7 @@ router.post('/import-card', async (req, res) => {
     return res.status(201).json({
       success: true,
       data: {
+        action: 'created',
         mappingId: mapping.id,
         kartfiyatCardId,
         ikasProductId: product.id,

@@ -1140,10 +1140,15 @@
         const payload = await response.json();
         if (!response.ok || !payload.success) throw new Error(payload.error || 'Yükleme başarısız.');
 
-        button.textContent = '✓ Yüklendi';
+        if (payload.data.action === 'stock_incremented') {
+          button.textContent = `✓ Stok: ${payload.data.newStock}`;
+          showToast(`"${card.name}" → ${locationName} · stok ${payload.data.previousStock} → ${payload.data.newStock}`, 'success');
+        } else {
+          button.textContent = '✓ Yüklendi';
+          showToast(`"${card.name}" → ${locationName} · ${payload.data.sellPrice} TRY`, 'success');
+        }
         button.classList.remove('loading');
         button.classList.add('imported');
-        showToast(`"${card.name}" → ${locationName} · ${payload.data.sellPrice} TRY`, 'success');
       } catch (error) {
         button.disabled = false;
         button.classList.remove('loading');

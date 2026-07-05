@@ -55,6 +55,17 @@ const LIST_STOCK_LOCATIONS_QUERY = `
   }
 `;
 
+const LIST_PRODUCT_STOCK_LOCATION_QUERY = `
+  query ListProductStockLocation {
+    listProductStockLocation {
+      productId
+      variantId
+      stockCount
+      stockLocationId
+    }
+  }
+`;
+
 let cachedStockLocations = null;
 
 async function listStockLocations() {
@@ -108,6 +119,45 @@ async function saveVariantStock({ productId, variantId, stockCount, stockLocatio
   }
 
   return result;
+}
+
+async function getVariantStockAtLocation({ productId, variantId, stockLocationId }) {
+  const data = await graphqlRequest(LIST_PRODUCT_STOCK_LOCATION_QUERY);
+  const match = (data.listProductStockLocation || []).find(
+    (row) => row.productId === productId
+      && row.variantId === variantId
+      && row.stockLocationId === stockLocationId,
+  );
+
+  return Number(match?.stockCount || 0);
+}
+
+async function incrementVariantStock({
+  productId,
+  variantId,
+  stockLocationId,
+  incrementBy = 1,
+}) {
+  const increment = Number(incrementBy);
+  if (!Number.isFinite(increment) || increment <= 0) {
+    throw new Error('incrementBy pozitif bir sayı olmalıdır.');
+  }
+
+  const previousStock = await getVariantStockAtLocation({
+    productId,
+    variantId,
+    stockLocationId,
+  });
+  const newStock = previousStock + increment;
+
+  await saveVariantStock({
+    productId,
+    variantId,
+    stockLocationId,
+    stockCount: newStock,
+  });
+
+  return { previousStock, newStock, incrementBy: increment };
 }
 
 function buildVariantInput({ sku, sellPrice, currency = 'TRY', isActive = true, variantValues = [], barcodeList = [] }) {
@@ -241,5 +291,7 @@ module.exports = {
   addVariantToProduct,
   updateVariantPrices,
   saveVariantStock,
+  getVariantStockAtLocation,
+  incrementVariantStock,
   listStockLocations,
 };
