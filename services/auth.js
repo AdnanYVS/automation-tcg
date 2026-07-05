@@ -53,13 +53,19 @@ function getSessionToken(req) {
   return cookies[SESSION_COOKIE] || null;
 }
 
+function shouldUseSecureCookie() {
+  if (process.env.COOKIE_SECURE === 'true') return true;
+  if (process.env.COOKIE_SECURE === 'false') return false;
+  return String(process.env.APP_BASE_URL || '').startsWith('https://');
+}
+
 function buildSessionCookie(token, { maxAgeMs = SESSION_TTL_MS } = {}) {
-  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  const secure = shouldUseSecureCookie() ? '; Secure' : '';
   return `${SESSION_COOKIE}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${Math.floor(maxAgeMs / 1000)}${secure}`;
 }
 
 function clearSessionCookie() {
-  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  const secure = shouldUseSecureCookie() ? '; Secure' : '';
   return `${SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${secure}`;
 }
 

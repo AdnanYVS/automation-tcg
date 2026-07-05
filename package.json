@@ -16,7 +16,8 @@
     "price:update": "node cron/priceUpdater.js --run-once",
     "price:check": "node cron/priceChecker.js --run-once",
     "price:cron": "node cron/priceUpdater.js",
-    "admin:create": "node scripts/create-admin.js"
+    "admin:create": "node scripts/create-admin.js",
+    "admin:reset-password": "node scripts/reset-admin-password.js"
   },
   "license": "UNLICENSED",
   "engines": {

@@ -393,6 +393,20 @@ function createAdminUser({ username, passwordHash, displayName = null }) {
   }
 }
 
+function updateAdminUserPassword(userId, passwordHash) {
+  const db = getDatabase();
+  try {
+    db.prepare(`
+      UPDATE admin_users
+      SET password_hash = @passwordHash
+      WHERE id = @userId
+    `).run({ userId, passwordHash });
+    db.prepare('DELETE FROM admin_sessions WHERE user_id = ?').run(userId);
+  } finally {
+    db.close();
+  }
+}
+
 function createAdminSession({ token, userId, expiresAt }) {
   const db = getDatabase();
   try {
@@ -474,6 +488,7 @@ module.exports = {
   findAdminUserByUsername,
   findAdminUserById,
   createAdminUser,
+  updateAdminUserPassword,
   createAdminSession,
   findAdminSession,
   deleteAdminSession,
