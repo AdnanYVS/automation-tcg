@@ -719,7 +719,8 @@
       letter-spacing: 0.04em;
     }
 
-    .modal-body select {
+    .modal-body select,
+    .modal-body input[type="number"] {
       width: 100%;
       background: var(--bg-elevated);
       border: 1px solid var(--border);
@@ -730,10 +731,14 @@
       color: var(--text);
       outline: none;
       margin-bottom: 20px;
+    }
+
+    .modal-body select {
       cursor: pointer;
     }
 
-    .modal-body select:focus {
+    .modal-body select:focus,
+    .modal-body input[type="number"]:focus {
       border-color: rgba(255, 203, 5, 0.4);
     }
 
@@ -867,6 +872,8 @@
         <select id="stock-location">
           <option value="">Yükleniyor...</option>
         </select>
+        <label for="stock-count">Stok Adedi</label>
+        <input id="stock-count" type="number" min="1" step="1" value="1" inputmode="numeric">
         <div class="modal-actions">
           <button type="button" class="modal-btn cancel" id="modal-cancel">İptal</button>
           <button type="button" class="modal-btn confirm" id="modal-confirm">Yükle</button>
@@ -881,6 +888,7 @@
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
     const stockLocationSelect = document.getElementById('stock-location');
+    const stockCountInput = document.getElementById('stock-count');
     const toastEl = document.getElementById('toast');
     const resultsEl = document.getElementById('results');
     const welcomeEl = document.getElementById('welcome');
@@ -1100,6 +1108,7 @@
       }
 
       importModal.classList.add('open');
+      stockCountInput.value = '1';
       document.body.style.overflow = 'hidden';
     }
 
@@ -1114,6 +1123,12 @@
       const stockLocationId = stockLocationSelect.value;
       if (!stockLocationId) {
         showToast('Stok lokasyonu seçin', 'error');
+        return;
+      }
+
+      const stockCount = Number(stockCountInput.value);
+      if (!Number.isFinite(stockCount) || stockCount < 1) {
+        showToast('Stok adedi en az 1 olmalı', 'error');
         return;
       }
 
@@ -1135,6 +1150,7 @@
             name: card.name,
             code: card.code,
             stockLocationId,
+            stockCount,
           }),
         });
         const payload = await response.json();
@@ -1142,10 +1158,10 @@
 
         if (payload.data.action === 'stock_incremented') {
           button.textContent = `✓ Stok: ${payload.data.newStock}`;
-          showToast(`"${card.name}" → ${locationName} · stok ${payload.data.previousStock} → ${payload.data.newStock}`, 'success');
+          showToast(`"${card.name}" → ${locationName} · +${stockCount} stok (${payload.data.previousStock} → ${payload.data.newStock})`, 'success');
         } else {
           button.textContent = '✓ Yüklendi';
-          showToast(`"${card.name}" → ${locationName} · ${payload.data.sellPrice} TRY`, 'success');
+          showToast(`"${card.name}" → ${locationName} · ${stockCount} adet · ${payload.data.sellPrice} TRY`, 'success');
         }
         button.classList.remove('loading');
         button.classList.add('imported');
