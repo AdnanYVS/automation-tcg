@@ -111,14 +111,11 @@ async function resolveCategoryForCard(card) {
   const { category, created } = await ensureCategoryExists({
     name: categoryName,
     parentId,
-    allowCreate: isJapanese,
+    allowCreate: true,
   });
 
   if (!category) {
-    throw new Error(
-      `ikas'ta "${categoryName}" kategorisi bulunamadı. `
-      + 'İngilizce kartlar için kategoriyi ikas panelinden oluşturun.',
-    );
+    throw new Error(`ikas'ta "${categoryName}" kategorisi oluşturulamadı.`);
   }
 
   return {
