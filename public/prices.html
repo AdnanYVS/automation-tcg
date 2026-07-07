@@ -249,6 +249,57 @@
       overflow: hidden;
     }
 
+    .main-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .main-tab {
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .main-tab:hover { color: var(--text); border-color: var(--border-strong); }
+    .main-tab.active {
+      color: var(--accent-text);
+      border-color: rgba(255, 203, 5, 0.45);
+      background: linear-gradient(135deg, var(--accent), #ff9500);
+    }
+
+    .view-section[hidden] { display: none !important; }
+
+    .value-highlight {
+      color: var(--accent);
+    }
+
+    .stock-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .portfolio-meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
     .panel-header {
       display: flex;
       align-items: center;
@@ -447,6 +498,12 @@
 
     <div class="toast" id="toast"></div>
 
+    <div class="main-tabs" id="main-tabs">
+      <button type="button" class="main-tab active" data-view="alerts">Fiyat Değişiklikleri</button>
+      <button type="button" class="main-tab" data-view="portfolio">Envanter Değeri (PC)</button>
+    </div>
+
+    <div class="view-section" id="alerts-view">
     <section class="stats">
       <div class="stat-card">
         <div class="stat-label">Bekleyen</div>
@@ -499,6 +556,37 @@
         </table>
       </div>
     </section>
+    </div>
+
+    <div class="view-section" id="portfolio-view" hidden>
+      <section class="stats" id="portfolio-stats"></section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <strong>ikas Envanteri · Güncel PriceCharting</strong>
+            <div class="portfolio-meta">Sisteme aktarılmış kartların güncel PC fiyatı × stok adedi</div>
+          </div>
+          <button type="button" class="btn btn-secondary" id="refresh-portfolio-btn">Yenile</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr id="portfolio-head-row">
+                <th>Kart</th>
+                <th>PC (USD)</th>
+                <th>Birim (TRY)</th>
+                <th>Toplam Stok</th>
+                <th>Toplam Değer</th>
+              </tr>
+            </thead>
+            <tbody id="portfolio-body">
+              <tr class="loading-row"><td colspan="5">Yükleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
   </div>
 
   <script src="/js/auth.js"></script>
@@ -508,9 +596,19 @@
     const tabsEl = document.getElementById('tabs');
     const checkNowBtn = document.getElementById('check-now-btn');
     const approveAllBtn = document.getElementById('approve-all-btn');
+    const mainTabsEl = document.getElementById('main-tabs');
+    const alertsView = document.getElementById('alerts-view');
+    const portfolioView = document.getElementById('portfolio-view');
+    const portfolioStats = document.getElementById('portfolio-stats');
+    const portfolioBody = document.getElementById('portfolio-body');
+    const portfolioHeadRow = document.getElementById('portfolio-head-row');
+    const refreshPortfolioBtn = document.getElementById('refresh-portfolio-btn');
 
     let currentStatus = 'pending';
+    let currentView = 'alerts';
     let dashboardData = null;
+    let portfolioData = null;
+    let portfolioLoaded = false;
 
     function showToast(message, type = 'info') {
       toastEl.textContent = message;
@@ -526,7 +624,7 @@
     function formatTry(value) {
       const num = Number(value);
       if (!Number.isFinite(num)) return '—';
-      return `${num.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺`;
+      return `${Math.round(num).toLocaleString('tr-TR')} ₺`;
     }
 
     function formatUsd(value) {
@@ -626,12 +724,142 @@
       renderTable(dashboardData.alerts || []);
     }
 
+    function renderPortfolioStats(data) {
+      const { summary, usdTryRate, multiplier, generatedAt } = data;
+      const cards = [
+        {
+          label: 'Toplam PC Değeri',
+          value: formatTry(summary.totalValueTry),
+          sub: `${summary.totalUnits} adet stok`,
+          highlight: true,
+        },
+        ...summary.locations.map((location) => ({
+          label: location.name,
+          value: formatTry(location.valueTry),
+          sub: `${location.units} adet`,
+        })),
+        {
+          label: 'Güncel Kur',
+          value: `${Number(usdTryRate).toFixed(2)} ₺`,
+          sub: `Çarpan ×${multiplier}`,
+        },
+        {
+          label: 'Son Güncelleme',
+          value: formatDate(generatedAt),
+          sub: `${summary.productCount} ürün · ${summary.skippedCount} atlandı`,
+        },
+      ];
+
+      portfolioStats.innerHTML = cards.map((card) => `
+        <div class="stat-card">
+          <div class="stat-label">${escapeHtml(card.label)}</div>
+          <div class="stat-value ${card.highlight ? 'value-highlight' : ''}" style="${card.highlight ? '' : 'font-size:1.1rem'}">${card.value}</div>
+          <div class="stat-sub">${escapeHtml(card.sub)}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderPortfolioTable(data) {
+      const locations = data.summary.locations || [];
+      portfolioHeadRow.innerHTML = `
+        <th>Kart</th>
+        <th>PC (USD)</th>
+        <th>Birim (TRY)</th>
+        ${locations.map((location) => `<th>${escapeHtml(location.name)}</th>`).join('')}
+        <th>Toplam Stok</th>
+        <th>Toplam Değer</th>
+      `;
+
+      if (!data.items.length) {
+        portfolioBody.innerHTML = `
+          <tr><td colspan="${5 + locations.length}">
+            <div class="empty-state"><span>📦</span>Henüz hesaplanabilir ürün yok.<br><small style="margin-top:8px;display:block">Önce kart arama sayfasından ürün aktarın.</small></div>
+          </td></tr>`;
+        return;
+      }
+
+      portfolioBody.innerHTML = data.items.map((item) => {
+        const locationCells = locations.map((location) => {
+          const entry = item.locations.find((row) => row.locationId === location.id) || { quantity: 0 };
+          return `<td><span class="stock-pill">${entry.quantity}</span></td>`;
+        }).join('');
+
+        return `
+          <tr>
+            <td>
+              <div class="card-name">${escapeHtml(item.cardName)}</div>
+              <span class="card-id">KF #${escapeHtml(item.kartfiyatCardId)}</span>
+            </td>
+            <td>${formatUsd(item.usdPrice)}</td>
+            <td class="price-new">${formatTry(item.unitTryPrice)}</td>
+            ${locationCells}
+            <td><span class="stock-pill">${item.totalQuantity}</span></td>
+            <td class="price-new">${formatTry(item.totalValueTry)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function loadPortfolio({ force = false } = {}) {
+      if (portfolioLoaded && !force && portfolioData) {
+        renderPortfolioStats(portfolioData);
+        renderPortfolioTable(portfolioData);
+        return;
+      }
+
+      refreshPortfolioBtn.disabled = true;
+      portfolioBody.innerHTML = `<tr class="loading-row"><td colspan="8">Kartfiyat ve ikas stokları yükleniyor...</td></tr>`;
+      showToast('Envanter değeri hesaplanıyor, bu işlem biraz sürebilir...', 'info');
+
+      try {
+        const response = await AUTH.apiFetch('/api/portfolio-valuation');
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || 'Envanter verisi yüklenemedi.');
+        portfolioData = payload.data;
+        portfolioLoaded = true;
+        renderPortfolioStats(portfolioData);
+        renderPortfolioTable(portfolioData);
+        showToast(`${portfolioData.summary.productCount} ürün için toplam ${formatTry(portfolioData.summary.totalValueTry)}`, 'success');
+      } catch (error) {
+        portfolioBody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><span>⚠️</span>${escapeHtml(error.message)}</div></td></tr>`;
+        showToast(error.message, 'error');
+        throw error;
+      } finally {
+        refreshPortfolioBtn.disabled = false;
+      }
+    }
+
+    function switchView(view) {
+      currentView = view;
+      mainTabsEl.querySelectorAll('.main-tab').forEach((tab) => {
+        tab.classList.toggle('active', tab.dataset.view === view);
+      });
+      alertsView.hidden = view !== 'alerts';
+      portfolioView.hidden = view !== 'portfolio';
+      checkNowBtn.hidden = view !== 'alerts';
+      approveAllBtn.hidden = view !== 'alerts';
+
+      if (view === 'portfolio' && !portfolioLoaded) {
+        loadPortfolio().catch(() => {});
+      }
+    }
+
     async function handleAction(id, action) {
       const response = await AUTH.apiFetch(`/api/price-changes/${id}/${action}`, { method: 'POST' });
       const payload = await response.json();
       if (!response.ok || !payload.success) throw new Error(payload.error || 'İşlem başarısız.');
       return payload.data;
     }
+
+    mainTabsEl.addEventListener('click', (event) => {
+      const tab = event.target.closest('.main-tab');
+      if (!tab?.dataset.view) return;
+      switchView(tab.dataset.view);
+    });
+
+    refreshPortfolioBtn.addEventListener('click', () => {
+      loadPortfolio({ force: true }).catch(() => {});
+    });
 
     tabsEl.addEventListener('click', (event) => {
       const tab = event.target.closest('.tab');

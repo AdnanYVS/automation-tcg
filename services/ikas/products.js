@@ -121,9 +121,14 @@ async function saveVariantStock({ productId, variantId, stockCount, stockLocatio
   return result;
 }
 
-async function getVariantStockAtLocation({ productId, variantId, stockLocationId }) {
+async function listAllVariantStocks() {
   const data = await graphqlRequest(LIST_PRODUCT_STOCK_LOCATION_QUERY);
-  const match = (data.listProductStockLocation || []).find(
+  return data.listProductStockLocation || [];
+}
+
+async function getVariantStockAtLocation({ productId, variantId, stockLocationId }) {
+  const rows = await listAllVariantStocks();
+  const match = rows.find(
     (row) => row.productId === productId
       && row.variantId === variantId
       && row.stockLocationId === stockLocationId,
@@ -292,6 +297,7 @@ module.exports = {
   updateVariantPrices,
   saveVariantStock,
   getVariantStockAtLocation,
+  listAllVariantStocks,
   incrementVariantStock,
   listStockLocations,
 };

@@ -6,6 +6,7 @@ const {
   approveAllPendingPriceChanges,
   getPriceDashboardData,
 } = require('../../services/priceTracking');
+const { getPortfolioValuation } = require('../../services/portfolioValuation');
 const { requireAuth } = require('../middleware/requireAuth');
 
 const router = express.Router();
@@ -59,6 +60,16 @@ router.post('/price-changes/approve-all', async (req, res) => {
     return res.json({ success: true, data: result });
   } catch (error) {
     console.error('POST /api/price-changes/approve-all hatası:', error.message);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/portfolio-valuation', async (req, res) => {
+  try {
+    const data = await getPortfolioValuation();
+    return res.json({ success: true, data });
+  } catch (error) {
+    console.error('GET /api/portfolio-valuation hatası:', error.message);
     return res.status(500).json({ success: false, error: error.message });
   }
 });
