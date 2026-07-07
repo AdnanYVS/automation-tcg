@@ -267,7 +267,7 @@ async function updateVariantPrices(variantUpdates, { currency = 'TRY', priceList
     deleted: false,
     productId,
     variantId,
-    price: { sellPrice, currency },
+    price: { sellPrice: Number(sellPrice) },
   }));
 
   const data = await graphqlRequest(UPDATE_VARIANT_PRICES_MUTATION, {

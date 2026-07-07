@@ -1,6 +1,6 @@
 const { createKartfiyatClient, parseApiResponse } = require('./client');
 const { getCategoryItems } = require('./categories');
-const { resolveJapaneseSet, getSetCodeRegistry } = require('./setRegistry');
+const { resolveSet, getSetCodeRegistry } = require('./setRegistry');
 
 const SET_CODE_PATTERN = /^([A-Za-z0-9][A-Za-z0-9.+]{1,7})-(\d{1,4})$/;
 
@@ -27,16 +27,16 @@ function filterItemsByCardNumber(items, cardNumber) {
   });
 }
 
-async function searchJapaneseBySetCode({
+async function searchBySetCode({
   setCode,
   cardNumber,
   page = 1,
   perPage = 20,
 }) {
-  const setEntry = await resolveJapaneseSet(setCode);
+  const setEntry = await resolveSet(setCode);
 
   if (!setEntry) {
-    throw new Error(`"${setCode}" set kodu için Japonca kategori bulunamadı.`);
+    throw new Error(`"${setCode}" set kodu için kategori bulunamadı.`);
   }
 
   const result = await getCategoryItems(setEntry.categoryId, {
@@ -50,13 +50,14 @@ async function searchJapaneseBySetCode({
   return {
     items,
     pagination: result.pagination,
-    searchMode: 'japanese-set-code',
+    searchMode: setEntry.language === 'en' ? 'english-set-code' : 'japanese-set-code',
     setCode,
     cardNumber,
     category: {
       id: setEntry.categoryId,
       name: setEntry.categoryName,
       setName: setEntry.setName,
+      language: setEntry.language || 'ja',
     },
   };
 }
@@ -69,7 +70,7 @@ async function searchCards({ q, page = 1, perPage = 20, categoryId, game, market
 
   const setCodeQuery = parseSetCodeQuery(query);
   if (setCodeQuery) {
-    return searchJapaneseBySetCode({
+    return searchBySetCode({
       setCode: setCodeQuery.setCode,
       cardNumber: setCodeQuery.cardNumber,
       page,
@@ -187,7 +188,8 @@ function getCardImageUrl(card) {
 
 module.exports = {
   searchCards,
-  searchJapaneseBySetCode,
+  searchBySetCode,
+  searchJapaneseBySetCode: searchBySetCode,
   parseSetCodeQuery,
   getCardById,
   parseUsdPrice,

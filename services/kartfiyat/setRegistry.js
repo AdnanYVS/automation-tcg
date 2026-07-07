@@ -8,6 +8,7 @@ const { fetchVendorToolsSets } = require('./setCodeSources');
 
 const CACHE_PATH = process.env.SET_CODES_PATH || path.join(__dirname, '../../data/set-codes.json');
 const OVERRIDES_PATH = process.env.SET_OVERRIDES_PATH || path.join(__dirname, '../../data/japanese-set-overrides.json');
+const EN_OVERRIDES_PATH = process.env.EN_SET_OVERRIDES_PATH || path.join(__dirname, '../../data/english-set-overrides.json');
 const CACHE_MAX_AGE_MS = Number(process.env.SET_CODES_CACHE_MS || 7 * 24 * 60 * 60 * 1000);
 const MATCH_SCORE_THRESHOLD = Number(process.env.SET_MATCH_SCORE_THRESHOLD || 50);
 
@@ -27,11 +28,46 @@ const PTCGO_SEARCH_TERMS = {
   JTG: ['journey together'],
   BLK: ['black bolt'],
   WHT: ['white flare'],
+  SWSH: ['sword shield'],
+  ASR: ['astral radiance'],
+  BRS: ['brilliant stars'],
+  CRZ: ['crown zenith'],
+  DAA: ['darkness ablaze'],
+  EVS: ['evolving skies'],
+  FST: ['fusion strike'],
+  LOR: ['lost origin'],
+  PGO: ['pokemon go'],
+  SHF: ['shining fates'],
+  SIT: ['silver tempest'],
+  CRE: ['chilling reign'],
+  BST: ['battle styles'],
+  SHL: ['shrouded fable'],
+  DRI: ['destined rivals'],
 };
+
+const META_CATEGORY_PATTERN = /setler$/i;
+
+function isMetaCategoryName(name) {
+  const value = String(name || '').trim();
+  return META_CATEGORY_PATTERN.test(value)
+    || /^(ingilizce|japonca|korece|cince)\s+setler$/i.test(value);
+}
+
+function isJapaneseCategory(category) {
+  return /pokemon japanese/i.test(category?.name || '');
+}
+
+function isEnglishPokemonCategory(category) {
+  const name = String(category?.name || '');
+  return /^pokemon\s+/i.test(name)
+    && !/japanese|korean|chinese|cince|korece/i.test(name)
+    && !isMetaCategoryName(name);
+}
 
 function normalizeCategoryName(name) {
   return String(name || '')
     .replace(/^pokemon japanese\s+/i, '')
+    .replace(/^pokemon\s+/i, '')
     .toLowerCase()
     .replace(/[：:]/g, ' ')
     .replace(/[^a-z0-9\s]/g, ' ')
@@ -43,13 +79,13 @@ function normalizeSetCode(code) {
   return String(code || '').trim().toUpperCase();
 }
 
-function readOverridesFile() {
-  if (!fs.existsSync(OVERRIDES_PATH)) return {};
+function readOverridesFile(filePath = OVERRIDES_PATH) {
+  if (!fs.existsSync(filePath)) return {};
 
   try {
-    return JSON.parse(fs.readFileSync(OVERRIDES_PATH, 'utf8'));
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
   } catch (error) {
-    console.error('japanese-set-overrides.json okunamadı:', error.message);
+    console.error(`${path.basename(filePath)} okunamadı:`, error.message);
     return {};
   }
 }
@@ -152,6 +188,11 @@ function registerCode(codes, rawCode, entry) {
 
   for (const key of variants) {
     if (!key) continue;
+    const existing = codes[key];
+    if (existing && existing.language && entry.language && existing.language !== entry.language) {
+      codes[`${key}:${entry.language}`] = { ...entry, setCode: key };
+      continue;
+    }
     codes[key] = { ...entry, setCode: key };
   }
 }
@@ -174,7 +215,10 @@ async function fetchPokemonTcgSets() {
   while (page <= totalPages) {
     const response = await axios.get('https://api.pokemontcg.io/v2/sets', {
       params: { page, pageSize: 250 },
-      timeout: 30000,
+      timeout: 60000,
+      headers: process.env.POKEMON_TCG_API_KEY
+        ? { 'X-Api-Key': process.env.POKEMON_TCG_API_KEY }
+        : undefined,
     });
 
     const batch = response.data?.data || [];
@@ -186,12 +230,13 @@ async function fetchPokemonTcgSets() {
   return sets.filter((set) => set.ptcgoCode);
 }
 
-function addCategoryCodes(codes, category, setCode, setName, source) {
+function addCategoryCodes(codes, category, setCode, setName, source, language = 'ja') {
   registerCode(codes, setCode, {
     setName: setName || normalizeCategoryName(category.name),
     categoryId: category.id,
     categoryName: category.name,
     source,
+    language,
   });
 }
 
@@ -203,6 +248,7 @@ async function buildSetCodeRegistry() {
     pokemonSets,
     vendorToolsSets,
     overrides,
+    englishOverrides,
   ] = await Promise.all([
     listCategories({ game: 'pokemon' }),
     fetchTcgdexJapaneseSets(),
@@ -212,12 +258,12 @@ async function buildSetCodeRegistry() {
       console.error('[setRegistry] VendorTools set listesi alınamadı:', error.message);
       return [];
     }),
-    Promise.resolve(readOverridesFile()),
+    Promise.resolve(readOverridesFile(OVERRIDES_PATH)),
+    Promise.resolve(readOverridesFile(EN_OVERRIDES_PATH)),
   ]);
 
-  const japaneseCategories = categories.filter((category) =>
-    /pokemon japanese/i.test(category.name),
-  );
+  const japaneseCategories = categories.filter(isJapaneseCategory);
+  const englishCategories = categories.filter(isEnglishPokemonCategory);
 
   const enNameById = Object.fromEntries(
     tcgdexEnSets.map((set) => [String(set.id).toLowerCase(), set.name]),
@@ -226,12 +272,47 @@ async function buildSetCodeRegistry() {
   const codes = {};
   const unmatched = [];
   const categoryCoverage = new Map();
+  const englishCategoryCoverage = new Map();
 
-  function markCovered(category, setCode, setName, source) {
-    addCategoryCodes(codes, category, setCode, setName, source);
+  function markCovered(category, setCode, setName, source, language = 'ja') {
+    addCategoryCodes(codes, category, setCode, setName, source, language);
     const existing = categoryCoverage.get(category.id) || [];
-    existing.push({ setCode, source });
+    existing.push({ setCode, source, language });
     categoryCoverage.set(category.id, existing);
+  }
+
+  function markEnglishCovered(category, setCode, setName, source) {
+    markCovered(category, setCode, setName, source, 'en');
+    const existing = englishCategoryCoverage.get(category.id) || [];
+    existing.push({ setCode, source });
+    englishCategoryCoverage.set(category.id, existing);
+  }
+
+  function hasEnglishCode(setCode) {
+    const key = normalizeSetCode(setCode);
+    const entry = codes[key] || codes[`${key}:en`];
+    return entry?.language === 'en';
+  }
+
+  for (const [rawCode, override] of Object.entries(englishOverrides)) {
+    const { category } = findBestCategory(
+      buildSearchTerms({
+        setCode: rawCode,
+        setName: override.setName,
+        extraTerms: override.searchTerms || [],
+      }),
+      englishCategories,
+    );
+
+    if (category) {
+      markEnglishCovered(category, rawCode, override.setName || rawCode, 'override-en');
+    } else {
+      unmatched.push({
+        setCode: normalizeSetCode(rawCode),
+        setName: override.setName || rawCode,
+        reason: 'english_override_category_not_found',
+      });
+    }
   }
 
   for (const [rawCode, override] of Object.entries(overrides)) {
@@ -288,16 +369,36 @@ async function buildSetCodeRegistry() {
   }
 
   for (const set of pokemonSets) {
-    const setCode = String(set.ptcgoCode || '').toUpperCase();
-    if (!setCode || codes[setCode]) continue;
+    const setCode = normalizeSetCode(set.ptcgoCode);
+    if (!setCode || hasEnglishCode(setCode)) continue;
 
     const { category } = findBestCategory(
       buildSearchTerms({ setCode, setName: set.name }),
-      japaneseCategories,
+      englishCategories,
     );
 
     if (category) {
-      markCovered(category, setCode, set.name, 'ptcgo');
+      markEnglishCovered(category, setCode, set.name, 'ptcgo-en');
+    } else {
+      unmatched.push({
+        setCode,
+        setName: set.name,
+        reason: 'ptcgo_en_no_match',
+      });
+    }
+  }
+
+  for (const set of tcgdexEnSets) {
+    const setCode = normalizeSetCode(set.id);
+    if (!setCode || hasEnglishCode(setCode) || codes[setCode]) continue;
+
+    const { category } = findBestCategory(
+      buildSearchTerms({ setCode, setName: set.name }),
+      englishCategories,
+    );
+
+    if (category && !englishCategoryCoverage.has(category.id)) {
+      markEnglishCovered(category, setCode, set.name, 'tcgdex-en');
     }
   }
 
@@ -325,28 +426,40 @@ async function buildSetCodeRegistry() {
   }
 
   const canonicalCodes = {};
-  for (const entry of Object.values(codes)) {
-    canonicalCodes[normalizeSetCode(entry.setCode)] = {
+  for (const [key, entry] of Object.entries(codes)) {
+    canonicalCodes[key] = {
       ...entry,
-      setCode: normalizeSetCode(entry.setCode),
+      setCode: normalizeSetCode(entry.setCode || key),
     };
   }
 
+  const uniqueEntries = Object.values(canonicalCodes).filter((entry, index, list) =>
+    list.findIndex((item) => normalizeSetCode(item.setCode) === normalizeSetCode(entry.setCode)
+      && item.language === entry.language) === index,
+  );
+
   return {
     updatedAt: new Date().toISOString(),
-    codes: { ...codes, ...canonicalCodes },
+    codes: canonicalCodes,
     unmatched,
-    totalCodes: Object.keys(canonicalCodes).length,
+    totalCodes: uniqueEntries.length,
     totalCategories: japaneseCategories.length,
     coveredCategories: categoryCoverage.size,
+    totalEnglishCategories: englishCategories.length,
+    coveredEnglishCategories: englishCategoryCoverage.size,
     sources: {
-      vendortools: Object.values(canonicalCodes).filter((entry) => entry.source === 'vendortools').length,
-      tcgdex: Object.values(canonicalCodes).filter((entry) => entry.source === 'tcgdex').length,
-      ptcgo: Object.values(canonicalCodes).filter((entry) => entry.source === 'ptcgo').length,
-      override: Object.values(canonicalCodes).filter((entry) => entry.source === 'override').length,
-      name: Object.values(canonicalCodes).filter((entry) => entry.source === 'name').length,
-      slug: Object.values(canonicalCodes).filter((entry) => entry.source === 'slug').length,
+      vendortools: uniqueEntries.filter((entry) => entry.source === 'vendortools').length,
+      tcgdex: uniqueEntries.filter((entry) => entry.source === 'tcgdex').length,
+      'tcgdex-en': uniqueEntries.filter((entry) => entry.source === 'tcgdex-en').length,
+      'ptcgo-en': uniqueEntries.filter((entry) => entry.source === 'ptcgo-en').length,
+      'override-en': uniqueEntries.filter((entry) => entry.source === 'override-en').length,
+      ptcgo: uniqueEntries.filter((entry) => entry.source === 'ptcgo').length,
+      override: uniqueEntries.filter((entry) => entry.source === 'override').length,
+      name: uniqueEntries.filter((entry) => entry.source === 'name').length,
+      slug: uniqueEntries.filter((entry) => entry.source === 'slug').length,
     },
+    englishCodeCount: uniqueEntries.filter((entry) => entry.language === 'en').length,
+    japaneseCodeCount: uniqueEntries.filter((entry) => entry.language === 'ja').length,
   };
 }
 
@@ -409,17 +522,23 @@ async function getSetCodeRegistry() {
   return syncSetCodes();
 }
 
-async function resolveJapaneseSet(setCode) {
+async function resolveSet(setCode) {
   const registry = await getSetCodeRegistry();
-  const normalized = String(setCode || '').trim();
-  const entry = registry.codes?.[normalized]
-    || registry.codes?.[normalized.toUpperCase()]
-    || registry.codes?.[normalized.toLowerCase()];
+  const normalized = normalizeSetCode(setCode);
+  const lowered = String(setCode || '').trim().toLowerCase();
 
-  if (!entry) {
+  return registry.codes?.[normalized]
+    || registry.codes?.[lowered]
+    || registry.codes?.[`${normalized}:en`]
+    || registry.codes?.[`${normalized}:ja`]
+    || null;
+}
+
+async function resolveJapaneseSet(setCode) {
+  const entry = await resolveSet(setCode);
+  if (!entry || entry.language === 'en') {
     return null;
   }
-
   return entry;
 }
 
@@ -428,6 +547,7 @@ module.exports = {
   OVERRIDES_PATH,
   syncSetCodes,
   getSetCodeRegistry,
+  resolveSet,
   resolveJapaneseSet,
   buildSetCodeRegistry,
 };

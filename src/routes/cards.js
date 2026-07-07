@@ -21,7 +21,10 @@ router.get('/set-codes', async (req, res) => {
       categoryName: entry.categoryName,
       categoryId: entry.categoryId,
       source: entry.source || null,
-    }));
+      language: entry.language || 'ja',
+    })).filter((entry, index, list) =>
+      list.findIndex((item) => item.setCode === entry.setCode && item.language === entry.language) === index,
+    );
 
     return res.json({
       success: true,
@@ -30,6 +33,10 @@ router.get('/set-codes', async (req, res) => {
         totalCodes: registry.totalCodes,
         totalCategories: registry.totalCategories,
         coveredCategories: registry.coveredCategories,
+        totalEnglishCategories: registry.totalEnglishCategories,
+        coveredEnglishCategories: registry.coveredEnglishCategories,
+        englishCodeCount: registry.englishCodeCount,
+        japaneseCodeCount: registry.japaneseCodeCount,
         sources: registry.sources,
         codes,
       },

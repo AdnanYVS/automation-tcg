@@ -813,7 +813,7 @@
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
           </svg>
           <input class="search-input" id="search-input" type="search"
-            placeholder="Kart adı, kodu veya Japonca set kodu (MEW-167)..."
+            placeholder="Kart adı, kodu veya set kodu (MEW-167, PAL-125, SV2A-100)..."
             minlength="2" required autocomplete="off">
         </div>
         <button class="search-btn" type="submit" id="search-button">Ara</button>
@@ -1045,9 +1045,10 @@
         currentPagination = data.pagination || null;
         renderResults(currentItems);
 
-        if (data.searchMode === 'japanese-set-code') {
-          showToast(`${currentItems.length} sonuç · ${data.setCode}-${data.cardNumber}`, 'success');
-          resultsCount.innerHTML = `<strong>${currentItems.length}</strong> sonuç · <strong>${data.setCode}-${data.cardNumber}</strong>`;
+        if (data.searchMode === 'japanese-set-code' || data.searchMode === 'english-set-code') {
+          const lang = data.searchMode === 'english-set-code' ? 'İngilizce' : 'Japonca';
+          showToast(`${currentItems.length} sonuç · ${lang} ${data.setCode}-${data.cardNumber}`, 'success');
+          resultsCount.innerHTML = `<strong>${currentItems.length}</strong> sonuç · <strong>${data.setCode}-${data.cardNumber}</strong> <span style="color:var(--muted)">(${lang})</span>`;
         } else {
           showToast(`${currentItems.length} kart bulundu`, 'success');
         }
