@@ -66,6 +66,40 @@ const LIST_PRODUCT_STOCK_LOCATION_QUERY = `
   }
 `;
 
+const LIST_PRODUCTS_QUERY = `
+  query ListProduct($pagination: PaginationInput) {
+    listProduct(pagination: $pagination) {
+      count
+      data {
+        id
+        name
+        categories {
+          id
+          name
+        }
+        variants {
+          id
+          sku
+          barcodeList
+        }
+      }
+    }
+  }
+`;
+
+const UPDATE_PRODUCT_MUTATION = `
+  mutation UpdateProduct($input: UpdateProductInput!) {
+    updateProduct(input: $input) {
+      id
+      name
+      categories {
+        id
+        name
+      }
+    }
+  }
+`;
+
 let cachedStockLocations = null;
 
 async function listStockLocations() {
@@ -172,6 +206,41 @@ function buildVariantInput({ sku, sellPrice, currency = 'TRY', isActive = true, 
   return variant;
 }
 
+async function listAllProducts({ pageSize = 50 } = {}) {
+  let page = 1;
+  const products = [];
+
+  while (true) {
+    const data = await graphqlRequest(LIST_PRODUCTS_QUERY, {
+      pagination: { page, limit: pageSize },
+    });
+    const items = data.listProduct?.data || [];
+    if (!items.length) break;
+
+    products.push(...items);
+    if (items.length < pageSize) break;
+    page += 1;
+  }
+
+  return products;
+}
+
+async function updateProductCategories({ productId, categoryName, categoryPath = [] }) {
+  const categories = [{ name: categoryName }];
+  if (categoryPath.length > 0) {
+    categories[0].path = categoryPath;
+  }
+
+  const data = await graphqlRequest(UPDATE_PRODUCT_MUTATION, {
+    input: {
+      id: productId,
+      categories,
+    },
+  });
+
+  return data.updateProduct;
+}
+
 async function createBasicProduct({
   name,
   sku,
@@ -183,6 +252,7 @@ async function createBasicProduct({
   type = 'PHYSICAL',
   imageUrl,
   categoryName,
+  categoryPath,
   barcode,
 }) {
   const input = {
@@ -198,7 +268,11 @@ async function createBasicProduct({
   };
 
   if (categoryName) {
-    input.categories = [{ name: categoryName }];
+    const categoryInput = { name: categoryName };
+    if (categoryPath?.length) {
+      categoryInput.path = categoryPath;
+    }
+    input.categories = [categoryInput];
   }
 
   const data = await graphqlRequest(CREATE_PRODUCT_MUTATION, {
@@ -295,6 +369,8 @@ module.exports = {
   createProductWithVariants,
   addVariantToProduct,
   updateVariantPrices,
+  updateProductCategories,
+  listAllProducts,
   saveVariantStock,
   getVariantStockAtLocation,
   listAllVariantStocks,

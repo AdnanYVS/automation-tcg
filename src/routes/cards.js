@@ -153,9 +153,19 @@ router.post('/import-card', async (req, res) => {
     if (!name) return res.status(400).json({ success: false, error: 'Ürün adı bulunamadı.' });
 
     const sku = req.body.code || card.code || `KF-${kartfiyatCardId}`;
-    let sellPrice = req.body.sellPrice !== undefined ? Number(req.body.sellPrice) : null;
+    const hasManualSellPrice = req.body.sellPrice !== undefined
+      && req.body.sellPrice !== null
+      && String(req.body.sellPrice).trim() !== '';
+    let sellPrice = hasManualSellPrice ? Number(req.body.sellPrice) : null;
 
-    if (!Number.isFinite(sellPrice)) {
+    if (hasManualSellPrice && (!Number.isFinite(sellPrice) || sellPrice <= 0)) {
+      return res.status(400).json({
+        success: false,
+        error: 'sellPrice pozitif bir sayı olmalıdır.',
+      });
+    }
+
+    if (!hasManualSellPrice) {
       const usdPrice = getPriceChartingUsd(card);
       if (!usdPrice) {
         return res.status(400).json({
@@ -184,6 +194,7 @@ router.post('/import-card', async (req, res) => {
       currency: 'TRY',
       imageUrl,
       categoryName: category.name,
+      categoryPath: category.path,
       barcode,
     });
     const variant = product.variants?.[0];
@@ -196,16 +207,26 @@ router.post('/import-card', async (req, res) => {
       ikasProductId: product.id,
       kartfiyatCardId,
       barcode,
+      priceManual: hasManualSellPrice,
     });
 
-    const usdPrice = getPriceChartingUsd(card);
-    if (usdPrice) {
+    if (hasManualSellPrice) {
       updateMappingPriceSnapshot({
         mappingId: mapping.id,
         cardName: name,
-        usdPrice,
+        usdPrice: null,
         tryPrice: sellPrice,
       });
+    } else {
+      const usdPrice = getPriceChartingUsd(card);
+      if (usdPrice) {
+        updateMappingPriceSnapshot({
+          mappingId: mapping.id,
+          cardName: name,
+          usdPrice,
+          tryPrice: sellPrice,
+        });
+      }
     }
 
     return res.status(201).json({
@@ -220,6 +241,7 @@ router.post('/import-card', async (req, res) => {
         sku: variant.sku,
         barcode: variant.barcodeList?.[0] || barcode,
         sellPrice,
+        priceManual: hasManualSellPrice,
         category: {
           id: category.id,
           name: category.name,

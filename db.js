@@ -19,6 +19,7 @@ const MAPPING_EXTRA_COLUMNS = [
   { name: 'last_try_price', ddl: 'REAL' },
   { name: 'last_price_checked_at', ddl: 'TEXT' },
   { name: 'barcode', ddl: 'TEXT' },
+  { name: 'price_manual', ddl: 'INTEGER DEFAULT 0' },
 ];
 
 function ensureMappingExtraColumns(db) {
@@ -121,13 +122,37 @@ function getDatabase() {
   return db;
 }
 
-function insertMapping({ ikasVariantId, kartfiyatCardId, ikasProductId = null, barcode = null }) {
+function insertMapping({
+  ikasVariantId,
+  kartfiyatCardId,
+  ikasProductId = null,
+  barcode = null,
+  priceManual = false,
+}) {
   const db = getDatabase();
   try {
     const result = db.prepare(`
-      INSERT INTO card_mappings (ikas_variant_id, ikas_product_id, kartfiyat_card_id, barcode)
-      VALUES (@ikasVariantId, @ikasProductId, @kartfiyatCardId, @barcode)
-    `).run({ ikasVariantId, ikasProductId, kartfiyatCardId, barcode });
+      INSERT INTO card_mappings (
+        ikas_variant_id,
+        ikas_product_id,
+        kartfiyat_card_id,
+        barcode,
+        price_manual
+      )
+      VALUES (
+        @ikasVariantId,
+        @ikasProductId,
+        @kartfiyatCardId,
+        @barcode,
+        @priceManual
+      )
+    `).run({
+      ikasVariantId,
+      ikasProductId,
+      kartfiyatCardId,
+      barcode,
+      priceManual: priceManual ? 1 : 0,
+    });
     return { id: result.lastInsertRowid };
   } finally {
     db.close();
@@ -156,6 +181,19 @@ function getAllMappings() {
   const db = getDatabase();
   try {
     return db.prepare('SELECT * FROM card_mappings ORDER BY created_at DESC').all();
+  } finally {
+    db.close();
+  }
+}
+
+function getAutoTrackedMappings() {
+  const db = getDatabase();
+  try {
+    return db.prepare(`
+      SELECT * FROM card_mappings
+      WHERE COALESCE(price_manual, 0) = 0
+      ORDER BY created_at DESC
+    `).all();
   } finally {
     db.close();
   }
@@ -477,6 +515,7 @@ module.exports = {
   findByIkasVariantId,
   findMappingById,
   getAllMappings,
+  getAutoTrackedMappings,
   updateMappingPriceSnapshot,
   upsertPendingPriceAlert,
   getPriceChangeAlerts,

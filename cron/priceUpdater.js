@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const cron = require('node-cron');
-const { getAllMappings } = require('../db');
+const { getAutoTrackedMappings } = require('../db');
 const { getCardById, getPriceChartingUsd } = require('../services/kartfiyat');
 const { updateVariantPrices } = require('../services/ikas');
 const { getUsdTryRate } = require('../services/exchangeRate');
@@ -23,7 +23,7 @@ function chunkArray(items, size) {
 }
 
 async function runPriceUpdate() {
-  const mappings = getAllMappings();
+  const mappings = getAutoTrackedMappings();
   if (!mappings.length) return { updated: 0, skipped: 0, failed: 0 };
 
   const usdTryRate = await getUsdTryRate();

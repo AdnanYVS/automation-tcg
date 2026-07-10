@@ -54,6 +54,55 @@ async function getPortfolioValuation() {
 
   for (const mapping of mappings) {
     try {
+      if (mapping.price_manual) {
+        const unitTryPrice = mapping.last_try_price;
+        const cardName = mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`;
+
+        if (!unitTryPrice) {
+          skipped.push({
+            mappingId: mapping.id,
+            cardName,
+            kartfiyatCardId: mapping.kartfiyat_card_id,
+            reason: 'Manuel fiyat kaydı yok',
+          });
+          continue;
+        }
+
+        const variantStocks = stockByVariant.get(mapping.ikas_variant_id) || new Map();
+        const locations = stockLocations.map((location) => {
+          const quantity = Number(variantStocks.get(location.id) || 0);
+          const valueTry = quantity * unitTryPrice;
+          locationTotals[location.id].units += quantity;
+          locationTotals[location.id].valueTry += valueTry;
+          return {
+            locationId: location.id,
+            name: location.name,
+            quantity,
+            valueTry,
+          };
+        });
+
+        const totalQuantity = locations.reduce((sum, entry) => sum + entry.quantity, 0);
+        const rowValueTry = locations.reduce((sum, entry) => sum + entry.valueTry, 0);
+        totalValueTry += rowValueTry;
+        totalUnits += totalQuantity;
+
+        items.push({
+          mappingId: mapping.id,
+          cardName,
+          kartfiyatCardId: mapping.kartfiyat_card_id,
+          ikasProductId: mapping.ikas_product_id,
+          ikasVariantId: mapping.ikas_variant_id,
+          usdPrice: null,
+          unitTryPrice,
+          priceManual: true,
+          totalQuantity,
+          totalValueTry: rowValueTry,
+          locations,
+        });
+        continue;
+      }
+
       const card = await getCardById(mapping.kartfiyat_card_id);
       const usdPrice = getPriceChartingUsd(card);
       const cardName = card.name || mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`;

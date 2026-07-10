@@ -1,5 +1,5 @@
 const {
-  getAllMappings,
+  getAutoTrackedMappings,
   findMappingById,
   updateMappingPriceSnapshot,
   upsertPendingPriceAlert,
@@ -31,6 +31,10 @@ function exceedsThreshold(changePercent, threshold = THRESHOLD_PERCENT) {
 }
 
 async function checkMappingPrice(mapping, { usdTryRate, multiplier, threshold }) {
+  if (mapping.price_manual) {
+    return { status: 'skipped', reason: 'Manuel fiyat' };
+  }
+
   if (!mapping.ikas_product_id) {
     return { status: 'skipped', reason: 'ikas_product_id yok' };
   }
@@ -102,7 +106,7 @@ async function checkMappingPrice(mapping, { usdTryRate, multiplier, threshold })
 }
 
 async function runPriceCheck() {
-  const mappings = getAllMappings();
+  const mappings = getAutoTrackedMappings();
   if (!mappings.length) {
     return {
       checked: 0,
