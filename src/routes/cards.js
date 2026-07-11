@@ -5,7 +5,7 @@ const { createBasicProduct, listStockLocations, resolveCategoryForCard, incremen
 const { getUsdTryRate } = require('../../services/exchangeRate');
 const { calculateFinalPriceTry } = require('../../services/pricing');
 const { generateProductBarcode } = require('../../services/barcode');
-const { insertMapping, findByKartfiyatCardId, updateMappingPriceSnapshot } = require('../../db');
+const { insertMapping, findByKartfiyatCardId, updateMappingPriceSnapshot, insertInventoryEvent } = require('../../db');
 const { requireAuth } = require('../middleware/requireAuth');
 
 const router = express.Router();
@@ -132,6 +132,16 @@ router.post('/import-card', async (req, res) => {
         incrementBy: stockCount,
       });
 
+      insertInventoryEvent({
+        mappingId: existing.id,
+        kartfiyatCardId,
+        ikasVariantId: existing.ikas_variant_id,
+        stockLocationId,
+        quantity: stockCount,
+        eventType: 'import',
+        note: 'Stok artırımı',
+      });
+
       return res.json({
         success: true,
         data: {
@@ -228,6 +238,16 @@ router.post('/import-card', async (req, res) => {
         });
       }
     }
+
+    insertInventoryEvent({
+      mappingId: mapping.id,
+      kartfiyatCardId,
+      ikasVariantId: variant.id,
+      stockLocationId,
+      quantity: stockCount,
+      eventType: 'import',
+      note: hasManualSellPrice ? 'Yeni ürün (manuel fiyat)' : 'Yeni ürün',
+    });
 
     return res.status(201).json({
       success: true,

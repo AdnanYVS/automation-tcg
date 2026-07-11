@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Depo & Satış · Card Dünyası</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c0f14;
+      --surface: #1a2230;
+      --surface-hover: #212b3c;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --text: #f0f4f8;
+      --muted: #8b9cb3;
+      --accent: #ffcb05;
+      --accent-text: #1a1400;
+      --success: #34d399;
+      --error: #f87171;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 203, 5, 0.08), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(59, 130, 246, 0.06), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .brand { display: flex; align-items: center; gap: 14px; }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent), #ff9500);
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+    }
+
+    .brand h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    .brand p { font-size: 0.88rem; color: var(--muted); margin-top: 2px; }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link, .logout-btn, .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+    }
+
+    .nav-link:hover, .logout-btn:hover, .btn:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+      background: var(--surface-hover);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #ffb800);
+      color: var(--accent-text);
+      border-color: transparent;
+    }
+
+    .user-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .user-badge strong { color: var(--text); }
+
+    .logout-btn { background: transparent; }
+
+    .main-tabs, .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .main-tab, .filter-btn {
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .main-tab.active, .filter-btn.active {
+      color: var(--accent-text);
+      background: var(--accent);
+      border-color: transparent;
+    }
+
+    .filters input, .filters select {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      min-width: 180px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    .stat-sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .panel-header strong { font-size: 1rem; }
+    .panel-meta { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+    .card-id {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .qty-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(52, 211, 153, 0.12);
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .qty-badge.zero {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+    }
+
+    .tag.manual {
+      background: rgba(255, 203, 5, 0.12);
+      color: var(--accent);
+    }
+
+    .toast {
+      display: none;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .toast.visible { display: block; }
+    .toast.info { background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.25); color: #93c5fd; }
+    .toast.success { background: rgba(52, 211, 153, 0.12); border: 1px solid rgba(52, 211, 153, 0.25); color: var(--success); }
+    .toast.error { background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.25); color: var(--error); }
+
+    .loading-row td, .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+    }
+
+    .view-section[hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon">📦</div>
+        <div>
+          <h1>Depo & Satış</h1>
+          <p>İstanbul / İzmir stokları ve satılan kartlar</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="/" class="nav-link">← Kart Arama</a>
+        <a href="/prices.html" class="nav-link">Fiyat Takibi</a>
+        <span class="user-badge" id="user-badge" hidden>👤 <strong id="user-name"></strong></span>
+        <button type="button" class="logout-btn" id="logout-btn" hidden>Çıkış</button>
+        <button type="button" class="btn btn-primary" id="refresh-btn">Yenile</button>
+      </div>
+    </header>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="main-tabs" id="main-tabs">
+      <button type="button" class="main-tab active" data-view="stock">Depo Stoku</button>
+      <button type="button" class="main-tab" data-view="sales">Satışlar</button>
+      <button type="button" class="main-tab" data-view="events">Depo Hareketleri</button>
+    </div>
+
+    <div class="filters">
+      <select id="location-filter">
+        <option value="">Tüm depolar</option>
+      </select>
+      <input id="search-filter" type="search" placeholder="Kart adı, KF ID, barkod...">
+      <span id="stock-filter-wrap">
+        <button type="button" class="filter-btn active" id="stock-filter-all">Tümü</button>
+        <button type="button" class="filter-btn" id="stock-filter-instock">Sadece stokta</button>
+      </span>
+    </div>
+
+    <section class="stats" id="stats"></section>
+
+    <div class="view-section" id="stock-view">
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <strong>Depodaki Kartlar</strong>
+            <div class="panel-meta">ikas stok lokasyonlarına göre güncel adetler</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr id="stock-head-row">
+                <th>Kart</th>
+                <th>Toplam</th>
+              </tr>
+            </thead>
+            <tbody id="stock-body">
+              <tr class="loading-row"><td colspan="4">Yükleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div class="view-section" id="sales-view" hidden>
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <strong>Satış Geçmişi</strong>
+            <div class="panel-meta">ikas siparişlerinden çekilen satılan kartlar</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Kart</th>
+                <th>Adet</th>
+                <th>Birim</th>
+                <th>Toplam</th>
+                <th>Depo</th>
+                <th>Sipariş</th>
+                <th>Tarih</th>
+              </tr>
+            </thead>
+            <tbody id="sales-body">
+              <tr class="loading-row"><td colspan="7">Yükleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div class="view-section" id="events-view" hidden>
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <strong>Depo Hareketleri</strong>
+            <div class="panel-meta">Panele eklenen kartların depo giriş kayıtları</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Kart</th>
+                <th>Adet</th>
+                <th>Depo</th>
+                <th>İşlem</th>
+                <th>Not</th>
+                <th>Tarih</th>
+              </tr>
+            </thead>
+            <tbody id="events-body">
+              <tr class="loading-row"><td colspan="6">Yükleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    const toastEl = document.getElementById('toast');
+    const statsEl = document.getElementById('stats');
+    const mainTabsEl = document.getElementById('main-tabs');
+    const locationFilter = document.getElementById('location-filter');
+    const searchFilter = document.getElementById('search-filter');
+    const stockFilterWrap = document.getElementById('stock-filter-wrap');
+    const stockFilterAll = document.getElementById('stock-filter-all');
+    const stockFilterInstock = document.getElementById('stock-filter-instock');
+    const refreshBtn = document.getElementById('refresh-btn');
+    const stockHeadRow = document.getElementById('stock-head-row');
+    const stockBody = document.getElementById('stock-body');
+    const salesBody = document.getElementById('sales-body');
+    const eventsBody = document.getElementById('events-body');
+
+    let currentView = 'stock';
+    let inStockOnly = false;
+    let inventoryData = null;
+    let salesData = null;
+    let eventsData = null;
+    let locationMap = new Map();
+
+    function showToast(message, type = 'info') {
+      toastEl.textContent = message;
+      toastEl.className = `toast visible ${type}`;
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => toastEl.classList.remove('visible'), 4000);
+    }
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function formatTry(value) {
+      const num = Number(value);
+      if (!Number.isFinite(num)) return '—';
+      return `${Math.round(num).toLocaleString('tr-TR')} ₺`;
+    }
+
+    function formatDate(value) {
+      if (!value) return '—';
+      return new Date(value).toLocaleString('tr-TR', {
+        day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+      });
+    }
+
+    function getFilters() {
+      return {
+        locationId: locationFilter.value || '',
+        search: searchFilter.value.trim(),
+        inStockOnly: currentView === 'stock' && inStockOnly,
+      };
+    }
+
+    function setStockFilter(mode) {
+      inStockOnly = mode === 'instock';
+      stockFilterAll.classList.toggle('active', !inStockOnly);
+      stockFilterInstock.classList.toggle('active', inStockOnly);
+      if (currentView === 'stock') loadCurrentView();
+    }
+
+    function switchView(view) {
+      currentView = view;
+      document.querySelectorAll('.main-tab').forEach((tab) => {
+        tab.classList.toggle('active', tab.dataset.view === view);
+      });
+      document.getElementById('stock-view').hidden = view !== 'stock';
+      document.getElementById('sales-view').hidden = view !== 'sales';
+      document.getElementById('events-view').hidden = view !== 'events';
+      stockFilterWrap.style.display = view === 'stock' ? 'inline-flex' : 'none';
+      loadCurrentView();
+    }
+
+    function renderStats() {
+      if (currentView === 'stock' && inventoryData) {
+        const summary = inventoryData.summary;
+        statsEl.innerHTML = `
+          <div class="stat-card"><div class="stat-label">Stoktaki Ürün</div><div class="stat-value">${summary.inStockProducts}</div><div class="stat-sub">${summary.listedProducts} kayıtlı kart</div></div>
+          <div class="stat-card"><div class="stat-label">Toplam Adet</div><div class="stat-value">${summary.totalUnits}</div><div class="stat-sub">Tüm depolar</div></div>
+          ${summary.locationTotals.map((loc) => `
+            <div class="stat-card">
+              <div class="stat-label">${escapeHtml(loc.name)}</div>
+              <div class="stat-value">${loc.units}</div>
+              <div class="stat-sub">${loc.productCount} farklı kart</div>
+            </div>
+          `).join('')}
+          <div class="stat-card"><div class="stat-label">Stokta Yok</div><div class="stat-value">${summary.outOfStockProducts}</div><div class="stat-sub">Sıfır adetli kartlar</div></div>
+        `;
+        return;
+      }
+
+      if (currentView === 'sales' && salesData) {
+        const summary = salesData.summary;
+        statsEl.innerHTML = `
+          <div class="stat-card"><div class="stat-label">Sipariş</div><div class="stat-value">${summary.totalOrders}</div><div class="stat-sub">${summary.totalLineItems} satır</div></div>
+          <div class="stat-card"><div class="stat-label">Satılan Adet</div><div class="stat-value">${summary.soldUnits}</div><div class="stat-sub">Toplam kart adedi</div></div>
+          <div class="stat-card"><div class="stat-label">Ciro</div><div class="stat-value" style="font-size:1.2rem">${formatTry(summary.soldRevenue)}</div><div class="stat-sub">Satış toplamı</div></div>
+          ${summary.byLocation.map((loc) => `
+            <div class="stat-card">
+              <div class="stat-label">${escapeHtml(loc.name)}</div>
+              <div class="stat-value">${loc.units}</div>
+              <div class="stat-sub">${formatTry(loc.revenue)}</div>
+            </div>
+          `).join('')}
+        `;
+        return;
+      }
+
+      if (currentView === 'events' && eventsData) {
+        const imports = eventsData.events.filter((event) => event.event_type === 'import');
+        const totalQty = imports.reduce((sum, event) => sum + Number(event.quantity || 0), 0);
+        statsEl.innerHTML = `
+          <div class="stat-card"><div class="stat-label">Giriş Kaydı</div><div class="stat-value">${imports.length}</div><div class="stat-sub">Panele eklenen hareket</div></div>
+          <div class="stat-card"><div class="stat-label">Eklenen Adet</div><div class="stat-value">${totalQty}</div><div class="stat-sub">Toplam giriş miktarı</div></div>
+        `;
+      }
+    }
+
+    function renderStockTable() {
+      if (!inventoryData) return;
+      const locations = inventoryData.locations || [];
+      stockHeadRow.innerHTML = `
+        <th>Kart</th>
+        ${locations.map((loc) => `<th>${escapeHtml(loc.name)}</th>`).join('')}
+        <th>Toplam</th>
+      `;
+
+      if (!inventoryData.items.length) {
+        stockBody.innerHTML = `<tr class="empty-state"><td colspan="${locations.length + 2}">Bu filtrede stok bulunamadı.</td></tr>`;
+        return;
+      }
+
+      stockBody.innerHTML = inventoryData.items.map((item) => `
+        <tr>
+          <td>
+            <strong>${escapeHtml(item.cardName)}</strong>
+            <span class="card-id">KF #${escapeHtml(item.kartfiyatCardId)}${item.barcode ? ` · ${escapeHtml(item.barcode)}` : ''}</span>
+            ${item.priceManual ? '<span class="tag manual">Manuel fiyat</span>' : ''}
+          </td>
+          ${item.locations.map((loc) => `
+            <td><span class="qty-badge ${loc.quantity > 0 ? '' : 'zero'}">${loc.quantity}</span></td>
+          `).join('')}
+          <td><span class="qty-badge ${item.totalQuantity > 0 ? '' : 'zero'}">${item.totalQuantity}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderSalesTable() {
+      if (!salesData) return;
+      if (!salesData.sales.length) {
+        salesBody.innerHTML = '<tr class="empty-state"><td colspan="7">Henüz satış kaydı yok.</td></tr>';
+        return;
+      }
+
+      salesBody.innerHTML = salesData.sales.map((sale) => `
+        <tr>
+          <td>
+            <strong>${escapeHtml(sale.cardName)}</strong>
+            <span class="card-id">${sale.kartfiyatCardId ? `KF #${escapeHtml(sale.kartfiyatCardId)}` : 'Eşleşmemiş ürün'}${sale.barcode ? ` · ${escapeHtml(sale.barcode)}` : ''}</span>
+          </td>
+          <td>${sale.quantity}</td>
+          <td>${formatTry(sale.unitPrice)}</td>
+          <td>${formatTry(sale.totalPrice)}</td>
+          <td>${escapeHtml(sale.locationName)}</td>
+          <td>#${escapeHtml(sale.orderNumber || sale.orderId)}</td>
+          <td>${formatDate(sale.soldAt)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderEventsTable() {
+      if (!eventsData) return;
+      if (!eventsData.events.length) {
+        eventsBody.innerHTML = '<tr class="empty-state"><td colspan="6">Henüz depo hareketi kaydı yok.</td></tr>';
+        return;
+      }
+
+      eventsBody.innerHTML = eventsData.events.map((event) => `
+        <tr>
+          <td>
+            <strong>${escapeHtml(event.card_name || `Kart #${event.kartfiyat_card_id}`)}</strong>
+            <span class="card-id">KF #${escapeHtml(event.kartfiyat_card_id || '—')}</span>
+          </td>
+          <td><span class="qty-badge">+${event.quantity}</span></td>
+          <td>${escapeHtml(locationMap.get(event.stock_location_id) || event.stock_location_id || '—')}</td>
+          <td><span class="tag">${escapeHtml(event.event_type)}</span></td>
+          <td>${escapeHtml(event.note || '—')}</td>
+          <td>${formatDate(event.created_at)}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadInventory() {
+      const filters = getFilters();
+      const params = new URLSearchParams();
+      if (filters.locationId) params.set('locationId', filters.locationId);
+      if (filters.search) params.set('search', filters.search);
+      if (filters.inStockOnly) params.set('inStockOnly', 'true');
+
+      stockBody.innerHTML = `<tr class="loading-row"><td colspan="4">Stoklar yükleniyor...</td></tr>`;
+      const response = await AUTH.apiFetch(`/api/warehouse-inventory?${params}`);
+      const payload = await response.json();
+      if (!response.ok || !payload.success) throw new Error(payload.error || 'Stok verisi alınamadı.');
+      inventoryData = payload.data;
+      renderStats();
+      renderStockTable();
+    }
+
+    async function loadSales() {
+      const filters = getFilters();
+      const params = new URLSearchParams();
+      if (filters.locationId) params.set('locationId', filters.locationId);
+      if (filters.search) params.set('search', filters.search);
+
+      salesBody.innerHTML = '<tr class="loading-row"><td colspan="7">Satışlar yükleniyor...</td></tr>';
+      const response = await AUTH.apiFetch(`/api/sales-history?${params}`);
+      const payload = await response.json();
+      if (!response.ok || !payload.success) throw new Error(payload.error || 'Satış verisi alınamadı.');
+      salesData = payload.data;
+      renderStats();
+      renderSalesTable();
+    }
+
+    async function loadEvents() {
+      const filters = getFilters();
+      const params = new URLSearchParams();
+      if (filters.locationId) params.set('locationId', filters.locationId);
+
+      eventsBody.innerHTML = '<tr class="loading-row"><td colspan="6">Hareketler yükleniyor...</td></tr>';
+      const response = await AUTH.apiFetch(`/api/inventory-events?${params}`);
+      const payload = await response.json();
+      if (!response.ok || !payload.success) throw new Error(payload.error || 'Hareket verisi alınamadı.');
+      eventsData = payload.data;
+      renderStats();
+      renderEventsTable();
+    }
+
+    async function loadLocations() {
+      const response = await AUTH.apiFetch('/api/stock-locations');
+      const payload = await response.json();
+      if (!response.ok || !payload.success) return;
+      locationMap = new Map(payload.data.map((loc) => [loc.id, loc.name]));
+      locationFilter.innerHTML = '<option value="">Tüm depolar</option>' + payload.data
+        .map((loc) => `<option value="${loc.id}">${escapeHtml(loc.name)}</option>`)
+        .join('');
+    }
+
+    async function loadCurrentView() {
+      try {
+        showToast('Veriler yükleniyor...', 'info');
+        if (currentView === 'stock') await loadInventory();
+        else if (currentView === 'sales') await loadSales();
+        else await loadEvents();
+        showToast('Veriler güncellendi', 'success');
+      } catch (error) {
+        showToast(error.message, 'error');
+      }
+    }
+
+    mainTabsEl.addEventListener('click', (event) => {
+      const tab = event.target.closest('.main-tab');
+      if (!tab) return;
+      switchView(tab.dataset.view);
+    });
+
+    locationFilter.addEventListener('change', loadCurrentView);
+    searchFilter.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') loadCurrentView();
+    });
+    stockFilterAll.addEventListener('click', () => setStockFilter('all'));
+    stockFilterInstock.addEventListener('click', () => setStockFilter('instock'));
+    refreshBtn.addEventListener('click', loadCurrentView);
+    document.getElementById('logout-btn').addEventListener('click', () => AUTH.logout());
+
+    AUTH.requireAuth().then(async (user) => {
+      if (!user) return;
+      document.getElementById('user-name').textContent = user.displayName || user.username;
+      document.getElementById('user-badge').hidden = false;
+      document.getElementById('logout-btn').hidden = false;
+      await loadLocations();
+      await loadCurrentView();
+    });
+  </script>
+</body>
+</html>

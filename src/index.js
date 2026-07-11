@@ -6,6 +6,7 @@ const { initDatabase } = require('../db');
 const { getSetCodeRegistry } = require('../services/kartfiyat/setRegistry');
 const cardsRouter = require('./routes/cards');
 const pricesRouter = require('./routes/prices');
+const inventoryRouter = require('./routes/inventory');
 const authRouter = require('./routes/auth');
 const { requireAuthPage } = require('./middleware/requireAuth');
 const { startPriceCheckerCron } = require('../cron/priceChecker');
@@ -29,11 +30,13 @@ app.get('/health', (req, res) => res.json({ success: true, status: 'ok' }));
 app.use('/api', authRouter);
 app.use('/api', cardsRouter);
 app.use('/api', pricesRouter);
+app.use('/api', inventoryRouter);
 
 app.get('/login.html', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'login.html')));
 app.get('/', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
 app.get('/index.html', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
 app.get('/prices.html', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'prices.html')));
+app.get('/inventory.html', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'inventory.html')));
 
 app.use(express.static(PUBLIC_DIR, { index: false }));
 

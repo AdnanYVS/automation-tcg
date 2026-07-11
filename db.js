@@ -98,6 +98,30 @@ function createTables(db) {
 
     CREATE INDEX IF NOT EXISTS idx_admin_sessions_expires_at
       ON admin_sessions(expires_at);
+
+    CREATE TABLE IF NOT EXISTS inventory_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      mapping_id INTEGER,
+      kartfiyat_card_id TEXT,
+      ikas_variant_id TEXT,
+      stock_location_id TEXT,
+      quantity INTEGER NOT NULL,
+      event_type TEXT NOT NULL,
+      order_id TEXT,
+      order_number TEXT,
+      note TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (mapping_id) REFERENCES card_mappings(id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_inventory_events_mapping_id
+      ON inventory_events(mapping_id);
+
+    CREATE INDEX IF NOT EXISTS idx_inventory_events_location_id
+      ON inventory_events(stock_location_id);
+
+    CREATE INDEX IF NOT EXISTS idx_inventory_events_event_type
+      ON inventory_events(event_type);
   `);
 
   ensureMappingExtraColumns(db);
@@ -489,6 +513,106 @@ function deleteExpiredAdminSessions() {
   }
 }
 
+function insertInventoryEvent({
+  mappingId = null,
+  kartfiyatCardId = null,
+  ikasVariantId = null,
+  stockLocationId,
+  quantity,
+  eventType,
+  orderId = null,
+  orderNumber = null,
+  note = null,
+}) {
+  const db = getDatabase();
+  try {
+    const result = db.prepare(`
+      INSERT INTO inventory_events (
+        mapping_id,
+        kartfiyat_card_id,
+        ikas_variant_id,
+        stock_location_id,
+        quantity,
+        event_type,
+        order_id,
+        order_number,
+        note
+      ) VALUES (
+        @mappingId,
+        @kartfiyatCardId,
+        @ikasVariantId,
+        @stockLocationId,
+        @quantity,
+        @eventType,
+        @orderId,
+        @orderNumber,
+        @note
+      )
+    `).run({
+      mappingId,
+      kartfiyatCardId,
+      ikasVariantId,
+      stockLocationId,
+      quantity,
+      eventType,
+      orderId,
+      orderNumber,
+      note,
+    });
+    return { id: result.lastInsertRowid };
+  } finally {
+    db.close();
+  }
+}
+
+function getInventoryEvents({ eventType, stockLocationId, limit = 100 } = {}) {
+  const db = getDatabase();
+  try {
+    const conditions = [];
+    const params = { limit };
+
+    if (eventType) {
+      conditions.push('event_type = @eventType');
+      params.eventType = eventType;
+    }
+    if (stockLocationId) {
+      conditions.push('stock_location_id = @stockLocationId');
+      params.stockLocationId = stockLocationId;
+    }
+
+    const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    return db.prepare(`
+      SELECT e.*, m.card_name, m.barcode
+      FROM inventory_events e
+      LEFT JOIN card_mappings m ON m.id = e.mapping_id
+      ${whereClause}
+      ORDER BY e.created_at DESC
+      LIMIT @limit
+    `).all(params);
+  } finally {
+    db.close();
+  }
+}
+
+function getInventoryEventSummary() {
+  const db = getDatabase();
+  try {
+    return db.prepare(`
+      SELECT
+        event_type,
+        stock_location_id,
+        SUM(quantity) AS total_quantity,
+        COUNT(*) AS event_count
+      FROM inventory_events
+      GROUP BY event_type, stock_location_id
+      ORDER BY event_type ASC, stock_location_id ASC
+    `).all();
+  } finally {
+    db.close();
+  }
+}
+
 function listAdminUsers() {
   const db = getDatabase();
   try {
@@ -532,5 +656,8 @@ module.exports = {
   findAdminSession,
   deleteAdminSession,
   deleteExpiredAdminSessions,
+  getInventoryEvents,
+  getInventoryEventSummary,
+  insertInventoryEvent,
   listAdminUsers,
 };
