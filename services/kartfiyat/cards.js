@@ -1,6 +1,7 @@
 const { createKartfiyatClient, parseApiResponse } = require('./client');
 const { getCategoryItems } = require('./categories');
-const { resolveSet, getSetCodeRegistry } = require('./setRegistry');
+const { resolveSetForGame } = require('./setCodeResolver');
+const { normalizeGameId } = require('../ikas/taxonomy');
 
 const SET_CODE_PATTERN = /^([A-Za-z0-9][A-Za-z0-9.+]{1,7})-(\d{1,4})$/;
 
@@ -14,16 +15,38 @@ function parseSetCodeQuery(query) {
   };
 }
 
-function filterItemsByCardNumber(items, cardNumber) {
+function filterItemsByCardNumber(items, cardNumber, setCode) {
   const target = String(cardNumber);
+  const targetNum = String(Number(target));
+  const padded = target.padStart(3, '0');
+  const normalizedSetCode = setCode ? String(setCode).trim().toUpperCase() : null;
 
   return items.filter((item) => {
-    const hashMatch = String(item.name || '').match(/#(\d+)\b/);
-    if (hashMatch) {
-      return hashMatch[1] === target;
+    const name = String(item.name || '');
+    const code = String(item.code || '');
+
+    const hashMatch = name.match(/#(\d+)\b/);
+    if (hashMatch && hashMatch[1] === target) {
+      return true;
     }
 
-    return String(item.code || '') === target;
+    if (code === target || code === padded) {
+      return true;
+    }
+
+    if (normalizedSetCode) {
+      const setCodePattern = new RegExp(`${normalizedSetCode}-0*${targetNum}\\b`, 'i');
+      if (setCodePattern.test(name) || setCodePattern.test(code)) {
+        return true;
+      }
+    }
+
+    const suffixMatch = name.match(/-0*(\d{1,4})\b/);
+    if (suffixMatch && String(Number(suffixMatch[1])) === targetNum) {
+      return true;
+    }
+
+    return false;
   });
 }
 
@@ -32,8 +55,9 @@ async function searchBySetCode({
   cardNumber,
   page = 1,
   perPage = 20,
-}) {
-  const setEntry = await resolveSet(setCode);
+  game = 'pokemon',
+} = {}) {
+  const setEntry = await resolveSetForGame(setCode, game);
 
   if (!setEntry) {
     throw new Error(`"${setCode}" set kodu için kategori bulunamadı.`);
@@ -45,14 +69,20 @@ async function searchBySetCode({
     perPage,
   });
 
-  const items = filterItemsByCardNumber(result.items, cardNumber);
+  const items = filterItemsByCardNumber(
+    result.items,
+    cardNumber,
+    setEntry.setCode || setCode,
+  );
+  const gameId = normalizeGameId(game);
 
   return {
     items,
     pagination: result.pagination,
     searchMode: setEntry.language === 'en' ? 'english-set-code' : 'japanese-set-code',
-    setCode,
+    setCode: setEntry.setCode || setCode,
     cardNumber,
+    game: gameId,
     category: {
       id: setEntry.categoryId,
       name: setEntry.categoryName,
@@ -75,6 +105,7 @@ async function searchCards({ q, page = 1, perPage = 20, categoryId, game, market
       cardNumber: setCodeQuery.cardNumber,
       page,
       perPage,
+      game: game || 'pokemon',
     });
   }
 

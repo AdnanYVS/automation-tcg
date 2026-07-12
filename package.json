@@ -13,6 +13,7 @@
     "pm2:logs": "pm2 logs automation-tcg",
     "pm2:setup": "bash scripts/setup-pm2.sh",
     "sets:sync": "node scripts/sync-set-codes.js",
+    "onepiece-sets:sync": "node scripts/sync-onepiece-set-codes.js",
     "categories:sync": "node scripts/sync-ikas-categories.js",
     "pokemon:setup": "node scripts/setup-pokemon-taxonomy.js",
     "category-logos:upload": "node scripts/upload-category-logos.js",

@@ -1,5 +1,11 @@
 const { graphqlRequest } = require('./client');
 const { getStorefrontSalesChannelId } = require('./salesChannel');
+const {
+  detectGameFromCard,
+  getTaxonomyOrThrow,
+  isJapaneseCategoryName: isJapaneseCategoryForTaxonomy,
+  isMetaCategoryName: isMetaCategoryForTaxonomy,
+} = require('./taxonomy');
 
 const LIST_CATEGORIES_QUERY = `
   query ListCategory {
@@ -48,33 +54,36 @@ const DELETE_CATEGORY_LIST_MUTATION = `
   }
 `;
 
-const DEFAULT_ROOT_CATEGORY_NAME = 'Pokemon';
-
 function getPokemonRootCategoryName() {
-  return process.env.IKAS_CATEGORY_ROOT_NAME || DEFAULT_ROOT_CATEGORY_NAME;
+  return getTaxonomyOrThrow('pokemon').rootCategoryName;
 }
 
-async function ensurePokemonRootCategory({ allowCreate = true } = {}) {
-  const rootName = getPokemonRootCategoryName();
+async function ensureRootCategory(gameId, { allowCreate = true } = {}) {
+  const taxonomy = getTaxonomyOrThrow(gameId);
   return ensureCategoryExists({
-    name: rootName,
+    name: taxonomy.rootCategoryName,
     parentId: null,
     allowCreate,
   });
 }
 
-async function getPokemonRootCategoryId() {
-  const rootName = getPokemonRootCategoryName();
+async function ensurePokemonRootCategory({ allowCreate = true } = {}) {
+  return ensureRootCategory('pokemon', { allowCreate });
+}
+
+async function getRootCategoryId(gameId) {
+  const taxonomy = getTaxonomyOrThrow(gameId);
   const categories = await listCategories();
-  const existing = findCategoryByName(categories, rootName);
+  const existing = findCategoryByName(categories, taxonomy.rootCategoryName);
   return existing?.id || null;
 }
 
-const META_CATEGORY_PATTERN = /setler$/i;
+async function getPokemonRootCategoryId() {
+  return getRootCategoryId('pokemon');
+}
 
 function isMetaCategoryName(name) {
-  const value = String(name || '').trim();
-  return META_CATEGORY_PATTERN.test(value) && !/^pokemon/i.test(value);
+  return isMetaCategoryForTaxonomy(name);
 }
 
 let cachedCategories = null;
@@ -84,7 +93,8 @@ function normalizeCategoryName(name) {
 }
 
 function isJapaneseCategoryName(name) {
-  return /pokemon japanese/i.test(String(name || ''));
+  const taxonomy = detectGameFromCard({ category: { name } }, { fallbackGame: 'pokemon' });
+  return isJapaneseCategoryForTaxonomy(name, taxonomy);
 }
 
 function invalidateCategoryCache() {
@@ -256,8 +266,9 @@ async function resolveCategoryForCard(card) {
     throw new Error(`Kart geçerli bir set kategorisinde değil: ${categoryName}`);
   }
 
-  const isJapanese = isJapaneseCategoryName(categoryName);
-  const rootCategory = await ensurePokemonRootCategory({ allowCreate: true });
+  const taxonomy = detectGameFromCard(card);
+  const isJapanese = isJapaneseCategoryForTaxonomy(categoryName, taxonomy);
+  const rootCategory = await ensureRootCategory(taxonomy.id, { allowCreate: true });
   const parentId = rootCategory.category?.id
     || (isJapanese
       ? (process.env.IKAS_CATEGORY_PARENT_JAPANESE || null)
@@ -282,6 +293,10 @@ async function resolveCategoryForCard(card) {
     name: category.name,
     parentId: category.parentId || parentId || null,
     path,
+    productCategoryPath: [taxonomy.rootCategoryName],
+    brandName: taxonomy.brandName,
+    game: taxonomy.id,
+    kartfiyatGame: taxonomy.kartfiyatGame,
     isJapanese,
     created,
   };
@@ -426,7 +441,9 @@ module.exports = {
   enableCategoryForStorefront,
   ensureCategoryStorefrontVisibility,
   ensureCategoryExists,
+  ensureRootCategory,
   ensurePokemonRootCategory,
+  getRootCategoryId,
   getPokemonRootCategoryId,
   getPokemonRootCategoryName,
   resolveCategoryForCard,

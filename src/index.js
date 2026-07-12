@@ -4,9 +4,11 @@ const path = require('path');
 const express = require('express');
 const { initDatabase } = require('../db');
 const { getSetCodeRegistry } = require('../services/kartfiyat/setRegistry');
+const { getOnePieceSetCodeRegistry } = require('../services/kartfiyat/onepieceSetRegistry');
 const cardsRouter = require('./routes/cards');
 const pricesRouter = require('./routes/prices');
 const inventoryRouter = require('./routes/inventory');
+const categoryLogosRouter = require('./routes/categoryLogos');
 const authRouter = require('./routes/auth');
 const { requireAuthPage } = require('./middleware/requireAuth');
 const { startPriceCheckerCron } = require('../cron/priceChecker');
@@ -31,12 +33,14 @@ app.use('/api', authRouter);
 app.use('/api', cardsRouter);
 app.use('/api', pricesRouter);
 app.use('/api', inventoryRouter);
+app.use('/api', categoryLogosRouter);
 
 app.get('/login.html', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'login.html')));
 app.get('/', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
 app.get('/index.html', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
 app.get('/prices.html', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'prices.html')));
 app.get('/inventory.html', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'inventory.html')));
+app.get('/category-logos.html', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'category-logos.html')));
 
 app.use(express.static(PUBLIC_DIR, { index: false }));
 
@@ -50,9 +54,10 @@ app.use((req, res) => {
 initDatabase();
 seedAdminUsersFromEnv();
 
-getSetCodeRegistry()
-  .then((registry) => {
-    console.log(`Set kodları hazır: ${registry.totalCodes || Object.keys(registry.codes || {}).length} eşleşme`);
+Promise.all([getSetCodeRegistry(), getOnePieceSetCodeRegistry()])
+  .then(([pokemonRegistry, onepieceRegistry]) => {
+    console.log(`Pokemon set kodları: ${pokemonRegistry.totalCodes || Object.keys(pokemonRegistry.codes || {}).length}`);
+    console.log(`One Piece set kodları: ${onepieceRegistry.totalCodes || Object.keys(onepieceRegistry.codes || {}).length}`);
   })
   .catch((error) => {
     console.error('Set kodları yüklenemedi:', error.message);

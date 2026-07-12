@@ -1,0 +1,1747 @@
+{
+  "updatedAt": "2026-07-12T16:51:53.475Z",
+  "game": "onepiece",
+  "codes": {
+    "OP01": {
+      "setName": "Romance Dawn",
+      "categoryId": 772,
+      "categoryName": "One Piece Romance Dawn",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP01"
+    },
+    "op01": {
+      "setName": "Romance Dawn",
+      "categoryId": 772,
+      "categoryName": "One Piece Romance Dawn",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP01"
+    },
+    "OP01:ja": {
+      "setName": "Romance Dawn",
+      "categoryId": 730,
+      "categoryName": "One Piece Japanese Romance Dawn",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP01"
+    },
+    "op01:ja": {
+      "setName": "Romance Dawn",
+      "categoryId": 730,
+      "categoryName": "One Piece Japanese Romance Dawn",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP01"
+    },
+    "OP02": {
+      "setName": "Paramount War",
+      "categoryId": 766,
+      "categoryName": "One Piece Paramount War",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP02"
+    },
+    "op02": {
+      "setName": "Paramount War",
+      "categoryId": 766,
+      "categoryName": "One Piece Paramount War",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP02"
+    },
+    "OP02:ja": {
+      "setName": "Paramount War",
+      "categoryId": 725,
+      "categoryName": "One Piece Japanese Paramount War",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP02"
+    },
+    "op02:ja": {
+      "setName": "Paramount War",
+      "categoryId": 725,
+      "categoryName": "One Piece Japanese Paramount War",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP02"
+    },
+    "OP03": {
+      "setName": "Pillars of Strength",
+      "categoryId": 768,
+      "categoryName": "One Piece Pillars of Strength",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP03"
+    },
+    "op03": {
+      "setName": "Pillars of Strength",
+      "categoryId": 768,
+      "categoryName": "One Piece Pillars of Strength",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP03"
+    },
+    "OP03:ja": {
+      "setName": "Pillars of Strength",
+      "categoryId": 726,
+      "categoryName": "One Piece Japanese Pillars of Strength",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP03"
+    },
+    "op03:ja": {
+      "setName": "Pillars of Strength",
+      "categoryId": 726,
+      "categoryName": "One Piece Japanese Pillars of Strength",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP03"
+    },
+    "OP04": {
+      "setName": "Kingdoms of Intrigue",
+      "categoryId": 763,
+      "categoryName": "One Piece Kingdoms of Intrigue",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP04"
+    },
+    "op04": {
+      "setName": "Kingdoms of Intrigue",
+      "categoryId": 763,
+      "categoryName": "One Piece Kingdoms of Intrigue",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP04"
+    },
+    "OP04:ja": {
+      "setName": "Kingdoms of Intrigue",
+      "categoryId": 723,
+      "categoryName": "One Piece Japanese Kingdoms of Intrigue",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP04"
+    },
+    "op04:ja": {
+      "setName": "Kingdoms of Intrigue",
+      "categoryId": 723,
+      "categoryName": "One Piece Japanese Kingdoms of Intrigue",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP04"
+    },
+    "OP05": {
+      "setName": "Awakening of the New Era",
+      "categoryId": 706,
+      "categoryName": "One Piece Awakening of the New Era",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP05"
+    },
+    "op05": {
+      "setName": "Awakening of the New Era",
+      "categoryId": 706,
+      "categoryName": "One Piece Awakening of the New Era",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP05"
+    },
+    "OP05:ja": {
+      "setName": "Awakening of the New Era",
+      "categoryId": 715,
+      "categoryName": "One Piece Japanese Awakening of the New Era",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP05"
+    },
+    "op05:ja": {
+      "setName": "Awakening of the New Era",
+      "categoryId": 715,
+      "categoryName": "One Piece Japanese Awakening of the New Era",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP05"
+    },
+    "OP06": {
+      "setName": "Wings of the Captain",
+      "categoryId": 806,
+      "categoryName": "One Piece Wings of the Captain",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP06"
+    },
+    "op06": {
+      "setName": "Wings of the Captain",
+      "categoryId": 806,
+      "categoryName": "One Piece Wings of the Captain",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP06"
+    },
+    "OP06:ja": {
+      "setName": "Wings of the Captain",
+      "categoryId": 762,
+      "categoryName": "One Piece Japanese Wings of the Captain",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP06"
+    },
+    "op06:ja": {
+      "setName": "Wings of the Captain",
+      "categoryId": 762,
+      "categoryName": "One Piece Japanese Wings of the Captain",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP06"
+    },
+    "OP07": {
+      "setName": "500 Years in the Future",
+      "categoryId": 705,
+      "categoryName": "One Piece 500 Years in the Future",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP07"
+    },
+    "op07": {
+      "setName": "500 Years in the Future",
+      "categoryId": 705,
+      "categoryName": "One Piece 500 Years in the Future",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP07"
+    },
+    "OP07:ja": {
+      "setName": "500 Years in the Future",
+      "categoryId": 714,
+      "categoryName": "One Piece Japanese 500 Years in the Future",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP07"
+    },
+    "op07:ja": {
+      "setName": "500 Years in the Future",
+      "categoryId": 714,
+      "categoryName": "One Piece Japanese 500 Years in the Future",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP07"
+    },
+    "OP08": {
+      "setName": "Two Legends",
+      "categoryId": 803,
+      "categoryName": "One Piece Two Legends",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP08"
+    },
+    "op08": {
+      "setName": "Two Legends",
+      "categoryId": 803,
+      "categoryName": "One Piece Two Legends",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP08"
+    },
+    "OP08:ja": {
+      "setName": "Two Legends",
+      "categoryId": 759,
+      "categoryName": "One Piece Japanese Two Legends",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP08"
+    },
+    "op08:ja": {
+      "setName": "Two Legends",
+      "categoryId": 759,
+      "categoryName": "One Piece Japanese Two Legends",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP08"
+    },
+    "OP09": {
+      "setName": "Emperors in the New World",
+      "categoryId": 709,
+      "categoryName": "One Piece Emperors in the New World",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP09"
+    },
+    "op09": {
+      "setName": "Emperors in the New World",
+      "categoryId": 709,
+      "categoryName": "One Piece Emperors in the New World",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP09"
+    },
+    "OP09:ja": {
+      "setName": "Emperors in the New World",
+      "categoryId": 718,
+      "categoryName": "One Piece Japanese Emperors in the New World",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP09"
+    },
+    "op09:ja": {
+      "setName": "Emperors in the New World",
+      "categoryId": 718,
+      "categoryName": "One Piece Japanese Emperors in the New World",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP09"
+    },
+    "OP10": {
+      "setName": "Royal Blood",
+      "categoryId": 773,
+      "categoryName": "One Piece Royal Blood",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP10"
+    },
+    "op10": {
+      "setName": "Royal Blood",
+      "categoryId": 773,
+      "categoryName": "One Piece Royal Blood",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP10"
+    },
+    "OP10:ja": {
+      "setName": "Royal Blood",
+      "categoryId": 731,
+      "categoryName": "One Piece Japanese Royal Blood",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP10"
+    },
+    "op10:ja": {
+      "setName": "Royal Blood",
+      "categoryId": 731,
+      "categoryName": "One Piece Japanese Royal Blood",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP10"
+    },
+    "OP11": {
+      "setName": "Fist of Divine Speed",
+      "categoryId": 713,
+      "categoryName": "One Piece Fist of Divine Speed",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP11"
+    },
+    "op11": {
+      "setName": "Fist of Divine Speed",
+      "categoryId": 713,
+      "categoryName": "One Piece Fist of Divine Speed",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP11"
+    },
+    "OP11:ja": {
+      "setName": "Fist of Divine Speed",
+      "categoryId": 722,
+      "categoryName": "One Piece Japanese Fist of Divine Speed",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP11"
+    },
+    "op11:ja": {
+      "setName": "Fist of Divine Speed",
+      "categoryId": 722,
+      "categoryName": "One Piece Japanese Fist of Divine Speed",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP11"
+    },
+    "OP12": {
+      "setName": "Legacy of the Master",
+      "categoryId": 765,
+      "categoryName": "One Piece Legacy of the Master",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP12"
+    },
+    "op12": {
+      "setName": "Legacy of the Master",
+      "categoryId": 765,
+      "categoryName": "One Piece Legacy of the Master",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP12"
+    },
+    "OP12:ja": {
+      "setName": "Legacy of the Master",
+      "categoryId": 724,
+      "categoryName": "One Piece Japanese Legacy of the Master",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP12"
+    },
+    "op12:ja": {
+      "setName": "Legacy of the Master",
+      "categoryId": 724,
+      "categoryName": "One Piece Japanese Legacy of the Master",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP12"
+    },
+    "OP13": {
+      "setName": "Carrying on His Will",
+      "categoryId": 708,
+      "categoryName": "One Piece Carrying on His Will",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP13"
+    },
+    "op13": {
+      "setName": "Carrying on His Will",
+      "categoryId": 708,
+      "categoryName": "One Piece Carrying on His Will",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP13"
+    },
+    "OP13:ja": {
+      "setName": "Carrying on His Will",
+      "categoryId": 717,
+      "categoryName": "One Piece Japanese Carrying on His Will",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP13"
+    },
+    "op13:ja": {
+      "setName": "Carrying on His Will",
+      "categoryId": 717,
+      "categoryName": "One Piece Japanese Carrying on His Will",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP13"
+    },
+    "OP14": {
+      "setName": "Azure Sea's Seven",
+      "categoryId": 707,
+      "categoryName": "One Piece Azure Sea's Seven",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP14"
+    },
+    "op14": {
+      "setName": "Azure Sea's Seven",
+      "categoryId": 707,
+      "categoryName": "One Piece Azure Sea's Seven",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP14"
+    },
+    "OP14:ja": {
+      "setName": "Azure Sea's Seven",
+      "categoryId": 716,
+      "categoryName": "One Piece Japanese Azure Sea's Seven",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP14"
+    },
+    "op14:ja": {
+      "setName": "Azure Sea's Seven",
+      "categoryId": 716,
+      "categoryName": "One Piece Japanese Azure Sea's Seven",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP14"
+    },
+    "OP15": {
+      "setName": "Adventure On Kami's Island",
+      "categoryId": 816,
+      "categoryName": "One Piece Adventure On Kami's Island",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP15"
+    },
+    "op15": {
+      "setName": "Adventure On Kami's Island",
+      "categoryId": 816,
+      "categoryName": "One Piece Adventure On Kami's Island",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP15"
+    },
+    "OP15:ja": {
+      "setName": "Adventure On Kami's Island",
+      "categoryId": 817,
+      "categoryName": "One Piece Japanese Adventure On Kami's Island",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP15"
+    },
+    "op15:ja": {
+      "setName": "Adventure On Kami's Island",
+      "categoryId": 817,
+      "categoryName": "One Piece Japanese Adventure On Kami's Island",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP15"
+    },
+    "OP16": {
+      "setName": "The Time Of Battle",
+      "categoryId": 1138,
+      "categoryName": "One Piece The Time Of Battle",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP16"
+    },
+    "op16": {
+      "setName": "The Time Of Battle",
+      "categoryId": 1138,
+      "categoryName": "One Piece The Time Of Battle",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "OP16"
+    },
+    "OP16:ja": {
+      "setName": "The Time Of Battle",
+      "categoryId": 1134,
+      "categoryName": "One Piece Japanese The Time Of Battle",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP16"
+    },
+    "op16:ja": {
+      "setName": "The Time Of Battle",
+      "categoryId": 1134,
+      "categoryName": "One Piece Japanese The Time Of Battle",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "OP16"
+    },
+    "EB01": {
+      "setName": "Memorial Collection",
+      "categoryId": 712,
+      "categoryName": "One Piece Extra Booster Memorial Collection",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "EB01"
+    },
+    "eb01": {
+      "setName": "Memorial Collection",
+      "categoryId": 712,
+      "categoryName": "One Piece Extra Booster Memorial Collection",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "EB01"
+    },
+    "EB01:ja": {
+      "setName": "Memorial Collection",
+      "categoryId": 721,
+      "categoryName": "One Piece Japanese Extra Booster Memorial Collection",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "EB01"
+    },
+    "eb01:ja": {
+      "setName": "Memorial Collection",
+      "categoryId": 721,
+      "categoryName": "One Piece Japanese Extra Booster Memorial Collection",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "EB01"
+    },
+    "EB02": {
+      "setName": "Anime 25th Collection",
+      "categoryId": 710,
+      "categoryName": "One Piece Extra Booster Anime 25th Collection",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "EB02"
+    },
+    "eb02": {
+      "setName": "Anime 25th Collection",
+      "categoryId": 710,
+      "categoryName": "One Piece Extra Booster Anime 25th Collection",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "EB02"
+    },
+    "EB02:ja": {
+      "setName": "Anime 25th Collection",
+      "categoryId": 719,
+      "categoryName": "One Piece Japanese Extra Booster Anime 25th Collection",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "EB02"
+    },
+    "eb02:ja": {
+      "setName": "Anime 25th Collection",
+      "categoryId": 719,
+      "categoryName": "One Piece Japanese Extra Booster Anime 25th Collection",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "EB02"
+    },
+    "EB03": {
+      "setName": "Heroines Edition",
+      "categoryId": 818,
+      "categoryName": "One Piece Extra Booster Heroines Edition",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "EB03"
+    },
+    "eb03": {
+      "setName": "Heroines Edition",
+      "categoryId": 818,
+      "categoryName": "One Piece Extra Booster Heroines Edition",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "EB03"
+    },
+    "EB03:ja": {
+      "setName": "Heroines Edition",
+      "categoryId": 720,
+      "categoryName": "One Piece Japanese Extra Booster Heroines Edition",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "EB03"
+    },
+    "eb03:ja": {
+      "setName": "Heroines Edition",
+      "categoryId": 720,
+      "categoryName": "One Piece Japanese Extra Booster Heroines Edition",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "EB03"
+    },
+    "EB04": {
+      "setName": "Egghead Crisis",
+      "categoryId": 711,
+      "categoryName": "One Piece Extra Booster EB04",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "EB04"
+    },
+    "eb04": {
+      "setName": "Egghead Crisis",
+      "categoryId": 711,
+      "categoryName": "One Piece Extra Booster EB04",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "EB04"
+    },
+    "EB04:ja": {
+      "setName": "Egghead Crisis",
+      "categoryId": 819,
+      "categoryName": "One Piece Japanese Extra Booster Egghead Crisis",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "EB04"
+    },
+    "eb04:ja": {
+      "setName": "Egghead Crisis",
+      "categoryId": 819,
+      "categoryName": "One Piece Japanese Extra Booster Egghead Crisis",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "EB04"
+    },
+    "PRB01": {
+      "setName": "Premium Booster",
+      "categoryId": 769,
+      "categoryName": "One Piece Premium Booster",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "PRB01"
+    },
+    "prb01": {
+      "setName": "Premium Booster",
+      "categoryId": 769,
+      "categoryName": "One Piece Premium Booster",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "PRB01"
+    },
+    "PRB01:ja": {
+      "setName": "Premium Booster",
+      "categoryId": 727,
+      "categoryName": "One Piece Japanese Premium Booster",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "PRB01"
+    },
+    "prb01:ja": {
+      "setName": "Premium Booster",
+      "categoryId": 727,
+      "categoryName": "One Piece Japanese Premium Booster",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "PRB01"
+    },
+    "PRB02": {
+      "setName": "Premium Booster 2",
+      "categoryId": 770,
+      "categoryName": "One Piece Premium Booster 2",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "PRB02"
+    },
+    "prb02": {
+      "setName": "Premium Booster 2",
+      "categoryId": 770,
+      "categoryName": "One Piece Premium Booster 2",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "PRB02"
+    },
+    "PRB02:ja": {
+      "setName": "Premium Booster 2",
+      "categoryId": 728,
+      "categoryName": "One Piece Japanese Premium Booster 2",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "PRB02"
+    },
+    "prb02:ja": {
+      "setName": "Premium Booster 2",
+      "categoryId": 728,
+      "categoryName": "One Piece Japanese Premium Booster 2",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "PRB02"
+    },
+    "ST01": {
+      "setName": "Straw Hat Crew",
+      "categoryId": 776,
+      "categoryName": "One Piece Starter Deck 12",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST01"
+    },
+    "st01": {
+      "setName": "Straw Hat Crew",
+      "categoryId": 776,
+      "categoryName": "One Piece Starter Deck 12",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST01"
+    },
+    "ST01:ja": {
+      "setName": "Straw Hat Crew",
+      "categoryId": 733,
+      "categoryName": "One Piece Japanese Starter Deck 12",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST01"
+    },
+    "st01:ja": {
+      "setName": "Straw Hat Crew",
+      "categoryId": 733,
+      "categoryName": "One Piece Japanese Starter Deck 12",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST01"
+    },
+    "ST02": {
+      "setName": "Worst Generation",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST02"
+    },
+    "st02": {
+      "setName": "Worst Generation",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST02"
+    },
+    "ST02:ja": {
+      "setName": "Worst Generation",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST02"
+    },
+    "st02:ja": {
+      "setName": "Worst Generation",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST02"
+    },
+    "ST03": {
+      "setName": "Seven Warlords of the Sea",
+      "categoryId": 774,
+      "categoryName": "One Piece Seven Warlords of the Sea Binder Set",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST03"
+    },
+    "st03": {
+      "setName": "Seven Warlords of the Sea",
+      "categoryId": 774,
+      "categoryName": "One Piece Seven Warlords of the Sea Binder Set",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST03"
+    },
+    "ST03:ja": {
+      "setName": "Seven Warlords of the Sea",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST03"
+    },
+    "st03:ja": {
+      "setName": "Seven Warlords of the Sea",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST03"
+    },
+    "ST04": {
+      "setName": "Animal Kingdom Pirates",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST04"
+    },
+    "st04": {
+      "setName": "Animal Kingdom Pirates",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST04"
+    },
+    "ST04:ja": {
+      "setName": "Animal Kingdom Pirates",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST04"
+    },
+    "st04:ja": {
+      "setName": "Animal Kingdom Pirates",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST04"
+    },
+    "ST05": {
+      "setName": "Film Edition",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST05"
+    },
+    "st05": {
+      "setName": "Film Edition",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST05"
+    },
+    "ST05:ja": {
+      "setName": "Film Edition",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST05"
+    },
+    "st05:ja": {
+      "setName": "Film Edition",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST05"
+    },
+    "ST06": {
+      "setName": "Absolute Justice",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST06"
+    },
+    "st06": {
+      "setName": "Absolute Justice",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST06"
+    },
+    "ST06:ja": {
+      "setName": "Absolute Justice",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST06"
+    },
+    "st06:ja": {
+      "setName": "Absolute Justice",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST06"
+    },
+    "ST07": {
+      "setName": "Big Mom Pirates",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST07"
+    },
+    "st07": {
+      "setName": "Big Mom Pirates",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST07"
+    },
+    "ST07:ja": {
+      "setName": "Big Mom Pirates",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST07"
+    },
+    "st07:ja": {
+      "setName": "Big Mom Pirates",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST07"
+    },
+    "ST08": {
+      "setName": "Monkey.D.Luffy",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST08"
+    },
+    "st08": {
+      "setName": "Monkey.D.Luffy",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST08"
+    },
+    "ST08:ja": {
+      "setName": "Monkey.D.Luffy",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST08"
+    },
+    "st08:ja": {
+      "setName": "Monkey.D.Luffy",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST08"
+    },
+    "ST09": {
+      "setName": "Yamato",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST09"
+    },
+    "st09": {
+      "setName": "Yamato",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST09"
+    },
+    "ST09:ja": {
+      "setName": "Yamato",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST09"
+    },
+    "st09:ja": {
+      "setName": "Yamato",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST09"
+    },
+    "ST11": {
+      "setName": "Uta",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST11"
+    },
+    "st11": {
+      "setName": "Uta",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST11"
+    },
+    "ST11:ja": {
+      "setName": "Uta",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST11"
+    },
+    "st11:ja": {
+      "setName": "Uta",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST11"
+    },
+    "ST12": {
+      "setName": "Starter Deck 12",
+      "categoryId": 776,
+      "categoryName": "One Piece Starter Deck 12",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST12"
+    },
+    "st12": {
+      "setName": "Starter Deck 12",
+      "categoryId": 776,
+      "categoryName": "One Piece Starter Deck 12",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST12"
+    },
+    "ST12:ja": {
+      "setName": "Starter Deck 12",
+      "categoryId": 733,
+      "categoryName": "One Piece Japanese Starter Deck 12",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST12"
+    },
+    "st12:ja": {
+      "setName": "Starter Deck 12",
+      "categoryId": 733,
+      "categoryName": "One Piece Japanese Starter Deck 12",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST12"
+    },
+    "ST14": {
+      "setName": "3D2Y",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST14"
+    },
+    "st14": {
+      "setName": "3D2Y",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST14"
+    },
+    "ST14:ja": {
+      "setName": "3D2Y",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST14"
+    },
+    "st14:ja": {
+      "setName": "3D2Y",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST14"
+    },
+    "ST15": {
+      "setName": "Edward Newgate",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST15"
+    },
+    "st15": {
+      "setName": "Edward Newgate",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST15"
+    },
+    "ST15:ja": {
+      "setName": "Edward Newgate",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST15"
+    },
+    "st15:ja": {
+      "setName": "Edward Newgate",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST15"
+    },
+    "ST16": {
+      "setName": "Uta",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST16"
+    },
+    "st16": {
+      "setName": "Uta",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST16"
+    },
+    "ST16:ja": {
+      "setName": "Uta",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST16"
+    },
+    "st16:ja": {
+      "setName": "Uta",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST16"
+    },
+    "ST17": {
+      "setName": "Donquixote Donflamingo",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST17"
+    },
+    "st17": {
+      "setName": "Donquixote Donflamingo",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST17"
+    },
+    "ST17:ja": {
+      "setName": "Donquixote Donflamingo",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST17"
+    },
+    "st17:ja": {
+      "setName": "Donquixote Donflamingo",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST17"
+    },
+    "ST18": {
+      "setName": "Monkey.D.Luffy",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST18"
+    },
+    "st18": {
+      "setName": "Monkey.D.Luffy",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST18"
+    },
+    "ST18:ja": {
+      "setName": "Monkey.D.Luffy",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST18"
+    },
+    "st18:ja": {
+      "setName": "Monkey.D.Luffy",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST18"
+    },
+    "ST19": {
+      "setName": "Smoker",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST19"
+    },
+    "st19": {
+      "setName": "Smoker",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST19"
+    },
+    "ST19:ja": {
+      "setName": "Smoker",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST19"
+    },
+    "st19:ja": {
+      "setName": "Smoker",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST19"
+    },
+    "ST20": {
+      "setName": "Charlotte Katakuri",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST20"
+    },
+    "st20": {
+      "setName": "Charlotte Katakuri",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST20"
+    },
+    "ST20:ja": {
+      "setName": "Charlotte Katakuri",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST20"
+    },
+    "st20:ja": {
+      "setName": "Charlotte Katakuri",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST20"
+    },
+    "ST21": {
+      "setName": "Gear5",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST21"
+    },
+    "st21": {
+      "setName": "Gear5",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST21"
+    },
+    "ST21:ja": {
+      "setName": "Gear5",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST21"
+    },
+    "st21:ja": {
+      "setName": "Gear5",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST21"
+    },
+    "ST22": {
+      "setName": "Ace & Newgate",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST22"
+    },
+    "st22": {
+      "setName": "Ace & Newgate",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST22"
+    },
+    "ST22:ja": {
+      "setName": "Ace & Newgate",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST22"
+    },
+    "st22:ja": {
+      "setName": "Ace & Newgate",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST22"
+    },
+    "ST23": {
+      "setName": "Red Shanks",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST23"
+    },
+    "st23": {
+      "setName": "Red Shanks",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST23"
+    },
+    "ST23:ja": {
+      "setName": "Red Shanks",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST23"
+    },
+    "st23:ja": {
+      "setName": "Red Shanks",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST23"
+    },
+    "ST24": {
+      "setName": "Green Jewelry Bonney",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST24"
+    },
+    "st24": {
+      "setName": "Green Jewelry Bonney",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST24"
+    },
+    "ST24:ja": {
+      "setName": "Green Jewelry Bonney",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST24"
+    },
+    "st24:ja": {
+      "setName": "Green Jewelry Bonney",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST24"
+    },
+    "ST25": {
+      "setName": "Blue Buggy",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST25"
+    },
+    "st25": {
+      "setName": "Blue Buggy",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST25"
+    },
+    "ST25:ja": {
+      "setName": "Blue Buggy",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST25"
+    },
+    "st25:ja": {
+      "setName": "Blue Buggy",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST25"
+    },
+    "ST26": {
+      "setName": "Purple Monkey.D.Luffy",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST26"
+    },
+    "st26": {
+      "setName": "Purple Monkey.D.Luffy",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST26"
+    },
+    "ST26:ja": {
+      "setName": "Purple Monkey.D.Luffy",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST26"
+    },
+    "st26:ja": {
+      "setName": "Purple Monkey.D.Luffy",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST26"
+    },
+    "ST27": {
+      "setName": "Black Marshall.D.Teach",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST27"
+    },
+    "st27": {
+      "setName": "Black Marshall.D.Teach",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST27"
+    },
+    "ST27:ja": {
+      "setName": "Black Marshall.D.Teach",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST27"
+    },
+    "st27:ja": {
+      "setName": "Black Marshall.D.Teach",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST27"
+    },
+    "ST28": {
+      "setName": "Yellow Yamato",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST28"
+    },
+    "st28": {
+      "setName": "Yellow Yamato",
+      "categoryId": 783,
+      "categoryName": "One Piece Starter Deck 1: Straw Hat Crew",
+      "source": "override-en",
+      "language": "en",
+      "game": "onepiece",
+      "setCode": "ST28"
+    },
+    "ST28:ja": {
+      "setName": "Yellow Yamato",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST28"
+    },
+    "st28:ja": {
+      "setName": "Yellow Yamato",
+      "categoryId": 740,
+      "categoryName": "One Piece Japanese Starter Deck 1: Straw Hat Crew",
+      "source": "override-ja",
+      "language": "ja",
+      "game": "onepiece",
+      "setCode": "ST28"
+    }
+  },
+  "unmatched": [],
+  "totalCodes": 96,
+  "totalEnglishCategories": 56,
+  "coveredEnglishCategories": 25,
+  "totalJapaneseCategories": 53,
+  "coveredJapaneseCategories": 24,
+  "englishCodeCount": 48,
+  "japaneseCodeCount": 48,
+  "sources": {
+    "override-en": 48,
+    "override-ja": 48,
+    "name": 0
+  }
+}

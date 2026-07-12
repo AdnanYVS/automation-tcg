@@ -1,12 +1,13 @@
 const express = require('express');
 const { searchCards, getCardById, getPriceChartingUsd, getCardPriceInfo, getCardImageUrl } = require('../../services/kartfiyat');
 const { getSetCodeRegistry } = require('../../services/kartfiyat/setRegistry');
+const { getOnePieceSetCodeRegistry } = require('../../services/kartfiyat/onepieceSetRegistry');
 const { createBasicProduct, listStockLocations, resolveCategoryForCard, incrementVariantStock } = require('../../services/ikas');
-const { DEFAULT_BRAND_NAME } = require('../../services/ikas/brands');
 const { getUsdTryRate } = require('../../services/exchangeRate');
 const { calculateFinalPriceTry } = require('../../services/pricing');
 const { generateProductBarcode } = require('../../services/barcode');
 const { insertMapping, findByKartfiyatCardId, updateMappingPriceSnapshot, insertInventoryEvent } = require('../../db');
+const { getSupportedGames, normalizeGameId } = require('../../services/ikas/taxonomy');
 const { requireAuth } = require('../middleware/requireAuth');
 
 const router = express.Router();
@@ -15,6 +16,40 @@ router.use(requireAuth);
 
 router.get('/set-codes', async (req, res) => {
   try {
+    const game = normalizeGameId(req.query.game || 'pokemon');
+
+    if (game === 'onepiece') {
+      const registry = await getOnePieceSetCodeRegistry();
+      const codes = Object.values(registry.codes || {}).map((entry) => ({
+        setCode: entry.setCode,
+        setName: entry.setName,
+        categoryName: entry.categoryName,
+        categoryId: entry.categoryId,
+        source: entry.source || null,
+        language: entry.language || 'en',
+        game: 'onepiece',
+      })).filter((entry, index, list) =>
+        list.findIndex((item) => item.setCode === entry.setCode && item.language === entry.language) === index,
+      );
+
+      return res.json({
+        success: true,
+        data: {
+          game: 'onepiece',
+          updatedAt: registry.updatedAt,
+          totalCodes: registry.totalCodes,
+          totalEnglishCategories: registry.totalEnglishCategories,
+          coveredEnglishCategories: registry.coveredEnglishCategories,
+          totalJapaneseCategories: registry.totalJapaneseCategories,
+          coveredJapaneseCategories: registry.coveredJapaneseCategories,
+          englishCodeCount: registry.englishCodeCount,
+          japaneseCodeCount: registry.japaneseCodeCount,
+          sources: registry.sources,
+          codes,
+        },
+      });
+    }
+
     const registry = await getSetCodeRegistry();
     const codes = Object.values(registry.codes || {}).map((entry) => ({
       setCode: entry.setCode,
@@ -30,6 +65,7 @@ router.get('/set-codes', async (req, res) => {
     return res.json({
       success: true,
       data: {
+        game: 'pokemon',
         updatedAt: registry.updatedAt,
         totalCodes: registry.totalCodes,
         totalCategories: registry.totalCategories,
@@ -48,6 +84,18 @@ router.get('/set-codes', async (req, res) => {
   }
 });
 
+router.get('/games', (req, res) => {
+  return res.json({
+    success: true,
+    data: getSupportedGames().map((game) => ({
+      id: game.id,
+      label: game.brandName,
+      kartfiyatGame: game.kartfiyatGame,
+      rootCategoryName: game.rootCategoryName,
+    })),
+  });
+});
+
 router.get('/search-card', async (req, res) => {
   try {
     const query = String(req.query.query || '').trim();
@@ -56,13 +104,18 @@ router.get('/search-card', async (req, res) => {
     }
 
     const perPage = req.query.perPage ? Number(req.query.perPage) : 20;
+    const game = normalizeGameId(req.query.game || 'pokemon');
+    const supportedGame = getSupportedGames().find((entry) => entry.id === game);
+    if (!supportedGame) {
+      return res.status(400).json({ success: false, error: `Desteklenmeyen oyun: ${req.query.game}` });
+    }
 
     const result = await searchCards({
       q: query,
       page: req.query.page ? Number(req.query.page) : 1,
       perPage,
       categoryId: req.query.categoryId ? Number(req.query.categoryId) : undefined,
-      game: req.query.game || 'pokemon',
+      game: supportedGame.kartfiyatGame,
       market: req.query.market,
     });
 
@@ -81,6 +134,7 @@ router.get('/search-card', async (req, res) => {
         items,
         pagination: result.pagination,
         searchMode: result.searchMode || 'text',
+        game: supportedGame.id,
         setCode: result.setCode || null,
         cardNumber: result.cardNumber || null,
         category: result.category || null,
@@ -205,8 +259,8 @@ router.post('/import-card', async (req, res) => {
       currency: 'TRY',
       imageUrl,
       categoryName: category.name,
-      categoryPath: category.path,
-      brandName: DEFAULT_BRAND_NAME,
+      categoryPath: category.productCategoryPath,
+      brandName: category.brandName,
       barcode,
     });
     const variant = product.variants?.[0];
