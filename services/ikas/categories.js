@@ -42,6 +42,12 @@ const UPDATE_CATEGORY_MUTATION = `
   }
 `;
 
+const DELETE_CATEGORY_LIST_MUTATION = `
+  mutation DeleteCategoryList($idList: [String!]!) {
+    deleteCategoryList(idList: $idList)
+  }
+`;
+
 const DEFAULT_ROOT_CATEGORY_NAME = 'Pokemon';
 
 function getPokemonRootCategoryName() {
@@ -100,6 +106,17 @@ function findCategoryByName(categories, name) {
   if (!target) return null;
 
   return categories.find((category) => normalizeCategoryName(category.name) === target) || null;
+}
+
+function findCategoryByNameAndParent(categories, name, parentId) {
+  const target = normalizeCategoryName(name);
+  if (!target) return null;
+
+  const normalizedParentId = parentId || null;
+  return categories.find((category) =>
+    normalizeCategoryName(category.name) === target
+    && (category.parentId || null) === normalizedParentId,
+  ) || null;
 }
 
 function isCategoryVisibleOnStorefront(category, salesChannelId) {
@@ -190,8 +207,32 @@ async function createCategory({ name, parentId }) {
   return category;
 }
 
+async function deleteCategoryList({ categoryIds }) {
+  if (!categoryIds?.length) {
+    return { deleted: 0 };
+  }
+
+  await graphqlRequest(DELETE_CATEGORY_LIST_MUTATION, { idList: categoryIds });
+  invalidateCategoryCache();
+  return { deleted: categoryIds.length };
+}
+
 async function ensureCategoryExists({ name, parentId, allowCreate = false }) {
   const categories = await listCategories();
+  const exactMatch = findCategoryByNameAndParent(categories, name, parentId);
+  if (exactMatch) {
+    return { category: exactMatch, created: false };
+  }
+
+  if (parentId) {
+    if (!allowCreate) {
+      return { category: null, created: false };
+    }
+
+    const category = await createCategory({ name, parentId });
+    return { category, created: true };
+  }
+
   const existing = findCategoryByName(categories, name);
   if (existing) {
     return { category: existing, created: false };
@@ -378,8 +419,10 @@ async function assignAllCategoriesUnderPokemonRoot({ delayMs = 500 } = {}) {
 module.exports = {
   listCategories,
   findCategoryByName,
+  findCategoryByNameAndParent,
   createCategory,
   updateCategory,
+  deleteCategoryList,
   enableCategoryForStorefront,
   ensureCategoryStorefrontVisibility,
   ensureCategoryExists,

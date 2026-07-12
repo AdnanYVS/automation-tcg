@@ -16,7 +16,7 @@ async function graphqlRequest(query, variables = {}) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
-        timeout: 30000,
+        timeout: Number(process.env.IKAS_GRAPHQL_TIMEOUT_MS || 120000),
       },
     );
 
