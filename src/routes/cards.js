@@ -2,6 +2,7 @@ const express = require('express');
 const { searchCards, getCardById, getPriceChartingUsd, getCardPriceInfo, getCardImageUrl } = require('../../services/kartfiyat');
 const { getSetCodeRegistry } = require('../../services/kartfiyat/setRegistry');
 const { createBasicProduct, listStockLocations, resolveCategoryForCard, incrementVariantStock } = require('../../services/ikas');
+const { DEFAULT_BRAND_NAME } = require('../../services/ikas/brands');
 const { getUsdTryRate } = require('../../services/exchangeRate');
 const { calculateFinalPriceTry } = require('../../services/pricing');
 const { generateProductBarcode } = require('../../services/barcode');
@@ -205,6 +206,7 @@ router.post('/import-card', async (req, res) => {
       imageUrl,
       categoryName: category.name,
       categoryPath: category.path,
+      brandName: DEFAULT_BRAND_NAME,
       barcode,
     });
     const variant = product.variants?.[0];

@@ -42,7 +42,27 @@ const UPDATE_CATEGORY_MUTATION = `
   }
 `;
 
-const META_CATEGORY_PATTERN = /setler$/i;
+const DEFAULT_ROOT_CATEGORY_NAME = 'Pokemon';
+
+function getPokemonRootCategoryName() {
+  return process.env.IKAS_CATEGORY_ROOT_NAME || DEFAULT_ROOT_CATEGORY_NAME;
+}
+
+async function ensurePokemonRootCategory({ allowCreate = true } = {}) {
+  const rootName = getPokemonRootCategoryName();
+  return ensureCategoryExists({
+    name: rootName,
+    parentId: null,
+    allowCreate,
+  });
+}
+
+async function getPokemonRootCategoryId() {
+  const rootName = getPokemonRootCategoryName();
+  const categories = await listCategories();
+  const existing = findCategoryByName(categories, rootName);
+  return existing?.id || null;
+}
 
 function isMetaCategoryName(name) {
   const value = String(name || '').trim();
@@ -194,9 +214,11 @@ async function resolveCategoryForCard(card) {
   }
 
   const isJapanese = isJapaneseCategoryName(categoryName);
-  const parentId = isJapanese
-    ? (process.env.IKAS_CATEGORY_PARENT_JAPANESE || null)
-    : (process.env.IKAS_CATEGORY_PARENT_NORMAL || null);
+  const rootCategory = await ensurePokemonRootCategory({ allowCreate: true });
+  const parentId = rootCategory.category?.id
+    || (isJapanese
+      ? (process.env.IKAS_CATEGORY_PARENT_JAPANESE || null)
+      : (process.env.IKAS_CATEGORY_PARENT_NORMAL || null));
 
   const { category, created } = await ensureCategoryExists({
     name: categoryName,
@@ -279,6 +301,78 @@ async function syncAllCategoriesToStorefront({ assignParentIds = true, delayMs =
   return stats;
 }
 
+async function assignAllCategoriesUnderPokemonRoot({ delayMs = 500 } = {}) {
+  const rootName = getPokemonRootCategoryName();
+  const salesChannelId = await getStorefrontSalesChannelId();
+  const { category: rootCategory, created } = await ensurePokemonRootCategory({ allowCreate: true });
+
+  if (!rootCategory?.id) {
+    throw new Error(`"${rootName}" ana kategorisi oluşturulamadı.`);
+  }
+
+  if (!isCategoryVisibleOnStorefront(rootCategory, salesChannelId)) {
+    await enableCategoryForStorefront(rootCategory.id, { salesChannelId });
+  }
+
+  const categories = await listCategories({ refresh: true });
+  const stats = {
+    rootCategoryId: rootCategory.id,
+    rootCategoryName: rootCategory.name,
+    rootCreated: created,
+    total: categories.length,
+    parentUpdated: 0,
+    skipped: 0,
+    duplicateSkipped: 0,
+    failed: 0,
+  };
+
+  const childrenUnderRoot = categories.filter((category) => category.parentId === rootCategory.id);
+  const childNamesUnderRoot = new Set(
+    childrenUnderRoot.map((category) => normalizeCategoryName(category.name)),
+  );
+
+  for (const category of categories) {
+    if (category.id === rootCategory.id) {
+      stats.skipped += 1;
+      continue;
+    }
+
+    if (category.parentId === rootCategory.id) {
+      stats.skipped += 1;
+      continue;
+    }
+
+    if (childNamesUnderRoot.has(normalizeCategoryName(category.name))) {
+      stats.duplicateSkipped += 1;
+      console.warn(`[ikas] Kategori zaten Pokemon altında var, atlandı: ${category.name}`);
+      continue;
+    }
+
+    try {
+      await updateCategoryWithRetry({
+        id: category.id,
+        parentId: rootCategory.id,
+      }, { delayMs });
+      stats.parentUpdated += 1;
+      childNamesUnderRoot.add(normalizeCategoryName(category.name));
+      if (delayMs > 0) await sleep(delayMs);
+    } catch (error) {
+      const isDuplicate = /duplicate key|E11000/i.test(error.message);
+      if (isDuplicate) {
+        stats.duplicateSkipped += 1;
+        console.warn(`[ikas] Yinelenen kategori atlandı: ${category.name}`);
+        continue;
+      }
+
+      stats.failed += 1;
+      console.error(`[ikas] Kategori taşınamadı (${category.name}):`, error.message);
+    }
+  }
+
+  invalidateCategoryCache();
+  return stats;
+}
+
 module.exports = {
   listCategories,
   findCategoryByName,
@@ -287,9 +381,13 @@ module.exports = {
   enableCategoryForStorefront,
   ensureCategoryStorefrontVisibility,
   ensureCategoryExists,
+  ensurePokemonRootCategory,
+  getPokemonRootCategoryId,
+  getPokemonRootCategoryName,
   resolveCategoryForCard,
   buildCategoryPath,
   syncAllCategoriesToStorefront,
+  assignAllCategoriesUnderPokemonRoot,
   isJapaneseCategoryName,
   invalidateCategoryCache,
 };

@@ -73,6 +73,10 @@ const LIST_PRODUCTS_QUERY = `
       data {
         id
         name
+        brand {
+          id
+          name
+        }
         categories {
           id
           name
@@ -92,6 +96,10 @@ const UPDATE_PRODUCT_MUTATION = `
     updateProduct(input: $input) {
       id
       name
+      brand {
+        id
+        name
+      }
       categories {
         id
         name
@@ -241,6 +249,41 @@ async function updateProductCategories({ productId, categoryName, categoryPath =
   return data.updateProduct;
 }
 
+async function updateProductBrand({ productId, brandName }) {
+  const data = await graphqlRequest(UPDATE_PRODUCT_MUTATION, {
+    input: {
+      id: productId,
+      brand: { name: brandName },
+    },
+  });
+
+  return data.updateProduct;
+}
+
+async function updateProductTaxonomy({
+  productId,
+  brandName,
+  categoryName,
+  categoryPath = [],
+}) {
+  const input = { id: productId };
+
+  if (brandName) {
+    input.brand = { name: brandName };
+  }
+
+  if (categoryName) {
+    const categoryInput = { name: categoryName };
+    if (categoryPath.length > 0) {
+      categoryInput.path = categoryPath;
+    }
+    input.categories = [categoryInput];
+  }
+
+  const data = await graphqlRequest(UPDATE_PRODUCT_MUTATION, { input });
+  return data.updateProduct;
+}
+
 async function createBasicProduct({
   name,
   sku,
@@ -253,6 +296,7 @@ async function createBasicProduct({
   imageUrl,
   categoryName,
   categoryPath,
+  brandName,
   barcode,
 }) {
   const input = {
@@ -266,6 +310,10 @@ async function createBasicProduct({
       barcodeList: barcode ? [barcode] : [],
     })],
   };
+
+  if (brandName) {
+    input.brand = { name: brandName };
+  }
 
   if (categoryName) {
     const categoryInput = { name: categoryName };
@@ -370,6 +418,8 @@ module.exports = {
   addVariantToProduct,
   updateVariantPrices,
   updateProductCategories,
+  updateProductBrand,
+  updateProductTaxonomy,
   listAllProducts,
   saveVariantStock,
   getVariantStockAtLocation,

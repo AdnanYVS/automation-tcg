@@ -14,6 +14,7 @@
     "pm2:setup": "bash scripts/setup-pm2.sh",
     "sets:sync": "node scripts/sync-set-codes.js",
     "categories:sync": "node scripts/sync-ikas-categories.js",
+    "pokemon:setup": "node scripts/setup-pokemon-taxonomy.js",
     "price:update": "node cron/priceUpdater.js --run-once",
     "price:check": "node cron/priceChecker.js --run-once",
     "price:cron": "node cron/priceUpdater.js",
