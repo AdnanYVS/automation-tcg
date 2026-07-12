@@ -64,6 +64,8 @@ async function getPokemonRootCategoryId() {
   return existing?.id || null;
 }
 
+const META_CATEGORY_PATTERN = /setler$/i;
+
 function isMetaCategoryName(name) {
   const value = String(name || '').trim();
   return META_CATEGORY_PATTERN.test(value) && !/^pokemon/i.test(value);
