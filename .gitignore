@@ -11,6 +11,7 @@ node_modules/
 *.db-journal
 *.db-wal
 *.db-shm
+data/category-logo-approvals.json
 
 # Loglar ve OS
 *.log

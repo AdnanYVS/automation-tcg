@@ -6,6 +6,8 @@ const LIST_BRANDS_QUERY = `
     listProductBrand {
       id
       name
+      deleted
+      salesChannelIds
     }
   }
 `;
@@ -15,6 +17,17 @@ const CREATE_BRAND_MUTATION = `
     createProductBrand(input: $input) {
       id
       name
+      salesChannelIds
+    }
+  }
+`;
+
+const UPDATE_BRAND_MUTATION = `
+  mutation UpdateProductBrand($input: UpdateProductBrandInput!) {
+    updateProductBrand(input: $input) {
+      id
+      name
+      salesChannelIds
     }
   }
 `;
@@ -46,6 +59,32 @@ function findBrandByName(brands, name) {
   return brands.find((brand) => normalizeBrandName(brand.name) === target) || null;
 }
 
+async function updateBrand({ id, name, salesChannelIds }) {
+  const input = { id };
+  if (name) input.name = name;
+  if (salesChannelIds) input.salesChannelIds = salesChannelIds;
+
+  const data = await graphqlRequest(UPDATE_BRAND_MUTATION, { input });
+  invalidateBrandCache();
+  return data.updateProductBrand;
+}
+
+async function ensureBrandOnStorefront(brand, { salesChannelId } = {}) {
+  const channelId = salesChannelId || await getStorefrontSalesChannelId();
+  const channels = brand.salesChannelIds || [];
+
+  if (channels.includes(channelId)) {
+    return { brand, updated: false };
+  }
+
+  const updated = await updateBrand({
+    id: brand.id,
+    salesChannelIds: [...new Set([...channels, channelId])],
+  });
+  console.log(`[ikas] Marka mağazada görünür yapıldı: ${updated.name}`);
+  return { brand: updated, updated: true };
+}
+
 async function createBrand({ name, salesChannelId = null }) {
   const channelId = salesChannelId || await getStorefrontSalesChannelId();
   const data = await graphqlRequest(CREATE_BRAND_MUTATION, {
@@ -69,6 +108,7 @@ async function ensureBrandExists({ name = DEFAULT_BRAND_NAME, allowCreate = true
   const brands = await listBrands();
   const existing = findBrandByName(brands, name);
   if (existing) {
+    await ensureBrandOnStorefront(existing);
     return { brand: existing, created: false };
   }
 
@@ -83,10 +123,21 @@ async function ensureBrandExists({ name = DEFAULT_BRAND_NAME, allowCreate = true
     const refreshed = await listBrands({ refresh: true });
     const fallback = findBrandByName(refreshed, name);
     if (fallback) {
+      await ensureBrandOnStorefront(fallback);
       return { brand: fallback, created: false };
     }
     throw error;
   }
+}
+
+async function syncPokemonBrand() {
+  const { brand, created } = await ensureBrandExists({ name: DEFAULT_BRAND_NAME, allowCreate: true });
+  return {
+    brandId: brand.id,
+    brandName: brand.name,
+    created,
+    salesChannelIds: brand.salesChannelIds || [],
+  };
 }
 
 module.exports = {
@@ -94,6 +145,9 @@ module.exports = {
   listBrands,
   findBrandByName,
   createBrand,
+  updateBrand,
+  ensureBrandOnStorefront,
   ensureBrandExists,
+  syncPokemonBrand,
   invalidateBrandCache,
 };
