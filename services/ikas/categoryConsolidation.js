@@ -308,8 +308,11 @@ async function consolidateDuplicateCategories({
           }),
           move.productName,
         );
-          stats.productsMoved += 1;
-        } catch (error) {
+        stats.productsMoved += 1;
+        if (stats.productsMoved % 10 === 0) {
+          console.log(`[consolidate] ürün taşındı: ${stats.productsMoved}`);
+        }
+      } catch (error) {
           stats.productsFailed += 1;
           stats.failures.push({
             type: 'product',

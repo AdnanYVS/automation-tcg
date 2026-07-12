@@ -53,7 +53,7 @@ function printPlan(plan, cleanupPlan) {
 
 async function main() {
   const { apply, dryRun, cleanupOnly, skipCleanup } = parseArgs(process.argv);
-  const delayMs = Number(process.env.IKAS_CONSOLIDATE_DELAY_MS || process.env.IKAS_TAXONOMY_DELAY_MS || 600);
+  const delayMs = Number(process.env.IKAS_CONSOLIDATE_DELAY_MS || process.env.IKAS_TAXONOMY_DELAY_MS || 1000);
 
   const modeLabel = cleanupOnly ? ' (cleanup-only)' : '';
   console.log(`[consolidate] Başlıyor${dryRun ? ' (dry-run)' : ' (apply)'}${modeLabel}...`);
