@@ -300,14 +300,14 @@ async function consolidateDuplicateCategories({
         }
 
         try {
-          await withRetry(
-            () => updateProductTaxonomy({
-              productId: move.productId,
-              categoryName: move.categoryName,
-              categoryPath: [plan.rootName, move.categoryName],
-            }),
-            move.productName,
-          );
+        await withRetry(
+          () => updateProductTaxonomy({
+            productId: move.productId,
+            categoryName: move.categoryName,
+            categoryPath: [plan.rootName],
+          }),
+          move.productName,
+        );
           stats.productsMoved += 1;
         } catch (error) {
           stats.productsFailed += 1;
