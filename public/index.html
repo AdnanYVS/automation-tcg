@@ -526,6 +526,99 @@
       color: var(--accent);
     }
 
+    .card-graded-prices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .card-graded-chip {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(96, 165, 250, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      color: #93c5fd;
+      font-weight: 600;
+    }
+
+    .graded-prices-section {
+      margin-bottom: 18px;
+    }
+
+    .graded-prices-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .graded-prices-header span {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .graded-prices-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .graded-price-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: left;
+    }
+
+    .graded-price-btn:hover {
+      border-color: rgba(255, 203, 5, 0.35);
+      background: rgba(255, 203, 5, 0.06);
+    }
+
+    .graded-price-btn.active {
+      border-color: rgba(255, 203, 5, 0.55);
+      background: rgba(255, 203, 5, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(255, 203, 5, 0.15);
+    }
+
+    .graded-price-btn strong {
+      font-size: 0.82rem;
+    }
+
+    .graded-price-btn em {
+      font-style: normal;
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    .graded-price-btn span {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .graded-prices-empty,
+    .graded-prices-loading {
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 10px 0;
+    }
+
     .card-action {
       margin-top: 10px;
       width: 100%;
@@ -906,6 +999,15 @@
         </select>
         <label for="stock-count">Stok Adedi</label>
         <input id="stock-count" type="number" min="1" step="1" value="1" inputmode="numeric">
+        <div class="graded-prices-section" id="graded-prices-section" hidden>
+          <div class="graded-prices-header">
+            <label for="graded-prices-grid" style="margin:0">Graded Fiyatlar</label>
+            <span id="graded-prices-count"></span>
+          </div>
+          <div class="graded-prices-loading" id="graded-prices-loading">Fiyatlar yükleniyor...</div>
+          <div class="graded-prices-grid" id="graded-prices-grid" hidden></div>
+          <p class="graded-prices-empty" id="graded-prices-empty" hidden>Bu kart için graded fiyat bulunamadı.</p>
+        </div>
         <label for="sell-price">Satış Fiyatı (TRY) <span style="color:var(--muted);font-weight:400">— opsiyonel</span></label>
         <input id="sell-price" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Otomatik hesaplanır">
         <p class="price-hint" id="sell-price-hint"></p>
@@ -929,6 +1031,11 @@
     const stockCountInput = document.getElementById('stock-count');
     const sellPriceInput = document.getElementById('sell-price');
     const sellPriceHint = document.getElementById('sell-price-hint');
+    const gradedPricesSection = document.getElementById('graded-prices-section');
+    const gradedPricesLoading = document.getElementById('graded-prices-loading');
+    const gradedPricesGrid = document.getElementById('graded-prices-grid');
+    const gradedPricesEmpty = document.getElementById('graded-prices-empty');
+    const gradedPricesCount = document.getElementById('graded-prices-count');
     const toastEl = document.getElementById('toast');
     const resultsEl = document.getElementById('results');
     const welcomeEl = document.getElementById('welcome');
@@ -986,6 +1093,8 @@
     let currentPagination = null;
     let hasSearched = false;
     let pendingImport = null;
+    let selectedPriceLabel = null;
+    let currentCardPrices = null;
 
     function showToast(message, type = 'info') {
       toastEl.textContent = message;
@@ -1040,9 +1149,119 @@
     }
 
     function formatPrice(card) {
-      return card.priceInfo?.formatted
+      const base = card.priceInfo?.formatted
         ? `${card.priceInfo.label}: ${card.priceInfo.formatted}`
         : 'Fiyat yok';
+      if (!card.gradedCount) return base;
+      return `${base} · ${card.gradedCount} graded`;
+    }
+
+    function renderGradedPriceChips(card) {
+      if (!card.gradedPrices?.length) return '';
+      return `
+        <div class="card-graded-prices">
+          ${card.gradedPrices.map((entry) => `
+            <span class="card-graded-chip">${escapeHtml(entry.label)} ${escapeHtml(entry.formattedUsd)}</span>
+          `).join('')}
+        </div>`;
+    }
+
+    function resetGradedPricesUi() {
+      selectedPriceLabel = null;
+      currentCardPrices = null;
+      gradedPricesSection.hidden = true;
+      gradedPricesLoading.hidden = false;
+      gradedPricesGrid.hidden = true;
+      gradedPricesGrid.innerHTML = '';
+      gradedPricesEmpty.hidden = true;
+      gradedPricesCount.textContent = '';
+    }
+
+    function selectPriceOption(button, entry) {
+      gradedPricesGrid.querySelectorAll('.graded-price-btn').forEach((node) => {
+        node.classList.toggle('active', node === button);
+      });
+
+      selectedPriceLabel = entry?.isUngraded
+        ? null
+        : normalizePriceLabelClient(entry?.label);
+
+      if (entry?.try) {
+        sellPriceInput.value = '';
+        sellPriceHint.textContent = `${entry.label}: ${entry.formattedUsd} → ${entry.formattedTry} (otomatik uygulanır)`;
+      } else {
+        sellPriceHint.textContent = 'PriceCharting fiyatı yoksa manuel fiyat girmeniz gerekir.';
+      }
+    }
+
+    function normalizePriceLabelClient(label) {
+      const value = String(label || '').trim();
+      if (!value || /^ungraded$/i.test(value)) return null;
+      return value;
+    }
+
+    function renderGradedPriceOptions(prices) {
+      currentCardPrices = prices;
+      gradedPricesSection.hidden = false;
+      gradedPricesLoading.hidden = true;
+
+      const options = [
+        prices.ungraded ? { ...prices.ungraded, isUngraded: true } : null,
+        ...(prices.graded || []),
+      ].filter(Boolean);
+
+      gradedPricesCount.textContent = prices.gradedCount
+        ? `${prices.gradedCount} graded seçenek`
+        : '';
+
+      if (!options.length) {
+        gradedPricesGrid.hidden = true;
+        gradedPricesEmpty.hidden = false;
+        return;
+      }
+
+      gradedPricesEmpty.hidden = true;
+      gradedPricesGrid.hidden = false;
+      gradedPricesGrid.innerHTML = options.map((entry) => `
+        <button
+          type="button"
+          class="graded-price-btn${entry.isUngraded ? ' active' : ''}"
+          data-label="${escapeHtml(entry.label)}"
+        >
+          <strong>${escapeHtml(entry.label)}</strong>
+          <em>${escapeHtml(entry.formattedUsd)}</em>
+          <span>${escapeHtml(entry.formattedTry)}</span>
+        </button>
+      `).join('');
+
+      gradedPricesGrid.querySelectorAll('.graded-price-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+          const label = button.dataset.label;
+          const entry = options.find((item) => item.label === label);
+          selectPriceOption(button, entry);
+        });
+      });
+
+      const defaultOption = options.find((entry) => entry.isUngraded) || options[0];
+      const defaultButton = gradedPricesGrid.querySelector(`[data-label="${CSS.escape(defaultOption.label)}"]`);
+      selectPriceOption(defaultButton, defaultOption);
+    }
+
+    async function loadCardPrices(cardId) {
+      resetGradedPricesUi();
+      gradedPricesSection.hidden = false;
+      gradedPricesLoading.hidden = false;
+
+      try {
+        const response = await AUTH.apiFetch(`/api/cards/${cardId}/prices`);
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || 'Fiyatlar alınamadı.');
+        renderGradedPriceOptions(payload.data);
+      } catch (error) {
+        gradedPricesLoading.hidden = true;
+        gradedPricesEmpty.hidden = false;
+        gradedPricesEmpty.textContent = error.message;
+      }
     }
 
     function getCardImage(card) {
@@ -1075,6 +1294,7 @@
             <span class="card-code">${escapeHtml(code)}</span>
             <span class="card-price">${escapeHtml(formatPrice(card))}</span>
           </div>
+          ${renderGradedPriceChips(card)}
           <button type="button" class="card-action">ikas'a Yükle</button>
         </div>`;
 
@@ -1187,16 +1407,16 @@
       importModal.classList.add('open');
       stockCountInput.value = '1';
       sellPriceInput.value = '';
-      sellPriceHint.textContent = card.priceInfo?.formatted
-        ? `PriceCharting referans: ${card.priceInfo.formatted} (boş bırakırsanız otomatik hesaplanır)`
-        : 'PriceCharting fiyatı yoksa manuel fiyat girmeniz gerekir.';
+      sellPriceHint.textContent = 'Fiyatlar yükleniyor...';
       document.body.style.overflow = 'hidden';
+      loadCardPrices(card.id);
     }
 
     function closeImportModal() {
       importModal.classList.remove('open');
       document.body.style.overflow = '';
       pendingImport = null;
+      resetGradedPricesUi();
     }
 
     async function confirmImport() {
@@ -1231,6 +1451,8 @@
           return;
         }
         body.sellPrice = sellPrice;
+      } else if (selectedPriceLabel) {
+        body.priceLabel = selectedPriceLabel;
       }
 
       const locationName = stockLocationSelect.options[stockLocationSelect.selectedIndex].text;
@@ -1255,7 +1477,9 @@
           showToast(`"${card.name}" → ${locationName} · +${stockCount} stok (${payload.data.previousStock} → ${payload.data.newStock})`, 'success');
         } else {
           button.textContent = '✓ Yüklendi';
-          const priceNote = payload.data.priceManual ? 'manuel fiyat' : `${payload.data.sellPrice} TRY`;
+          const priceNote = payload.data.priceManual
+            ? `manuel fiyat${payload.data.priceLabel ? ` (${payload.data.priceLabel})` : ''}`
+            : `${payload.data.sellPrice} TRY${payload.data.priceLabel ? ` · ${payload.data.priceLabel}` : ''}`;
           showToast(`"${card.name}" → ${locationName} · ${stockCount} adet · ${priceNote}`, 'success');
         }
         button.classList.remove('loading');

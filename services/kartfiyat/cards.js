@@ -2,6 +2,7 @@ const { createKartfiyatClient, parseApiResponse } = require('./client');
 const { getCategoryItems } = require('./categories');
 const { resolveSetForGame } = require('./setCodeResolver');
 const { normalizeGameId } = require('../ikas/taxonomy');
+const { calculateFinalPriceTry } = require('../pricing');
 
 const SET_CODE_PATTERN = /^([A-Za-z0-9][A-Za-z0-9.+]{1,7})-(\d{1,4})$/;
 
@@ -167,15 +168,88 @@ const PRICE_LABEL_PRIORITY = [
   'heavily played',
 ];
 
-function getPriceChartingEntry(card) {
-  if (!card?.prices?.length) return null;
+const GRADED_LABEL_PATTERN = /^(PSA|BGS|CGC|SGC|Grade)\s+([\d.]+)$/i;
+const GRADING_COMPANY_ORDER = ['PSA', 'BGS', 'CGC', 'SGC', 'Grade'];
+
+function getPriceChartingCandidates(card) {
+  if (!card?.prices?.length) return [];
 
   const prices = card.prices.filter((entry) => {
     const market = String(entry.market || card.market || '').toLowerCase();
     return market.includes('pricecharting');
   });
 
-  const candidates = prices.length ? prices : card.prices;
+  return prices.length ? prices : card.prices;
+}
+
+function normalizePriceLabel(label) {
+  const value = String(label || '').trim();
+  if (!value || /^ungraded$/i.test(value)) return null;
+  return value;
+}
+
+function isGradedPriceLabel(label) {
+  return GRADED_LABEL_PATTERN.test(String(label || '').trim());
+}
+
+function parseGradedLabel(label) {
+  const match = String(label || '').trim().match(GRADED_LABEL_PATTERN);
+  if (!match) return null;
+
+  return {
+    company: match[1].toUpperCase() === 'GRADE' ? 'Grade' : match[1].toUpperCase(),
+    grade: match[2],
+    numericGrade: Number(match[2]),
+  };
+}
+
+function sortGradedEntries(a, b) {
+  const gradeA = parseGradedLabel(a.label);
+  const gradeB = parseGradedLabel(b.label);
+  if (!gradeA || !gradeB) return 0;
+
+  const companyDiff = GRADING_COMPANY_ORDER.indexOf(gradeA.company)
+    - GRADING_COMPANY_ORDER.indexOf(gradeB.company);
+  if (companyDiff !== 0) return companyDiff;
+
+  return gradeB.numericGrade - gradeA.numericGrade;
+}
+
+function buildPriceEntry(entry) {
+  const usd = parseUsdPrice(entry.price);
+  if (usd === null) return null;
+
+  const label = String(entry.label || '').trim();
+  const graded = parseGradedLabel(label);
+
+  return {
+    label,
+    usd,
+    formattedUsd: `$${usd.toFixed(2)}`,
+    isGraded: Boolean(graded),
+    company: graded?.company || null,
+    grade: graded?.grade || null,
+    updatedAt: entry.updated_at || null,
+  };
+}
+
+function getPriceChartingEntries(card) {
+  return getPriceChartingCandidates(card)
+    .map(buildPriceEntry)
+    .filter(Boolean);
+}
+
+function getPriceChartingEntry(card, { label } = {}) {
+  const normalizedLabel = normalizePriceLabel(label);
+  const candidates = getPriceChartingCandidates(card);
+
+  if (normalizedLabel) {
+    const exact = candidates.find(
+      (entry) => String(entry.label || '').trim().toLowerCase() === normalizedLabel.toLowerCase(),
+    );
+    if (exact && parseUsdPrice(exact.price) !== null) return exact;
+    return null;
+  }
 
   for (const preferredLabel of PRICE_LABEL_PRIORITY) {
     const match = candidates.find(
@@ -189,22 +263,63 @@ function getPriceChartingEntry(card) {
   return candidates.find((entry) => parseUsdPrice(entry.price) !== null) || null;
 }
 
-function getPriceChartingUsd(card) {
-  const entry = getPriceChartingEntry(card);
+function getPriceChartingUsd(card, options = {}) {
+  const entry = getPriceChartingEntry(card, options);
   return entry ? parseUsdPrice(entry.price) : null;
 }
 
-function getCardPriceInfo(card) {
-  const entry = getPriceChartingEntry(card);
+function getGradedPrices(card) {
+  return getPriceChartingEntries(card)
+    .filter((entry) => entry.isGraded)
+    .sort(sortGradedEntries);
+}
+
+function getCardPriceInfo(card, options = {}) {
+  const entry = getPriceChartingEntry(card, options);
   if (!entry) return null;
 
   const usd = parseUsdPrice(entry.price);
   if (usd === null) return null;
 
+  const label = String(entry.label || '').trim();
+  const graded = parseGradedLabel(label);
+
   return {
-    label: entry.label,
+    label,
     usd,
     formatted: `$${usd.toFixed(2)}`,
+    formattedUsd: `$${usd.toFixed(2)}`,
+    isGraded: Boolean(graded),
+    company: graded?.company || null,
+    grade: graded?.grade || null,
+  };
+}
+
+function buildTryPrice(usd, usdTryRate, multiplier = 1.86) {
+  return calculateFinalPriceTry(usd, usdTryRate, multiplier);
+}
+
+function enrichPriceWithTry(entry, usdTryRate, multiplier = 1.86) {
+  if (!entry) return null;
+
+  const tryPrice = buildTryPrice(entry.usd, usdTryRate, multiplier);
+  return {
+    ...entry,
+    try: tryPrice,
+    formattedTry: `${tryPrice.toLocaleString('tr-TR')} ₺`,
+  };
+}
+
+function getCardPricesPayload(card, { usdTryRate, multiplier = 1.86 } = {}) {
+  const ungradedEntry = getCardPriceInfo(card);
+  const graded = getGradedPrices(card).map((entry) => enrichPriceWithTry(entry, usdTryRate, multiplier));
+
+  return {
+    ungraded: enrichPriceWithTry(ungradedEntry, usdTryRate, multiplier),
+    graded,
+    gradedCount: graded.length,
+    usdTryRate,
+    multiplier,
   };
 }
 
@@ -224,7 +339,13 @@ module.exports = {
   parseSetCodeQuery,
   getCardById,
   parseUsdPrice,
+  normalizePriceLabel,
+  isGradedPriceLabel,
   getPriceChartingUsd,
+  getPriceChartingEntry,
+  getPriceChartingEntries,
+  getGradedPrices,
   getCardPriceInfo,
+  getCardPricesPayload,
   getCardImageUrl,
 };

@@ -39,7 +39,7 @@ async function runPriceUpdate() {
     }
     try {
       const card = await getCardById(mapping.kartfiyat_card_id);
-      const usdPrice = getPriceChartingUsd(card);
+      const usdPrice = getPriceChartingUsd(card, { label: mapping.price_label });
       if (!usdPrice) {
         skipped += 1;
         continue;

@@ -20,6 +20,7 @@ const MAPPING_EXTRA_COLUMNS = [
   { name: 'last_price_checked_at', ddl: 'TEXT' },
   { name: 'barcode', ddl: 'TEXT' },
   { name: 'price_manual', ddl: 'INTEGER DEFAULT 0' },
+  { name: 'price_label', ddl: 'TEXT' },
 ];
 
 function ensureMappingExtraColumns(db) {
@@ -152,6 +153,7 @@ function insertMapping({
   ikasProductId = null,
   barcode = null,
   priceManual = false,
+  priceLabel = null,
 }) {
   const db = getDatabase();
   try {
@@ -161,14 +163,16 @@ function insertMapping({
         ikas_product_id,
         kartfiyat_card_id,
         barcode,
-        price_manual
+        price_manual,
+        price_label
       )
       VALUES (
         @ikasVariantId,
         @ikasProductId,
         @kartfiyatCardId,
         @barcode,
-        @priceManual
+        @priceManual,
+        @priceLabel
       )
     `).run({
       ikasVariantId,
@@ -176,6 +180,7 @@ function insertMapping({
       kartfiyatCardId,
       barcode,
       priceManual: priceManual ? 1 : 0,
+      priceLabel: priceLabel || null,
     });
     return { id: result.lastInsertRowid };
   } finally {
@@ -183,10 +188,18 @@ function insertMapping({
   }
 }
 
-function findByKartfiyatCardId(kartfiyatCardId) {
+function findByKartfiyatCardId(kartfiyatCardId, { priceLabel = null } = {}) {
   const db = getDatabase();
   try {
-    return db.prepare('SELECT * FROM card_mappings WHERE kartfiyat_card_id = ?').get(kartfiyatCardId);
+    if (priceLabel === undefined) {
+      return db.prepare('SELECT * FROM card_mappings WHERE kartfiyat_card_id = ?').get(kartfiyatCardId);
+    }
+
+    return db.prepare(`
+      SELECT * FROM card_mappings
+      WHERE kartfiyat_card_id = ?
+        AND COALESCE(price_label, '') = COALESCE(?, '')
+    `).get(kartfiyatCardId, priceLabel || null);
   } finally {
     db.close();
   }

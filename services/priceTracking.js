@@ -40,7 +40,7 @@ async function checkMappingPrice(mapping, { usdTryRate, multiplier, threshold })
   }
 
   const card = await getCardById(mapping.kartfiyat_card_id);
-  const usdPrice = getPriceChartingUsd(card);
+  const usdPrice = getPriceChartingUsd(card, { label: mapping.price_label });
   if (!usdPrice) {
     return { status: 'skipped', reason: 'PriceCharting fiyatı yok' };
   }

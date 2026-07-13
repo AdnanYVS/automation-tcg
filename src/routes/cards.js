@@ -1,5 +1,15 @@
 const express = require('express');
-const { searchCards, getCardById, getPriceChartingUsd, getCardPriceInfo, getCardImageUrl } = require('../../services/kartfiyat');
+const {
+  searchCards,
+  getCardById,
+  getPriceChartingUsd,
+  getCardPriceInfo,
+  getGradedPrices,
+  getCardPricesPayload,
+  getCardImageUrl,
+  normalizePriceLabel,
+  isGradedPriceLabel,
+} = require('../../services/kartfiyat');
 const { getSetCodeRegistry } = require('../../services/kartfiyat/setRegistry');
 const { getOnePieceSetCodeRegistry } = require('../../services/kartfiyat/onepieceSetRegistry');
 const { createBasicProduct, listStockLocations, resolveCategoryForCard, incrementVariantStock } = require('../../services/ikas');
@@ -11,6 +21,20 @@ const { getSupportedGames, normalizeGameId } = require('../../services/ikas/taxo
 const { requireAuth } = require('../middleware/requireAuth');
 
 const router = express.Router();
+
+function buildGradedProductName(baseName, priceLabel) {
+  const normalized = normalizePriceLabel(priceLabel);
+  if (!normalized) return baseName;
+
+  const suffix = ` [${normalized}]`;
+  return String(baseName || '').includes(suffix) ? baseName : `${baseName}${suffix}`;
+}
+
+function buildGradedSku(baseSku, priceLabel) {
+  const normalized = normalizePriceLabel(priceLabel);
+  if (!normalized) return baseSku;
+  return `${baseSku}-${normalized.replace(/\s+/g, '').toUpperCase()}`;
+}
 
 router.use(requireAuth);
 
@@ -119,14 +143,27 @@ router.get('/search-card', async (req, res) => {
       market: req.query.market,
     });
 
-    const items = result.items.map((card) => ({
-      id: card.id,
-      name: card.name,
-      code: card.code,
-      category: card.category,
-      images: card.images,
-      priceInfo: getCardPriceInfo(card),
-    }));
+    const items = result.items.map((card) => {
+      const gradedPrices = getGradedPrices(card)
+        .filter((entry) => entry.company === 'PSA')
+        .slice(0, 3)
+        .map((entry) => ({
+          label: entry.label,
+          usd: entry.usd,
+          formattedUsd: entry.formattedUsd,
+        }));
+
+      return {
+        id: card.id,
+        name: card.name,
+        code: card.code,
+        category: card.category,
+        images: card.images,
+        priceInfo: getCardPriceInfo(card),
+        gradedPrices,
+        gradedCount: getGradedPrices(card).length,
+      };
+    });
 
     return res.json({
       success: true,
@@ -142,6 +179,22 @@ router.get('/search-card', async (req, res) => {
     });
   } catch (error) {
     console.error('GET /api/search-card hatası:', error.message);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/cards/:id/prices', async (req, res) => {
+  try {
+    const card = await getCardById(req.params.id);
+    const usdTryRate = await getUsdTryRate();
+    const multiplier = Number(process.env.FINAL_COST_MULTIPLIER || 1.86);
+
+    return res.json({
+      success: true,
+      data: getCardPricesPayload(card, { usdTryRate, multiplier }),
+    });
+  } catch (error) {
+    console.error('GET /api/cards/:id/prices hatası:', error.message);
     return res.status(500).json({ success: false, error: error.message });
   }
 });
@@ -162,6 +215,7 @@ router.post('/import-card', async (req, res) => {
     if (!cardId) return res.status(400).json({ success: false, error: 'cardId zorunludur.' });
 
     const kartfiyatCardId = String(cardId);
+    const priceLabel = normalizePriceLabel(req.body.priceLabel);
     const stockLocationId = req.body.stockLocationId;
     if (!stockLocationId) {
       return res.status(400).json({
@@ -178,7 +232,7 @@ router.post('/import-card', async (req, res) => {
       });
     }
 
-    const existing = findByKartfiyatCardId(kartfiyatCardId);
+    const existing = findByKartfiyatCardId(kartfiyatCardId, { priceLabel });
     if (existing?.ikas_product_id && existing?.ikas_variant_id) {
       const stockResult = await incrementVariantStock({
         productId: existing.ikas_product_id,
@@ -214,14 +268,17 @@ router.post('/import-card', async (req, res) => {
     }
 
     const card = await getCardById(kartfiyatCardId);
-    const name = req.body.name || card.name;
+    const baseName = req.body.name || card.name;
+    const name = buildGradedProductName(baseName, priceLabel);
     if (!name) return res.status(400).json({ success: false, error: 'Ürün adı bulunamadı.' });
 
-    const sku = req.body.code || card.code || `KF-${kartfiyatCardId}`;
+    const baseSku = req.body.code || card.code || `KF-${kartfiyatCardId}`;
+    const sku = buildGradedSku(baseSku, priceLabel);
     const hasManualSellPrice = req.body.sellPrice !== undefined
       && req.body.sellPrice !== null
       && String(req.body.sellPrice).trim() !== '';
     let sellPrice = hasManualSellPrice ? Number(req.body.sellPrice) : null;
+    const multiplier = Number(process.env.FINAL_COST_MULTIPLIER || 1.86);
 
     if (hasManualSellPrice && (!Number.isFinite(sellPrice) || sellPrice <= 0)) {
       return res.status(400).json({
@@ -231,24 +288,25 @@ router.post('/import-card', async (req, res) => {
     }
 
     if (!hasManualSellPrice) {
-      const usdPrice = getPriceChartingUsd(card);
+      const usdPrice = getPriceChartingUsd(card, { label: priceLabel });
       if (!usdPrice) {
         return res.status(400).json({
           success: false,
-          error: 'PriceCharting USD fiyatı bulunamadı. sellPrice alanını manuel gönderin.',
+          error: 'Seçilen fiyat etiketi için PriceCharting USD fiyatı bulunamadı. sellPrice alanını manuel gönderin.',
         });
       }
       sellPrice = calculateFinalPriceTry(
         usdPrice,
         await getUsdTryRate(),
-        Number(process.env.FINAL_COST_MULTIPLIER || 1.86),
+        multiplier,
       );
     }
 
     const imageUrl = req.body.imageUrl || getCardImageUrl(card);
 
     const category = await resolveCategoryForCard(card);
-    const barcode = generateProductBarcode(kartfiyatCardId);
+    const barcodeSource = priceLabel ? `${kartfiyatCardId}:${priceLabel}` : kartfiyatCardId;
+    const barcode = generateProductBarcode(barcodeSource);
 
     const product = await createBasicProduct({
       name,
@@ -274,6 +332,7 @@ router.post('/import-card', async (req, res) => {
       kartfiyatCardId,
       barcode,
       priceManual: hasManualSellPrice,
+      priceLabel,
     });
 
     if (hasManualSellPrice) {
@@ -284,7 +343,7 @@ router.post('/import-card', async (req, res) => {
         tryPrice: sellPrice,
       });
     } else {
-      const usdPrice = getPriceChartingUsd(card);
+      const usdPrice = getPriceChartingUsd(card, { label: priceLabel });
       if (usdPrice) {
         updateMappingPriceSnapshot({
           mappingId: mapping.id,
@@ -302,7 +361,9 @@ router.post('/import-card', async (req, res) => {
       stockLocationId,
       quantity: stockCount,
       eventType: 'import',
-      note: hasManualSellPrice ? 'Yeni ürün (manuel fiyat)' : 'Yeni ürün',
+      note: hasManualSellPrice
+        ? (priceLabel ? `Yeni graded ürün (manuel fiyat: ${priceLabel})` : 'Yeni ürün (manuel fiyat)')
+        : (priceLabel ? `Yeni graded ürün (${priceLabel})` : 'Yeni ürün'),
     });
 
     return res.status(201).json({
@@ -318,6 +379,8 @@ router.post('/import-card', async (req, res) => {
         barcode: variant.barcodeList?.[0] || barcode,
         sellPrice,
         priceManual: hasManualSellPrice,
+        priceLabel,
+        isGraded: Boolean(priceLabel && isGradedPriceLabel(priceLabel)),
         category: {
           id: category.id,
           name: category.name,
