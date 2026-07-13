@@ -12,7 +12,7 @@ const {
 const { getCardById, getPriceChartingUsd } = require('./kartfiyat');
 const { updateVariantPrices } = require('./ikas');
 const { getUsdTryRate } = require('./exchangeRate');
-const { calculateFinalPriceTry } = require('./pricing');
+const { calculateFinalPriceTry, getPriceMultiplierForCard } = require('./pricing');
 
 const REQUEST_DELAY_MS = Number(process.env.KARTFIYAT_REQUEST_DELAY_MS || 200);
 const THRESHOLD_PERCENT = Number(process.env.PRICE_CHANGE_THRESHOLD_PERCENT || 10);
@@ -30,7 +30,7 @@ function exceedsThreshold(changePercent, threshold = THRESHOLD_PERCENT) {
   return Math.abs(changePercent) >= threshold;
 }
 
-async function checkMappingPrice(mapping, { usdTryRate, multiplier, threshold }) {
+async function checkMappingPrice(mapping, { usdTryRate, threshold }) {
   if (mapping.price_manual) {
     return { status: 'skipped', reason: 'Manuel fiyat' };
   }
@@ -40,6 +40,7 @@ async function checkMappingPrice(mapping, { usdTryRate, multiplier, threshold })
   }
 
   const card = await getCardById(mapping.kartfiyat_card_id);
+  const { multiplier } = getPriceMultiplierForCard(card);
   const usdPrice = getPriceChartingUsd(card, { label: mapping.price_label });
   if (!usdPrice) {
     return { status: 'skipped', reason: 'PriceCharting fiyatı yok' };
@@ -120,7 +121,6 @@ async function runPriceCheck() {
   }
 
   const usdTryRate = await getUsdTryRate();
-  const multiplier = Number(process.env.FINAL_COST_MULTIPLIER || 1.86);
   const summary = {
     checked: 0,
     alerts: 0,
@@ -134,7 +134,7 @@ async function runPriceCheck() {
 
   for (const mapping of mappings) {
     try {
-      const result = await checkMappingPrice(mapping, { usdTryRate, multiplier, threshold: THRESHOLD_PERCENT });
+      const result = await checkMappingPrice(mapping, { usdTryRate, threshold: THRESHOLD_PERCENT });
       summary.checked += 1;
 
       if (result.status === 'alert') summary.alerts += 1;

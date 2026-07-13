@@ -727,7 +727,10 @@
     }
 
     function renderPortfolioStats(data) {
-      const { summary, usdTryRate, multiplier, generatedAt } = data;
+      const { summary, usdTryRate, multipliers, generatedAt } = data;
+      const multiplierText = multipliers
+        ? `Pokemon ×${multipliers.pokemon} · One Piece ×${multipliers.onepiece}`
+        : 'Çarpan bilgisi yok';
       const cards = [
         {
           label: 'Toplam PC Değeri',
@@ -743,7 +746,7 @@
         {
           label: 'Güncel Kur',
           value: `${Number(usdTryRate).toFixed(2)} ₺`,
-          sub: `Çarpan ×${multiplier}`,
+          sub: multiplierText,
         },
         {
           label: 'Son Güncelleme',

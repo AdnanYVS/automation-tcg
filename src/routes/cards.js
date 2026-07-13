@@ -13,8 +13,9 @@ const {
 const { getSetCodeRegistry } = require('../../services/kartfiyat/setRegistry');
 const { getOnePieceSetCodeRegistry } = require('../../services/kartfiyat/onepieceSetRegistry');
 const { createBasicProduct, listStockLocations, resolveCategoryForCard, incrementVariantStock } = require('../../services/ikas');
+const { resolveProductCategories, ensureNavigationTaxonomy } = require('../../services/ikas/navigationCategories');
 const { getUsdTryRate } = require('../../services/exchangeRate');
-const { calculateFinalPriceTry } = require('../../services/pricing');
+const { calculateFinalPriceTry, getPriceMultiplierForCard } = require('../../services/pricing');
 const { generateProductBarcode } = require('../../services/barcode');
 const { insertMapping, findByKartfiyatCardId, updateMappingPriceSnapshot, insertInventoryEvent } = require('../../db');
 const { getSupportedGames, normalizeGameId } = require('../../services/ikas/taxonomy');
@@ -187,11 +188,15 @@ router.get('/cards/:id/prices', async (req, res) => {
   try {
     const card = await getCardById(req.params.id);
     const usdTryRate = await getUsdTryRate();
-    const multiplier = Number(process.env.FINAL_COST_MULTIPLIER || 1.86);
+    const { multiplier, gameId, gameLabel } = getPriceMultiplierForCard(card);
 
     return res.json({
       success: true,
-      data: getCardPricesPayload(card, { usdTryRate, multiplier }),
+      data: {
+        ...getCardPricesPayload(card, { usdTryRate, multiplier }),
+        gameId,
+        gameLabel,
+      },
     });
   } catch (error) {
     console.error('GET /api/cards/:id/prices hatası:', error.message);
@@ -268,6 +273,7 @@ router.post('/import-card', async (req, res) => {
     }
 
     const card = await getCardById(kartfiyatCardId);
+    const { multiplier, gameId, gameLabel } = getPriceMultiplierForCard(card);
     const baseName = req.body.name || card.name;
     const name = buildGradedProductName(baseName, priceLabel);
     if (!name) return res.status(400).json({ success: false, error: 'Ürün adı bulunamadı.' });
@@ -278,7 +284,6 @@ router.post('/import-card', async (req, res) => {
       && req.body.sellPrice !== null
       && String(req.body.sellPrice).trim() !== '';
     let sellPrice = hasManualSellPrice ? Number(req.body.sellPrice) : null;
-    const multiplier = Number(process.env.FINAL_COST_MULTIPLIER || 1.86);
 
     if (hasManualSellPrice && (!Number.isFinite(sellPrice) || sellPrice <= 0)) {
       return res.status(400).json({
@@ -305,6 +310,8 @@ router.post('/import-card', async (req, res) => {
     const imageUrl = req.body.imageUrl || getCardImageUrl(card);
 
     const category = await resolveCategoryForCard(card);
+    await ensureNavigationTaxonomy(category.game, { allowCreate: true });
+    const productCategoryPlan = resolveProductCategories(card, category, { priceLabel });
     const barcodeSource = priceLabel ? `${kartfiyatCardId}:${priceLabel}` : kartfiyatCardId;
     const barcode = generateProductBarcode(barcodeSource);
 
@@ -316,8 +323,7 @@ router.post('/import-card', async (req, res) => {
       stockLocationId,
       currency: 'TRY',
       imageUrl,
-      categoryName: category.name,
-      categoryPath: category.productCategoryPath,
+      categories: productCategoryPlan.categories,
       brandName: category.brandName,
       barcode,
     });
@@ -381,6 +387,15 @@ router.post('/import-card', async (req, res) => {
         priceManual: hasManualSellPrice,
         priceLabel,
         isGraded: Boolean(priceLabel && isGradedPriceLabel(priceLabel)),
+        multiplier: hasManualSellPrice ? null : multiplier,
+        gameId,
+        gameLabel,
+        productKind: productCategoryPlan.kind,
+        navigationCategories: productCategoryPlan.navigation.map((entry) => entry.name),
+        categories: productCategoryPlan.categories.map((entry) => ({
+          name: entry.name,
+          path: entry.path,
+        })),
         category: {
           id: category.id,
           name: category.name,

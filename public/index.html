@@ -1188,7 +1188,10 @@
 
       if (entry?.try) {
         sellPriceInput.value = '';
-        sellPriceHint.textContent = `${entry.label}: ${entry.formattedUsd} → ${entry.formattedTry} (otomatik uygulanır)`;
+        const multiplierNote = currentCardPrices?.multiplier
+          ? ` · ×${currentCardPrices.multiplier}`
+          : '';
+        sellPriceHint.textContent = `${entry.label}: ${entry.formattedUsd} → ${entry.formattedTry}${multiplierNote} (otomatik uygulanır)`;
       } else {
         sellPriceHint.textContent = 'PriceCharting fiyatı yoksa manuel fiyat girmeniz gerekir.';
       }
@@ -1477,10 +1480,13 @@
           showToast(`"${card.name}" → ${locationName} · +${stockCount} stok (${payload.data.previousStock} → ${payload.data.newStock})`, 'success');
         } else {
           button.textContent = '✓ Yüklendi';
+          const navNote = payload.data.navigationCategories?.length
+            ? ` · ${payload.data.navigationCategories.join(', ')}`
+            : '';
           const priceNote = payload.data.priceManual
             ? `manuel fiyat${payload.data.priceLabel ? ` (${payload.data.priceLabel})` : ''}`
-            : `${payload.data.sellPrice} TRY${payload.data.priceLabel ? ` · ${payload.data.priceLabel}` : ''}`;
-          showToast(`"${card.name}" → ${locationName} · ${stockCount} adet · ${priceNote}`, 'success');
+            : `${payload.data.sellPrice} TRY · ×${payload.data.multiplier}${payload.data.priceLabel ? ` · ${payload.data.priceLabel}` : ''}`;
+          showToast(`"${card.name}" → ${locationName} · ${stockCount} adet · ${priceNote}${navNote}`, 'success');
         }
         button.classList.remove('loading');
         button.classList.add('imported');

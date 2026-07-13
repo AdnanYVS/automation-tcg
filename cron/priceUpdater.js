@@ -5,7 +5,7 @@ const { getAutoTrackedMappings } = require('../db');
 const { getCardById, getPriceChartingUsd } = require('../services/kartfiyat');
 const { updateVariantPrices } = require('../services/ikas');
 const { getUsdTryRate } = require('../services/exchangeRate');
-const { calculateFinalPriceTry } = require('../services/pricing');
+const { calculateFinalPriceTry, getPriceMultiplierForCard } = require('../services/pricing');
 
 const CRON_SCHEDULE = process.env.PRICE_UPDATE_CRON || '0 3 * * *';
 const CRON_TIMEZONE = process.env.CRON_TIMEZONE || 'Europe/Istanbul';
@@ -27,7 +27,6 @@ async function runPriceUpdate() {
   if (!mappings.length) return { updated: 0, skipped: 0, failed: 0 };
 
   const usdTryRate = await getUsdTryRate();
-  const multiplier = Number(process.env.FINAL_COST_MULTIPLIER || 1.86);
   const variantUpdates = [];
   const failed = [];
   let skipped = 0;
@@ -39,6 +38,7 @@ async function runPriceUpdate() {
     }
     try {
       const card = await getCardById(mapping.kartfiyat_card_id);
+      const { multiplier } = getPriceMultiplierForCard(card);
       const usdPrice = getPriceChartingUsd(card, { label: mapping.price_label });
       if (!usdPrice) {
         skipped += 1;

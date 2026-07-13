@@ -2,7 +2,7 @@ const { getAllMappings } = require('../db');
 const { getCardById, getPriceChartingUsd } = require('./kartfiyat');
 const { listStockLocations, listAllVariantStocks } = require('./ikas');
 const { getUsdTryRate } = require('./exchangeRate');
-const { calculateFinalPriceTry } = require('./pricing');
+const { calculateFinalPriceTry, getPriceMultiplier, getPriceMultiplierForCard } = require('./pricing');
 
 const REQUEST_DELAY_MS = Number(process.env.KARTFIYAT_REQUEST_DELAY_MS || 200);
 
@@ -43,7 +43,6 @@ async function getPortfolioValuation() {
     listStockLocations(),
     listAllVariantStocks(),
   ]);
-  const multiplier = Number(process.env.FINAL_COST_MULTIPLIER || 1.86);
   const stockByVariant = buildStockIndex(stockRows);
   const locationTotals = initLocationTotals(stockLocations);
 
@@ -104,7 +103,8 @@ async function getPortfolioValuation() {
       }
 
       const card = await getCardById(mapping.kartfiyat_card_id);
-      const usdPrice = getPriceChartingUsd(card);
+      const usdPrice = getPriceChartingUsd(card, { label: mapping.price_label });
+      const { multiplier } = getPriceMultiplierForCard(card);
       const cardName = card.name || mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`;
 
       if (!usdPrice) {
@@ -145,6 +145,7 @@ async function getPortfolioValuation() {
         ikasVariantId: mapping.ikas_variant_id,
         usdPrice,
         unitTryPrice,
+        multiplier,
         totalQuantity,
         totalValueTry: rowValueTry,
         locations,
@@ -168,7 +169,10 @@ async function getPortfolioValuation() {
   return {
     generatedAt: new Date().toISOString(),
     usdTryRate,
-    multiplier,
+    multipliers: {
+      pokemon: getPriceMultiplier('pokemon'),
+      onepiece: getPriceMultiplier('onepiece'),
+    },
     summary: {
       productCount: items.length,
       skippedCount: skipped.length,

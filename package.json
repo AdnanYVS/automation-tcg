@@ -16,6 +16,7 @@
     "onepiece-sets:sync": "node scripts/sync-onepiece-set-codes.js",
     "categories:sync": "node scripts/sync-ikas-categories.js",
     "pokemon:setup": "node scripts/setup-pokemon-taxonomy.js",
+    "navigation:setup": "node scripts/setup-navigation-categories.js",
     "category-logos:upload": "node scripts/upload-category-logos.js",
     "categories:consolidate": "node scripts/consolidate-duplicate-categories.js --dry-run",
     "categories:consolidate:apply": "node scripts/consolidate-duplicate-categories.js --apply",

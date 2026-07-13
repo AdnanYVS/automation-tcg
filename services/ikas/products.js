@@ -233,16 +233,15 @@ async function listAllProducts({ pageSize = 50 } = {}) {
   return products;
 }
 
-async function updateProductCategories({ productId, categoryName, categoryPath = [] }) {
-  const categories = [{ name: categoryName }];
-  if (categoryPath.length > 0) {
-    categories[0].path = categoryPath;
-  }
+async function updateProductCategories({ productId, categoryName, categoryPath = [], categories = null }) {
+  const categoryInputs = categories?.length
+    ? categories
+    : [{ name: categoryName, ...(categoryPath.length > 0 ? { path: categoryPath } : {}) }];
 
   const data = await graphqlRequest(UPDATE_PRODUCT_MUTATION, {
     input: {
       id: productId,
-      categories,
+      categories: categoryInputs,
     },
   });
 
@@ -265,6 +264,7 @@ async function updateProductTaxonomy({
   brandName,
   categoryName,
   categoryPath = [],
+  categories = null,
 }) {
   const input = { id: productId };
 
@@ -272,7 +272,9 @@ async function updateProductTaxonomy({
     input.brand = { name: brandName };
   }
 
-  if (categoryName) {
+  if (categories?.length) {
+    input.categories = categories;
+  } else if (categoryName) {
     const categoryInput = { name: categoryName };
     if (categoryPath.length > 0) {
       categoryInput.path = categoryPath;
@@ -296,6 +298,7 @@ async function createBasicProduct({
   imageUrl,
   categoryName,
   categoryPath,
+  categories = null,
   brandName,
   barcode,
 }) {
@@ -315,7 +318,9 @@ async function createBasicProduct({
     input.brand = { name: brandName };
   }
 
-  if (categoryName) {
+  if (categories?.length) {
+    input.categories = categories;
+  } else if (categoryName) {
     const categoryInput = { name: categoryName };
     if (categoryPath?.length) {
       categoryInput.path = categoryPath;
