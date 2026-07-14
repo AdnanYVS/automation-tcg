@@ -91,6 +91,23 @@ const LIST_PRODUCTS_QUERY = `
   }
 `;
 
+const GET_PRODUCT_QUERY = `
+  query GetProduct($id: String!) {
+    listProduct(id: { eq: $id }) {
+      data {
+        id
+        name
+        variants {
+          id
+          sku
+          barcodeList
+          isActive
+        }
+      }
+    }
+  }
+`;
+
 const UPDATE_PRODUCT_MUTATION = `
   mutation UpdateProduct($input: UpdateProductInput!) {
     updateProduct(input: $input) {
@@ -134,33 +151,119 @@ async function getDefaultStockLocationId() {
   return locations[0].id;
 }
 
-async function saveVariantStock({ productId, variantId, stockCount, stockLocationId }) {
+async function getProductById(productId) {
+  if (!productId) return null;
+
+  try {
+    const data = await graphqlRequest(GET_PRODUCT_QUERY, { id: productId });
+    return data.listProduct?.data?.[0] || null;
+  } catch (error) {
+    // Bazı ikas tenantlarında id filtresi farklı olabilir; fallback listeleme.
+    console.warn(`[ikas] getProductById filtre başarısız (${productId}):`, error.message);
+  }
+
+  const products = await listAllProducts();
+  return products.find((product) => product.id === productId) || null;
+}
+
+function pickLiveVariant(product, { preferredVariantId = null, sku = null } = {}) {
+  const variants = product?.variants || [];
+  if (!variants.length) return null;
+
+  if (preferredVariantId) {
+    const preferred = variants.find((variant) => variant.id === preferredVariantId);
+    if (preferred) return preferred;
+  }
+
+  if (sku) {
+    const bySku = variants.find((variant) => String(variant.sku || '') === String(sku));
+    if (bySku) return bySku;
+  }
+
+  return variants[0];
+}
+
+async function resolveLiveVariant({ productId, variantId = null, sku = null }) {
+  const product = await getProductById(productId);
+  if (!product?.id) {
+    throw new Error(`ikas ürünü bulunamadı: ${productId}`);
+  }
+
+  const variant = pickLiveVariant(product, {
+    preferredVariantId: variantId,
+    sku,
+  });
+
+  if (!variant?.id) {
+    throw new Error(`ikas ürününde aktif varyant bulunamadı: ${productId}`);
+  }
+
+  return {
+    product,
+    variant,
+    variantChanged: Boolean(variantId && variant.id !== variantId),
+  };
+}
+
+async function saveVariantStock({ productId, variantId, stockCount, stockLocationId, sku = null }) {
   if (stockCount === undefined || stockCount === null) {
     return null;
   }
 
   const locationId = stockLocationId || await getDefaultStockLocationId();
-  const data = await graphqlRequest(SAVE_VARIANT_STOCKS_MUTATION, {
-    input: {
-      stockInputs: [{
-        deleted: false,
-        productId,
-        variantId,
-        stockLocationId: locationId,
-        stockCount: Number(stockCount),
-      }],
-    },
-  });
 
-  const result = data.saveVariantStocks;
-  if (result?.errors?.length) {
-    const errors = result.errors
-      .map((entry) => entry.errorCode || JSON.stringify(entry))
-      .join(', ');
-    throw new Error(`ikas stok güncellenemedi (${errors}).`);
+  async function attempt(targetVariantId) {
+    const data = await graphqlRequest(SAVE_VARIANT_STOCKS_MUTATION, {
+      input: {
+        stockInputs: [{
+          deleted: false,
+          productId,
+          variantId: targetVariantId,
+          stockLocationId: locationId,
+          stockCount: Number(stockCount),
+        }],
+      },
+    });
+
+    const result = data.saveVariantStocks;
+    if (result?.errors?.length) {
+      const errors = result.errors
+        .map((entry) => entry.errorCode || JSON.stringify(entry))
+        .join(', ');
+      const error = new Error(`ikas stok güncellenemedi (${errors}).`);
+      error.errorCodes = result.errors.map((entry) => entry.errorCode).filter(Boolean);
+      throw error;
+    }
+
+    return { result, variantId: targetVariantId };
   }
 
-  return result;
+  try {
+    return await attempt(variantId);
+  } catch (error) {
+    const isInvalidVariant = /INVALID_VARIANT_ID/i.test(error.message)
+      || (error.errorCodes || []).includes('INVALID_VARIANT_ID');
+
+    if (!isInvalidVariant) {
+      throw error;
+    }
+
+    console.warn(
+      `[ikas] Geçersiz variantId (${variantId}), ürün yeniden okunuyor: ${productId}`,
+    );
+
+    const live = await resolveLiveVariant({ productId, variantId, sku });
+    if (live.variant.id === variantId) {
+      throw error;
+    }
+
+    const retry = await attempt(live.variant.id);
+    return {
+      ...retry,
+      resolvedVariantId: live.variant.id,
+      variantChanged: true,
+    };
+  }
 }
 
 async function listAllVariantStocks() {
@@ -184,27 +287,38 @@ async function incrementVariantStock({
   variantId,
   stockLocationId,
   incrementBy = 1,
+  sku = null,
 }) {
   const increment = Number(incrementBy);
   if (!Number.isFinite(increment) || increment <= 0) {
     throw new Error('incrementBy pozitif bir sayı olmalıdır.');
   }
 
+  const live = await resolveLiveVariant({ productId, variantId, sku });
+  const effectiveVariantId = live.variant.id;
+
   const previousStock = await getVariantStockAtLocation({
     productId,
-    variantId,
+    variantId: effectiveVariantId,
     stockLocationId,
   });
   const newStock = previousStock + increment;
 
-  await saveVariantStock({
+  const stockResult = await saveVariantStock({
     productId,
-    variantId,
+    variantId: effectiveVariantId,
     stockLocationId,
     stockCount: newStock,
+    sku: sku || live.variant.sku,
   });
 
-  return { previousStock, newStock, incrementBy: increment };
+  return {
+    previousStock,
+    newStock,
+    incrementBy: increment,
+    variantId: stockResult.variantId || effectiveVariantId,
+    variantChanged: live.variantChanged || Boolean(stockResult.variantChanged),
+  };
 }
 
 function buildVariantInput({ sku, sellPrice, currency = 'TRY', isActive = true, variantValues = [], barcodeList = [] }) {
@@ -333,7 +447,21 @@ async function createBasicProduct({
   });
 
   const product = data.createProduct;
-  const variant = product.variants?.[0];
+  let variant = product.variants?.[0];
+
+  if (product?.id) {
+    try {
+      const live = await resolveLiveVariant({
+        productId: product.id,
+        variantId: variant?.id || null,
+        sku,
+      });
+      variant = live.variant;
+      product.variants = live.product.variants || product.variants;
+    } catch (error) {
+      console.warn('[ikas] Ürün oluşturulduktan sonra varyant yenilenemedi:', error.message);
+    }
+  }
 
   if (product?.id && variant?.id) {
     try {
@@ -349,6 +477,7 @@ async function createBasicProduct({
         variantId: variant.id,
         stockCount,
         stockLocationId,
+        sku,
       });
     }
 
@@ -426,6 +555,8 @@ module.exports = {
   updateProductBrand,
   updateProductTaxonomy,
   listAllProducts,
+  getProductById,
+  resolveLiveVariant,
   saveVariantStock,
   getVariantStockAtLocation,
   listAllVariantStocks,

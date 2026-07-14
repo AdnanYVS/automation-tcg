@@ -17,7 +17,7 @@ const { resolveProductCategories, ensureNavigationTaxonomy } = require('../../se
 const { getUsdTryRate } = require('../../services/exchangeRate');
 const { calculateFinalPriceTry, getPriceMultiplierForCard } = require('../../services/pricing');
 const { generateProductBarcode } = require('../../services/barcode');
-const { insertMapping, findByKartfiyatCardId, updateMappingPriceSnapshot, insertInventoryEvent } = require('../../db');
+const { insertMapping, findByKartfiyatCardId, updateMappingPriceSnapshot, updateMappingIkasIds, insertInventoryEvent } = require('../../db');
 const { getSupportedGames, normalizeGameId } = require('../../services/ikas/taxonomy');
 const { requireAuth } = require('../middleware/requireAuth');
 
@@ -238,38 +238,63 @@ router.post('/import-card', async (req, res) => {
     }
 
     const existing = findByKartfiyatCardId(kartfiyatCardId, { priceLabel });
+    let brokenExistingMapping = null;
     if (existing?.ikas_product_id && existing?.ikas_variant_id) {
-      const stockResult = await incrementVariantStock({
-        productId: existing.ikas_product_id,
-        variantId: existing.ikas_variant_id,
-        stockLocationId,
-        incrementBy: stockCount,
-      });
+      try {
+        const expectedSku = buildGradedSku(
+          req.body.code || `KF-${kartfiyatCardId}`,
+          priceLabel,
+        );
+        const stockResult = await incrementVariantStock({
+          productId: existing.ikas_product_id,
+          variantId: existing.ikas_variant_id,
+          stockLocationId,
+          incrementBy: stockCount,
+          sku: expectedSku,
+        });
 
-      insertInventoryEvent({
-        mappingId: existing.id,
-        kartfiyatCardId,
-        ikasVariantId: existing.ikas_variant_id,
-        stockLocationId,
-        quantity: stockCount,
-        eventType: 'import',
-        note: 'Stok artırımı',
-      });
+        if (stockResult.variantChanged && stockResult.variantId) {
+          updateMappingIkasIds({
+            mappingId: existing.id,
+            ikasVariantId: stockResult.variantId,
+          });
+        }
 
-      return res.json({
-        success: true,
-        data: {
-          action: 'stock_incremented',
+        insertInventoryEvent({
           mappingId: existing.id,
           kartfiyatCardId,
-          ikasProductId: existing.ikas_product_id,
-          ikasVariantId: existing.ikas_variant_id,
+          ikasVariantId: stockResult.variantId || existing.ikas_variant_id,
           stockLocationId,
-          previousStock: stockResult.previousStock,
-          newStock: stockResult.newStock,
-          incrementBy: stockResult.incrementBy,
-        },
-      });
+          quantity: stockCount,
+          eventType: 'import',
+          note: 'Stok artırımı',
+        });
+
+        return res.json({
+          success: true,
+          data: {
+            action: 'stock_incremented',
+            mappingId: existing.id,
+            kartfiyatCardId,
+            ikasProductId: existing.ikas_product_id,
+            ikasVariantId: stockResult.variantId || existing.ikas_variant_id,
+            stockLocationId,
+            previousStock: stockResult.previousStock,
+            newStock: stockResult.newStock,
+            incrementBy: stockResult.incrementBy,
+            variantChanged: Boolean(stockResult.variantChanged),
+          },
+        });
+      } catch (error) {
+        const isMissingProduct = /ürünü bulunamadı|INVALID_VARIANT_ID|varyant bulunamadı/i.test(error.message);
+        if (!isMissingProduct) {
+          throw error;
+        }
+        brokenExistingMapping = existing;
+        console.warn(
+          `[import] Mevcut mapping stok güncellenemedi (${kartfiyatCardId}): ${error.message}. Yeni ürün oluşturulacak.`,
+        );
+      }
     }
 
     const card = await getCardById(kartfiyatCardId);
@@ -332,14 +357,24 @@ router.post('/import-card', async (req, res) => {
       throw new Error('ikas ürün yanıtında productId veya variantId bulunamadı.');
     }
 
-    const mapping = insertMapping({
-      ikasVariantId: variant.id,
-      ikasProductId: product.id,
-      kartfiyatCardId,
-      barcode,
-      priceManual: hasManualSellPrice,
-      priceLabel,
-    });
+    let mapping;
+    if (brokenExistingMapping?.id) {
+      updateMappingIkasIds({
+        mappingId: brokenExistingMapping.id,
+        ikasProductId: product.id,
+        ikasVariantId: variant.id,
+      });
+      mapping = { id: brokenExistingMapping.id };
+    } else {
+      mapping = insertMapping({
+        ikasVariantId: variant.id,
+        ikasProductId: product.id,
+        kartfiyatCardId,
+        barcode,
+        priceManual: hasManualSellPrice,
+        priceLabel,
+      });
+    }
 
     if (hasManualSellPrice) {
       updateMappingPriceSnapshot({

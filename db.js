@@ -268,6 +268,21 @@ function updateMappingPriceSnapshot({
   }
 }
 
+function updateMappingIkasIds({ mappingId, ikasProductId = null, ikasVariantId = null }) {
+  const db = getDatabase();
+  try {
+    db.prepare(`
+      UPDATE card_mappings
+      SET ikas_product_id = COALESCE(@ikasProductId, ikas_product_id),
+          ikas_variant_id = COALESCE(@ikasVariantId, ikas_variant_id),
+          updated_at = datetime('now')
+      WHERE id = @mappingId
+    `).run({ mappingId, ikasProductId, ikasVariantId });
+  } finally {
+    db.close();
+  }
+}
+
 function upsertPendingPriceAlert({
   mappingId,
   kartfiyatCardId,
@@ -654,6 +669,7 @@ module.exports = {
   getAllMappings,
   getAutoTrackedMappings,
   updateMappingPriceSnapshot,
+  updateMappingIkasIds,
   upsertPendingPriceAlert,
   getPriceChangeAlerts,
   getPriceChangeAlertById,
