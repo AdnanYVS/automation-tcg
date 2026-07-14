@@ -197,6 +197,10 @@ async function ensureCategoryStorefrontVisibility(category) {
   return { category: updated, updated: true };
 }
 
+function isDuplicateCategoryError(error) {
+  return /E11000|duplicate key|merchantId_1_name_1_parentId_1/i.test(String(error?.message || ''));
+}
+
 async function createCategory({ name, parentId }) {
   const input = { name: String(name).trim() };
   if (parentId) {
@@ -227,6 +231,13 @@ async function deleteCategoryList({ categoryIds }) {
   return { deleted: categoryIds.length };
 }
 
+async function findExistingCategoryAfterConflict(name, parentId) {
+  const categories = await listCategories({ refresh: true });
+  return findCategoryByNameAndParent(categories, name, parentId)
+    || findCategoryByName(categories, name)
+    || null;
+}
+
 async function ensureCategoryExists({ name, parentId, allowCreate = false }) {
   const categories = await listCategories();
   const exactMatch = findCategoryByNameAndParent(categories, name, parentId);
@@ -234,26 +245,53 @@ async function ensureCategoryExists({ name, parentId, allowCreate = false }) {
     return { category: exactMatch, created: false };
   }
 
+  // Yanlışlıkla kökte (parentId=null) kalan kategori varsa doğru parent altına taşı.
+  // Farklı oyun kökü altındakilere dokunma (Pokemon vs One Piece).
   if (parentId) {
-    if (!allowCreate) {
-      return { category: null, created: false };
+    const orphan = findCategoryByNameAndParent(categories, name, null);
+    if (orphan) {
+      try {
+        const updated = await updateCategory({
+          id: orphan.id,
+          parentId,
+        });
+        console.log(`[ikas] Kök kategorisi taşındı: ${name} → parent ${parentId}`);
+        return { category: updated || { ...orphan, parentId }, created: false };
+      } catch (error) {
+        if (isDuplicateCategoryError(error)) {
+          const existing = await findExistingCategoryAfterConflict(name, parentId);
+          if (existing) return { category: existing, created: false };
+        }
+        console.warn(`[ikas] Kök kategori taşınamadı (${name}):`, error.message);
+      }
     }
-
-    const category = await createCategory({ name, parentId });
-    return { category, created: true };
-  }
-
-  const existing = findCategoryByName(categories, name);
-  if (existing) {
-    return { category: existing, created: false };
+  } else {
+    const existing = findCategoryByName(categories, name);
+    if (existing) {
+      return { category: existing, created: false };
+    }
   }
 
   if (!allowCreate) {
     return { category: null, created: false };
   }
 
-  const category = await createCategory({ name, parentId });
-  return { category, created: true };
+  try {
+    const category = await createCategory({ name, parentId });
+    return { category, created: true };
+  } catch (error) {
+    if (!isDuplicateCategoryError(error)) {
+      throw error;
+    }
+
+    const existing = await findExistingCategoryAfterConflict(name, parentId);
+    if (existing) {
+      console.warn(`[ikas] Duplicate kategori yakalandı, mevcut kullanılıyor: ${name}`);
+      return { category: existing, created: false };
+    }
+
+    throw error;
+  }
 }
 
 async function resolveCategoryForCard(card) {

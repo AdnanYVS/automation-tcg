@@ -32,7 +32,7 @@ async function main() {
       continue;
     }
 
-    const stats = await ensureNavigationTaxonomy(game.id, { allowCreate: true });
+    const stats = await ensureNavigationTaxonomy(game.id, { allowCreate: true, force: true });
     const summary = await listNavigationCategorySummary(game.id);
     console.log(`[navigation] ${game.id} tamam:`, stats);
     console.log(`[navigation] ${game.id} özet:`, summary);

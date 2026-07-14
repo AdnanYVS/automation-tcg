@@ -108,7 +108,13 @@ function dedupeCategoryRefs(categories) {
   });
 }
 
-async function ensureNavigationTaxonomy(gameId, { allowCreate = true } = {}) {
+let navigationTaxonomyReady = new Set();
+
+async function ensureNavigationTaxonomy(gameId, { allowCreate = true, force = false } = {}) {
+  if (!force && navigationTaxonomyReady.has(gameId)) {
+    return { gameId, skipped: true };
+  }
+
   const { category: rootCategory } = await ensureRootCategory(gameId, { allowCreate });
   if (!rootCategory?.id) {
     throw new Error(`"${gameId}" kök kategorisi bulunamadı.`);
@@ -124,7 +130,13 @@ async function ensureNavigationTaxonomy(gameId, { allowCreate = true } = {}) {
   };
 
   async function ensureChild(name, parentId) {
+    if (!parentId) {
+      throw new Error(`Navigasyon kategorisi parent olmadan oluşturulamaz: ${name}`);
+    }
     const result = await ensureCategoryExists({ name, parentId, allowCreate });
+    if (!result.category?.id) {
+      throw new Error(`Navigasyon kategorisi hazırlanamadı: ${name}`);
+    }
     if (result.created) stats.created += 1;
     else stats.existing += 1;
     return result.category;
@@ -147,6 +159,7 @@ async function ensureNavigationTaxonomy(gameId, { allowCreate = true } = {}) {
   }
 
   invalidateCategoryCache();
+  navigationTaxonomyReady.add(gameId);
   return stats;
 }
 
