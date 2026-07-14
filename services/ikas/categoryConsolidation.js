@@ -5,8 +5,12 @@ const {
   deleteCategoryList,
   updateCategory,
   invalidateCategoryCache,
+  resolveCategoryForCard,
 } = require('./categories');
 const { listAllProducts, updateProductTaxonomy } = require('./products');
+const { getCardById } = require('../kartfiyat');
+const { resolveProductCategories, ensureNavigationTaxonomy } = require('./navigationCategories');
+const { normalizePriceLabel } = require('../kartfiyat/cards');
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -146,6 +150,152 @@ function buildTemporaryCategoryName(categoryId) {
   return `__TMP_DUP__${String(categoryId).slice(0, 8)}`;
 }
 
+function extractKartfiyatIdFromSku(sku) {
+  const match = String(sku || '').match(/^KF-(\d+)/i);
+  return match ? match[1] : null;
+}
+
+function extractPriceLabelFromProduct(product) {
+  const nameMatch = String(product.name || '').match(
+    /\[((?:PSA|BGS|CGC|SGC|ACE|TAG|Grade)\s+[\d.]+)\]/i,
+  );
+  if (nameMatch) {
+    return normalizePriceLabel(nameMatch[1]);
+  }
+  return null;
+}
+
+async function buildTemporaryProductRescuePlan() {
+  const [categories, products] = await Promise.all([
+    listCategories({ refresh: true }),
+    listAllProducts(),
+  ]);
+
+  const temporaryIds = new Set(
+    categories
+      .filter((category) => isTemporaryDuplicateName(category.name))
+      .map((category) => category.id),
+  );
+
+  const rescueItems = [];
+
+  for (const product of products) {
+    const tmpCategories = (product.categories || []).filter((category) => temporaryIds.has(category.id));
+    if (!tmpCategories.length) continue;
+
+    const sku = product.variants?.[0]?.sku || null;
+    const kartfiyatCardId = extractKartfiyatIdFromSku(sku);
+    const priceLabel = extractPriceLabelFromProduct(product);
+
+    rescueItems.push({
+      productId: product.id,
+      productName: product.name,
+      sku,
+      kartfiyatCardId,
+      priceLabel,
+      temporaryCategoryIds: tmpCategories.map((category) => category.id),
+      temporaryCategoryNames: tmpCategories.map((category) => category.name),
+    });
+  }
+
+  return {
+    totalProducts: rescueItems.length,
+    items: rescueItems,
+  };
+}
+
+async function rescueTemporaryCategoryProducts({
+  dryRun = true,
+  delayMs = Number(process.env.IKAS_CONSOLIDATE_DELAY_MS || 800),
+  maxAttempts = 5,
+} = {}) {
+  const rescuePlan = await buildTemporaryProductRescuePlan();
+  const stats = {
+    dryRun,
+    checked: rescuePlan.totalProducts,
+    rescued: 0,
+    failed: 0,
+    skipped: 0,
+    failures: [],
+  };
+
+  async function withRetry(action, label) {
+    let attempt = 0;
+    while (attempt < maxAttempts) {
+      try {
+        return await action();
+      } catch (error) {
+        attempt += 1;
+        const isRetryable = /timeout|network timeout|429|rate limit|too many|ECONNRESET|ETIMEDOUT|503|502|504/i.test(error.message);
+        if (!isRetryable || attempt >= maxAttempts) {
+          throw error;
+        }
+        const waitMs = delayMs * attempt * 3;
+        console.warn(`[tmp-rescue] ${label} tekrar denenecek (${attempt}/${maxAttempts}): ${error.message}`);
+        await sleep(waitMs);
+      }
+    }
+    return null;
+  }
+
+  for (const item of rescuePlan.items) {
+    if (!item.kartfiyatCardId) {
+      stats.skipped += 1;
+      stats.failures.push({
+        type: 'rescue-skip',
+        productId: item.productId,
+        productName: item.productName,
+        reason: 'SKU içinden KartFiyat ID çıkarılamadı',
+      });
+      continue;
+    }
+
+    try {
+      const card = await getCardById(item.kartfiyatCardId);
+      const setCategory = await resolveCategoryForCard(card);
+      await ensureNavigationTaxonomy(setCategory.game, { allowCreate: true });
+      const categoryPlan = resolveProductCategories(card, setCategory, {
+        priceLabel: item.priceLabel,
+      });
+
+      if (dryRun) {
+        stats.rescued += 1;
+        console.log(
+          `[tmp-rescue] DRY-RUN ${item.productName} → ${categoryPlan.categories.map((entry) => entry.name).join(' + ')}`,
+        );
+        continue;
+      }
+
+      await withRetry(
+        () => updateProductTaxonomy({
+          productId: item.productId,
+          brandName: setCategory.brandName,
+          categories: categoryPlan.categories,
+        }),
+        item.productName,
+      );
+
+      stats.rescued += 1;
+      console.log(
+        `[tmp-rescue] OK ${item.productName} → ${categoryPlan.categories.map((entry) => entry.name).join(' + ')}`,
+      );
+    } catch (error) {
+      stats.failed += 1;
+      stats.failures.push({
+        type: 'rescue',
+        productId: item.productId,
+        productName: item.productName,
+        reason: error.message,
+      });
+      console.error(`[tmp-rescue] FAIL ${item.productName}: ${error.message}`);
+    }
+
+    if (delayMs > 0) await sleep(delayMs);
+  }
+
+  return { rescuePlan, stats };
+}
+
 async function buildTemporaryCategoryCleanupPlan() {
   const [categories, products] = await Promise.all([
     listCategories({ refresh: true }),
@@ -213,6 +363,7 @@ async function consolidateDuplicateCategories({
 } = {}) {
   const plan = await buildDuplicateCategoryConsolidationPlan();
   const cleanupPlan = await buildTemporaryCategoryCleanupPlan();
+  const rescuePlan = await buildTemporaryProductRescuePlan();
   const stats = {
     dryRun,
     duplicateGroups: plan.summary.duplicateGroupCount,
@@ -225,11 +376,17 @@ async function consolidateDuplicateCategories({
     temporaryDeleted: 0,
     temporaryDeleteFailed: 0,
     temporaryWithProducts: cleanupPlan.temporaryCategoriesWithProducts.length,
+    temporaryRescued: 0,
+    temporaryRescueFailed: 0,
     failures: [],
   };
 
-  if (!plan.groups.length && !cleanupPlan.emptyTemporaryCategories.length) {
-    return { plan, cleanupPlan, stats };
+  if (
+    !plan.groups.length
+    && !cleanupPlan.emptyTemporaryCategories.length
+    && !rescuePlan.totalProducts
+  ) {
+    return { plan, cleanupPlan, rescuePlan, stats };
   }
 
   async function withRetry(action, label) {
@@ -354,21 +511,36 @@ async function consolidateDuplicateCategories({
     stats.categoriesDeleted = duplicateCategories.length;
     if (!skipCleanup) {
       stats.temporaryDeleted = cleanupPlan.emptyTemporaryCategories.length;
+      stats.temporaryRescued = rescuePlan.totalProducts;
     }
-    return { plan, cleanupPlan, stats };
+    return { plan, cleanupPlan, rescuePlan, stats };
   }
 
-  if (!skipCleanup && cleanupPlan.emptyTemporaryCategories.length) {
-    console.log(`[consolidate] ${cleanupPlan.emptyTemporaryCategories.length} boş geçici kategori siliniyor...`);
+  // Önce TMP üzerinde kalan ürünleri doğru set kategorisine taşı
+  if (!skipCleanup && rescuePlan.totalProducts > 0) {
+    console.log(`[consolidate] ${rescuePlan.totalProducts} ürün TMP kategorilerinden kurtarılıyor...`);
+    const rescueResult = await rescueTemporaryCategoryProducts({
+      dryRun: false,
+      delayMs,
+      maxAttempts,
+    });
+    stats.temporaryRescued = rescueResult.stats.rescued;
+    stats.temporaryRescueFailed = rescueResult.stats.failed + rescueResult.stats.skipped;
+    stats.failures.push(...rescueResult.stats.failures);
+  }
+
+  const cleanupAfterRescue = await buildTemporaryCategoryCleanupPlan();
+  if (!skipCleanup && cleanupAfterRescue.emptyTemporaryCategories.length) {
+    console.log(`[consolidate] ${cleanupAfterRescue.emptyTemporaryCategories.length} boş geçici kategori siliniyor...`);
     await deleteCategoriesSafely({
-      categoryIds: cleanupPlan.emptyTemporaryCategories.map((category) => category.id),
+      categoryIds: cleanupAfterRescue.emptyTemporaryCategories.map((category) => category.id),
       label: 'tmp cleanup',
       withRetry,
       delayMs,
-      onSuccess: (categoryId) => {
+      onSuccess: () => {
         stats.temporaryDeleted += 1;
         if (stats.temporaryDeleted % 10 === 0) {
-          console.log(`[consolidate] tmp cleanup: ${stats.temporaryDeleted}/${cleanupPlan.emptyTemporaryCategories.length}`);
+          console.log(`[consolidate] tmp cleanup: ${stats.temporaryDeleted}/${cleanupAfterRescue.emptyTemporaryCategories.length}`);
         }
       },
       onFailure: (categoryId, error) => {
@@ -384,11 +556,13 @@ async function consolidateDuplicateCategories({
   }
 
   invalidateCategoryCache();
-  return { plan, cleanupPlan, stats };
+  return { plan, cleanupPlan: cleanupAfterRescue, rescuePlan, stats };
 }
 
 module.exports = {
   buildDuplicateCategoryConsolidationPlan,
   buildTemporaryCategoryCleanupPlan,
+  buildTemporaryProductRescuePlan,
+  rescueTemporaryCategoryProducts,
   consolidateDuplicateCategories,
 };

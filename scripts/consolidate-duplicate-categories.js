@@ -32,6 +32,9 @@ function printPlan(plan, cleanupPlan) {
     emptyTemporaryCategories: cleanupPlan.emptyTemporaryCategories.length,
     temporaryCategoriesWithProducts: cleanupPlan.temporaryCategoriesWithProducts.length,
   });
+  if (cleanupPlan.temporaryCategoriesWithProducts.length) {
+    console.log('[consolidate] Ürünlü TMP kategorileri kurtarma için hazır.');
+  }
   console.log('[consolidate] Kök kategori:', plan.rootName, `(${plan.rootId})`);
   console.log('[consolidate] Örnek gruplar:');
 

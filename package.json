@@ -21,6 +21,8 @@
     "categories:consolidate": "node scripts/consolidate-duplicate-categories.js --dry-run",
     "categories:consolidate:apply": "node scripts/consolidate-duplicate-categories.js --apply",
     "categories:consolidate:cleanup": "node scripts/consolidate-duplicate-categories.js --apply --cleanup-only",
+    "categories:tmp-cleanup": "node scripts/cleanup-tmp-categories.js --dry-run",
+    "categories:tmp-cleanup:apply": "node scripts/cleanup-tmp-categories.js --apply",
     "price:update": "node cron/priceUpdater.js --run-once",
     "price:check": "node cron/priceChecker.js --run-once",
     "price:cron": "node cron/priceUpdater.js",
