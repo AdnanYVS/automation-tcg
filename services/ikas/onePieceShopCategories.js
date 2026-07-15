@@ -1,5 +1,5 @@
 const { isGradedPriceLabel, normalizePriceLabel } = require('../kartfiyat/cards');
-const { getTaxonomyOrThrow, looksLikeNonPokemonProduct } = require('./taxonomy');
+const { getTaxonomyOrThrow } = require('./taxonomy');
 const {
   ensureRootCategory,
   ensureCategoryExists,
@@ -26,16 +26,19 @@ const PRODUCT_TYPE_LEAVES = [
 
 const TYPE_RULES = [
   { type: 'Elite Trainer Box', pattern: /\b(elite trainer box|etb)\b/i },
-  { type: 'Booster Box', pattern: /\bbooster box\b/i },
-  { type: 'Single Pack', pattern: /\b(booster pack|sleeved booster|booster paket|single pack)\b/i },
-  { type: 'Tinler', pattern: /\b(tin box|mini tin|poke ball tin|\btin\b|tinler)\b/i },
+  { type: 'Booster Box', pattern: /\b(booster box|booster display|display box)\b/i },
+  {
+    type: 'Single Pack',
+    pattern: /\b(booster pack|sleeved booster|booster paket|single pack|premium booster|extra booster)\b/i,
+  },
+  { type: 'Tinler', pattern: /\b(tin box|mini tin|\btin\b|tinler)\b/i },
   {
     type: 'Kutular',
-    pattern: /\b(collection box|premium collection|special collection|ultra premium collection|booster bundle|bundle|gift box|build box|deck box|premium box|display|blister|prerelease|collection)\b/i,
+    pattern: /\b(starter deck|deck box|collection box|premium collection|special collection|booster bundle|bundle|gift box|premium box|display|blister|prerelease|collection|kutular)\b/i,
   },
 ];
 
-const SEALED_FALLBACK_PATTERN = /\b(box|bundle|deck|gift|display|blister|prerelease|trainer box|premium)\b/i;
+const SEALED_FALLBACK_PATTERN = /\b(box|bundle|deck|gift|display|blister|prerelease|premium|starter)\b/i;
 
 let shopTaxonomyReady = false;
 
@@ -73,18 +76,19 @@ function detectProductType(card, { priceLabel, productName } = {}) {
   return 'Single Cards';
 }
 
-function classifyPokemonShopPlacement(card, { priceLabel = null, productName = null } = {}) {
+function classifyOnePieceShopPlacement(card, { priceLabel = null, productName = null } = {}) {
   const language = detectLanguageBranch(card, { productName });
   const productType = detectProductType(card, { priceLabel, productName });
+  const rootName = getTaxonomyOrThrow('onepiece').rootCategoryName;
 
   return {
     language,
     productType,
     leafName: productType,
-    path: ['Pokemon', language],
+    path: [rootName, language],
     category: {
       name: productType,
-      path: ['Pokemon', language],
+      path: [rootName, language],
     },
   };
 }
@@ -99,12 +103,11 @@ function dedupeCategoryRefs(categories) {
   });
 }
 
-function resolvePokemonShopCategories(card, { priceLabel = null, productName = null } = {}) {
-  const placement = classifyPokemonShopPlacement(card, { priceLabel, productName });
-  const rootName = getTaxonomyOrThrow('pokemon').rootCategoryName;
+function resolveOnePieceShopCategories(card, { priceLabel = null, productName = null } = {}) {
+  const placement = classifyOnePieceShopPlacement(card, { priceLabel, productName });
+  const rootName = getTaxonomyOrThrow('onepiece').rootCategoryName;
 
-  // ikas üst kategori sayfasında alt menüyü doldurmak için dil + kök de atanır.
-  // Yalnızca leaf atanınca Pokemon sayfasında İngilizce/Japonca resultCount=0 kalır.
+  // ikas üst kategori sayfasında alt menü için dil + kök de atanır
   const categories = dedupeCategoryRefs([
     {
       name: placement.leafName,
@@ -126,13 +129,13 @@ function resolvePokemonShopCategories(card, { priceLabel = null, productName = n
   };
 }
 
-async function ensurePokemonShopTaxonomy({ allowCreate = true, force = false } = {}) {
+async function ensureOnePieceShopTaxonomy({ allowCreate = true, force = false } = {}) {
   if (!force && shopTaxonomyReady) {
     return { skipped: true };
   }
 
-  const taxonomy = getTaxonomyOrThrow('pokemon');
-  const { category: rootCategory } = await ensureRootCategory('pokemon', { allowCreate });
+  const taxonomy = getTaxonomyOrThrow('onepiece');
+  const { category: rootCategory } = await ensureRootCategory('onepiece', { allowCreate });
   if (!rootCategory?.id) {
     throw new Error(`"${taxonomy.rootCategoryName}" kök kategorisi oluşturulamadı.`);
   }
@@ -169,7 +172,7 @@ async function ensurePokemonShopTaxonomy({ allowCreate = true, force = false } =
   return stats;
 }
 
-function collectPokemonShopCategoryIds(categories, root) {
+function collectOnePieceShopCategoryIds(categories, root) {
   const keepIds = new Set();
   if (!root?.id) return keepIds;
 
@@ -195,38 +198,22 @@ function collectPokemonShopCategoryIds(categories, root) {
 
 function collectProtectedCategoryIds(categories) {
   const protectedIds = new Set();
-  const onePieceRootName = getTaxonomyOrThrow('onepiece').rootCategoryName;
   const pokemonRootName = getTaxonomyOrThrow('pokemon').rootCategoryName;
+  const onePieceRootName = getTaxonomyOrThrow('onepiece').rootCategoryName;
   const categoriesById = new Map(categories.map((entry) => [entry.id, entry]));
-  const opRoot = categories.find((entry) => entry.name === onePieceRootName && !entry.parentId);
-
-  // One Piece shop ağacı (kök + dil + tip) — set kategorileri değil
-  if (opRoot?.id) {
-    protectedIds.add(opRoot.id);
-    for (const languageName of LANGUAGE_BRANCHES) {
-      const language = categories.find(
-        (entry) => entry.name === languageName && entry.parentId === opRoot.id,
-      );
-      if (!language?.id) continue;
-      protectedIds.add(language.id);
-      for (const productType of PRODUCT_TYPE_LEAVES) {
-        const leaf = categories.find(
-          (entry) => entry.name === productType && entry.parentId === language.id,
-        );
-        if (leaf?.id) protectedIds.add(leaf.id);
-      }
-    }
-  }
 
   for (const category of categories) {
     const path = buildCategoryPath(category, categoriesById);
     const rootName = path[0] || '';
 
-    if (rootName === pokemonRootName) continue;
+    // One Piece shop ağacı kendi keep setiyle yönetilir
+    if (rootName === onePieceRootName) continue;
 
     if (
-      /\briftbound\b/i.test(path.join(' > '))
+      rootName === pokemonRootName
+      || /\briftbound\b/i.test(path.join(' > '))
       || /\briftbound\b/i.test(category.name)
+      || /^pokemon\b/i.test(category.name)
     ) {
       protectedIds.add(category.id);
     }
@@ -235,9 +222,9 @@ function collectProtectedCategoryIds(categories) {
   return protectedIds;
 }
 
-async function listPokemonShopTaxonomySummary() {
+async function listOnePieceShopTaxonomySummary() {
   const categories = await listCategories({ refresh: true });
-  const rootName = getTaxonomyOrThrow('pokemon').rootCategoryName;
+  const rootName = getTaxonomyOrThrow('onepiece').rootCategoryName;
   const root = categories.find((entry) => entry.name === rootName && !entry.parentId);
 
   const languages = LANGUAGE_BRANCHES.map((languageName) => {
@@ -263,15 +250,16 @@ async function listPokemonShopTaxonomySummary() {
 }
 
 /**
- * Shop ağacını VISIBLE yapar; One Piece dışındaki diğer tüm kategorileri HIDDEN yapar.
+ * Shop ağacını VISIBLE yapar; Pokemon/Riftbound dışındaki diğer kategorileri HIDDEN yapar.
+ * One Piece kökü altında yalnızca dil+tip dalları görünür kalır.
  */
-async function syncPokemonShopStorefrontVisibility({
+async function syncOnePieceShopStorefrontVisibility({
   dryRun = false,
   hideOthers = true,
   delayMs = Number(process.env.IKAS_CATEGORY_VISIBILITY_DELAY_MS || 250),
 } = {}) {
   const salesChannelId = await getStorefrontSalesChannelId();
-  const taxonomy = getTaxonomyOrThrow('pokemon');
+  const taxonomy = getTaxonomyOrThrow('onepiece');
   const categories = await listCategories({ refresh: true });
   const root = categories.find(
     (entry) => entry.name === taxonomy.rootCategoryName && !entry.parentId,
@@ -281,14 +269,14 @@ async function syncPokemonShopStorefrontVisibility({
     throw new Error(`"${taxonomy.rootCategoryName}" kök kategorisi bulunamadı.`);
   }
 
-  const keepIds = collectPokemonShopCategoryIds(categories, root);
+  const keepIds = collectOnePieceShopCategoryIds(categories, root);
   const protectedIds = collectProtectedCategoryIds(categories);
   const categoriesById = new Map(categories.map((entry) => [entry.id, entry]));
 
   const stats = {
     dryRun,
     keepVisible: keepIds.size,
-    protectedNonPokemon: protectedIds.size,
+    protectedOther: protectedIds.size,
     shown: 0,
     hidden: 0,
     skipped: 0,
@@ -299,7 +287,7 @@ async function syncPokemonShopStorefrontVisibility({
   };
 
   for (const category of categories) {
-    if (!keepIds.has(category.id) && !protectedIds.has(category.id)) continue;
+    if (!keepIds.has(category.id)) continue;
     const visible = isCategoryVisibleOnStorefront(category, salesChannelId);
     if (visible) {
       stats.skipped += 1;
@@ -308,19 +296,29 @@ async function syncPokemonShopStorefrontVisibility({
     stats.toShow.push({
       id: category.id,
       name: category.name,
-      reason: keepIds.has(category.id) ? 'shop' : 'protected',
+      reason: 'shop',
     });
   }
 
   if (hideOthers) {
     for (const category of categories) {
       if (keepIds.has(category.id) || protectedIds.has(category.id)) continue;
+      // Sadece One Piece kökü altındakileri (ve orphan OP setlerini) gizle;
+      // global hideOthers Pokemon ağacına dokunmasın diye protected set kullanılır.
+      const path = buildCategoryPath(category, categoriesById);
+      const underOnePiece = path[0] === taxonomy.rootCategoryName
+        || /\bone\s*piece\b/i.test(category.name);
+      if (!underOnePiece) continue;
+
       if (!isCategoryVisibleOnStorefront(category, salesChannelId)) {
         stats.skipped += 1;
         continue;
       }
-      const path = buildCategoryPath(category, categoriesById).join(' > ');
-      stats.toHide.push({ id: category.id, name: category.name, path });
+      stats.toHide.push({
+        id: category.id,
+        name: category.name,
+        path: path.join(' > '),
+      });
     }
   }
 
@@ -339,7 +337,7 @@ async function syncPokemonShopStorefrontVisibility({
     } catch (error) {
       stats.failed += 1;
       stats.failures.push({ id: item.id, name: item.name, action: 'show', reason: error.message });
-      console.error(`[pokemon-shop] VISIBLE başarısız ${item.name}: ${error.message}`);
+      console.error(`[onepiece-shop] VISIBLE başarısız ${item.name}: ${error.message}`);
     }
     if (delayMs > 0) await sleep(delayMs);
   }
@@ -353,7 +351,7 @@ async function syncPokemonShopStorefrontVisibility({
     } catch (error) {
       stats.failed += 1;
       stats.failures.push({ id: item.id, name: item.name, action: 'hide', reason: error.message });
-      console.error(`[pokemon-shop] HIDDEN başarısız ${item.name}: ${error.message}`);
+      console.error(`[onepiece-shop] HIDDEN başarısız ${item.name}: ${error.message}`);
     }
     if (delayMs > 0) await sleep(delayMs);
   }
@@ -362,25 +360,28 @@ async function syncPokemonShopStorefrontVisibility({
   return stats;
 }
 
-function isPokemonProduct(product) {
+function isOnePieceProduct(product) {
   const brand = String(product?.brand?.name || '');
   const categoryNames = (product?.categories || []).map((category) => String(category?.name || ''));
   const productName = String(product?.name || '');
 
-  if (looksLikeNonPokemonProduct({ name: productName, brand, categoryNames })) {
+  if (/^pokemon$/i.test(brand) || /\briftbound\b/i.test(brand)) {
+    return false;
+  }
+  if (/^pokemon\b/i.test(productName) && !/\bone\s*piece\b/i.test(productName)) {
+    return false;
+  }
+  if (categoryNames.some((name) => /^pokemon\b/i.test(name))) {
     return false;
   }
 
-  if (/^one\s*piece$/i.test(brand) || /\briftbound\b/i.test(brand)) {
-    return false;
-  }
-
-  // Sadece açık Pokemon brand veya gerçek Pokemon set kategorisi
-  if (/^pokemon$/i.test(brand)) {
+  if (/^one\s*piece$/i.test(brand)) {
     return true;
   }
 
-  return categoryNames.some((name) => /^pokemon\b/i.test(name));
+  return categoryNames.some((name) => /\bone\s*piece\b/i.test(name))
+    || /\bone\s*piece\b/i.test(productName)
+    || /\b(?:OP|EB|ST|PRB)\d{2}\b/i.test(`${productName} ${categoryNames.join(' ')}`);
 }
 
 module.exports = {
@@ -388,11 +389,11 @@ module.exports = {
   PRODUCT_TYPE_LEAVES,
   detectLanguageBranch,
   detectProductType,
-  classifyPokemonShopPlacement,
-  resolvePokemonShopCategories,
-  ensurePokemonShopTaxonomy,
-  listPokemonShopTaxonomySummary,
-  syncPokemonShopStorefrontVisibility,
-  collectPokemonShopCategoryIds,
-  isPokemonProduct,
+  classifyOnePieceShopPlacement,
+  resolveOnePieceShopCategories,
+  ensureOnePieceShopTaxonomy,
+  listOnePieceShopTaxonomySummary,
+  syncOnePieceShopStorefrontVisibility,
+  collectOnePieceShopCategoryIds,
+  isOnePieceProduct,
 };

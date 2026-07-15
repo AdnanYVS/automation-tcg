@@ -18,6 +18,8 @@
     "pokemon:setup": "node scripts/setup-pokemon-taxonomy.js",
     "pokemon:shop:setup": "node scripts/setup-pokemon-shop-categories.js",
     "pokemon:shop:migrate": "node scripts/migrate-pokemon-shop-categories.js",
+    "onepiece:shop:setup": "node scripts/setup-onepiece-shop-categories.js",
+    "onepiece:shop:migrate": "node scripts/migrate-onepiece-shop-categories.js",
     "products:repair-non-pokemon": "node scripts/repair-non-pokemon-misbranded.js",
     "navigation:setup": "node scripts/setup-navigation-categories.js",
     "category-logos:upload": "node scripts/upload-category-logos.js",

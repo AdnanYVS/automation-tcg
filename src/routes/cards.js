@@ -13,11 +13,14 @@ const {
 const { getSetCodeRegistry } = require('../../services/kartfiyat/setRegistry');
 const { getOnePieceSetCodeRegistry } = require('../../services/kartfiyat/onepieceSetRegistry');
 const { createBasicProduct, listStockLocations, resolveCategoryForCard, incrementVariantStock } = require('../../services/ikas');
-const { resolveProductCategories, ensureNavigationTaxonomy } = require('../../services/ikas/navigationCategories');
 const {
   ensurePokemonShopTaxonomy,
   resolvePokemonShopCategories,
 } = require('../../services/ikas/pokemonShopCategories');
+const {
+  ensureOnePieceShopTaxonomy,
+  resolveOnePieceShopCategories,
+} = require('../../services/ikas/onePieceShopCategories');
 const { getUsdTryRate } = require('../../services/exchangeRate');
 const { calculateFinalPriceTry, getPriceMultiplierForCard } = require('../../services/pricing');
 const { generateProductBarcode } = require('../../services/barcode');
@@ -350,10 +353,16 @@ router.post('/import-card', async (req, res) => {
         gameId: 'pokemon',
       };
     } else if (category.game === 'onepiece') {
-      await ensureNavigationTaxonomy(category.game, { allowCreate: true });
-      productCategoryPlan = resolveProductCategories(card, category, { priceLabel });
+      await ensureOnePieceShopTaxonomy({ allowCreate: true });
+      const shopPlacement = resolveOnePieceShopCategories(card, { priceLabel, productName: name });
+      productCategoryPlan = {
+        ...shopPlacement,
+        kind: shopPlacement.productType,
+        navigation: [],
+        gameId: 'onepiece',
+      };
     } else {
-      // Riftbound vb. desteklenmeyen oyunlar: set leaf + kendi kök/brand, Pokemon'a düşmez
+      // Riftbound vb. desteklenmeyen oyunlar: set leaf + kendi kök/brand
       productCategoryPlan = {
         categories: [{
           name: category.name,
