@@ -186,6 +186,14 @@ async function enableCategoryForStorefront(categoryId, { salesChannelId } = {}) 
   });
 }
 
+async function disableCategoryForStorefront(categoryId, { salesChannelId } = {}) {
+  const channelId = salesChannelId || await getStorefrontSalesChannelId();
+  return updateCategory({
+    id: categoryId,
+    salesChannels: [{ id: channelId, status: 'HIDDEN' }],
+  });
+}
+
 async function ensureCategoryStorefrontVisibility(category) {
   const salesChannelId = await getStorefrontSalesChannelId();
   if (isCategoryVisibleOnStorefront(category, salesChannelId)) {
@@ -194,6 +202,17 @@ async function ensureCategoryStorefrontVisibility(category) {
 
   const updated = await enableCategoryForStorefront(category.id, { salesChannelId });
   console.log(`[ikas] Kategori mağazada görünür yapıldı: ${updated.name}`);
+  return { category: updated, updated: true };
+}
+
+async function ensureCategoryStorefrontHidden(category) {
+  const salesChannelId = await getStorefrontSalesChannelId();
+  if (!isCategoryVisibleOnStorefront(category, salesChannelId)) {
+    return { category, updated: false };
+  }
+
+  const updated = await disableCategoryForStorefront(category.id, { salesChannelId });
+  console.log(`[ikas] Kategori mağazada gizlendi: ${updated.name}`);
   return { category: updated, updated: true };
 }
 
@@ -477,7 +496,9 @@ module.exports = {
   updateCategory,
   deleteCategoryList,
   enableCategoryForStorefront,
+  disableCategoryForStorefront,
   ensureCategoryStorefrontVisibility,
+  ensureCategoryStorefrontHidden,
   ensureCategoryExists,
   ensureRootCategory,
   ensurePokemonRootCategory,
@@ -486,6 +507,7 @@ module.exports = {
   getPokemonRootCategoryName,
   resolveCategoryForCard,
   buildCategoryPath,
+  isCategoryVisibleOnStorefront,
   syncAllCategoriesToStorefront,
   assignAllCategoriesUnderPokemonRoot,
   isJapaneseCategoryName,

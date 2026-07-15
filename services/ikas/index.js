@@ -4,6 +4,7 @@ const images = require('./images');
 const salesChannel = require('./salesChannel');
 const categories = require('./categories');
 const navigationCategories = require('./navigationCategories');
+const pokemonShopCategories = require('./pokemonShopCategories');
 const brands = require('./brands');
 const orders = require('./orders');
 
@@ -14,6 +15,7 @@ module.exports = {
   ...salesChannel,
   ...categories,
   ...navigationCategories,
+  ...pokemonShopCategories,
   ...brands,
   ...orders,
 };

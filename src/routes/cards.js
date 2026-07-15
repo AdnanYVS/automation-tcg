@@ -14,6 +14,10 @@ const { getSetCodeRegistry } = require('../../services/kartfiyat/setRegistry');
 const { getOnePieceSetCodeRegistry } = require('../../services/kartfiyat/onepieceSetRegistry');
 const { createBasicProduct, listStockLocations, resolveCategoryForCard, incrementVariantStock } = require('../../services/ikas');
 const { resolveProductCategories, ensureNavigationTaxonomy } = require('../../services/ikas/navigationCategories');
+const {
+  ensurePokemonShopTaxonomy,
+  resolvePokemonShopCategories,
+} = require('../../services/ikas/pokemonShopCategories');
 const { getUsdTryRate } = require('../../services/exchangeRate');
 const { calculateFinalPriceTry, getPriceMultiplierForCard } = require('../../services/pricing');
 const { generateProductBarcode } = require('../../services/barcode');
@@ -335,8 +339,20 @@ router.post('/import-card', async (req, res) => {
     const imageUrl = req.body.imageUrl || getCardImageUrl(card);
 
     const category = await resolveCategoryForCard(card);
-    await ensureNavigationTaxonomy(category.game, { allowCreate: true });
-    const productCategoryPlan = resolveProductCategories(card, category, { priceLabel });
+    let productCategoryPlan;
+    if (category.game === 'pokemon') {
+      await ensurePokemonShopTaxonomy({ allowCreate: true });
+      const shopPlacement = resolvePokemonShopCategories(card, { priceLabel, productName: name });
+      productCategoryPlan = {
+        ...shopPlacement,
+        kind: shopPlacement.productType,
+        navigation: [],
+        gameId: 'pokemon',
+      };
+    } else {
+      await ensureNavigationTaxonomy(category.game, { allowCreate: true });
+      productCategoryPlan = resolveProductCategories(card, category, { priceLabel });
+    }
     const barcodeSource = priceLabel ? `${kartfiyatCardId}:${priceLabel}` : kartfiyatCardId;
     const barcode = generateProductBarcode(barcodeSource);
 
