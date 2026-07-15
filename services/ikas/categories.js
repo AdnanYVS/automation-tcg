@@ -178,20 +178,29 @@ async function updateCategoryWithRetry(input, { maxAttempts = 5, delayMs = 400 }
   return null;
 }
 
-async function enableCategoryForStorefront(categoryId, { salesChannelId } = {}) {
+async function enableCategoryForStorefront(categoryId, { salesChannelId, parentId } = {}) {
   const channelId = salesChannelId || await getStorefrontSalesChannelId();
-  return updateCategory({
+  const input = {
     id: categoryId,
     salesChannels: [{ id: channelId, status: 'VISIBLE' }],
-  });
+  };
+  // parentId gönderilmezse ikas parent'ı null'a çekip duplicate key hatası üretebiliyor
+  if (parentId !== undefined) {
+    input.parentId = parentId;
+  }
+  return updateCategory(input);
 }
 
-async function disableCategoryForStorefront(categoryId, { salesChannelId } = {}) {
+async function disableCategoryForStorefront(categoryId, { salesChannelId, parentId } = {}) {
   const channelId = salesChannelId || await getStorefrontSalesChannelId();
-  return updateCategory({
+  const input = {
     id: categoryId,
     salesChannels: [{ id: channelId, status: 'HIDDEN' }],
-  });
+  };
+  if (parentId !== undefined) {
+    input.parentId = parentId;
+  }
+  return updateCategory(input);
 }
 
 async function ensureCategoryStorefrontVisibility(category) {
@@ -200,7 +209,10 @@ async function ensureCategoryStorefrontVisibility(category) {
     return { category, updated: false };
   }
 
-  const updated = await enableCategoryForStorefront(category.id, { salesChannelId });
+  const updated = await enableCategoryForStorefront(category.id, {
+    salesChannelId,
+    parentId: category.parentId ?? null,
+  });
   console.log(`[ikas] Kategori mağazada görünür yapıldı: ${updated.name}`);
   return { category: updated, updated: true };
 }
@@ -211,7 +223,10 @@ async function ensureCategoryStorefrontHidden(category) {
     return { category, updated: false };
   }
 
-  const updated = await disableCategoryForStorefront(category.id, { salesChannelId });
+  const updated = await disableCategoryForStorefront(category.id, {
+    salesChannelId,
+    parentId: category.parentId ?? null,
+  });
   console.log(`[ikas] Kategori mağazada gizlendi: ${updated.name}`);
   return { category: updated, updated: true };
 }
