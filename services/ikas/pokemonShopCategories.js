@@ -1,5 +1,5 @@
 const { isGradedPriceLabel, normalizePriceLabel } = require('../kartfiyat/cards');
-const { getTaxonomyOrThrow } = require('./taxonomy');
+const { getTaxonomyOrThrow, looksLikeNonPokemonProduct } = require('./taxonomy');
 const {
   ensureRootCategory,
   ensureCategoryExists,
@@ -171,7 +171,17 @@ function collectProtectedCategoryIds(categories) {
 
   for (const category of categories) {
     const path = buildCategoryPath(category, categoriesById);
-    if (path[0] === onePieceRootName) {
+    const rootName = path[0] || '';
+    const fullPath = path.join(' > ');
+
+    // One Piece / Riftbound (ve benzeri) — Pokemon shop dışı korunur
+    if (
+      rootName === onePieceRootName
+      || /\bone\s*piece\b/i.test(fullPath)
+      || /\briftbound\b/i.test(fullPath)
+      || /\briftbound\b/i.test(category.name)
+      || /\bone\s*piece\b/i.test(category.name)
+    ) {
       protectedIds.add(category.id);
     }
   }
@@ -232,7 +242,7 @@ async function syncPokemonShopStorefrontVisibility({
   const stats = {
     dryRun,
     keepVisible: keepIds.size,
-    protectedOnePiece: protectedIds.size,
+    protectedNonPokemon: protectedIds.size,
     shown: 0,
     hidden: 0,
     skipped: 0,
@@ -243,13 +253,17 @@ async function syncPokemonShopStorefrontVisibility({
   };
 
   for (const category of categories) {
-    if (!keepIds.has(category.id)) continue;
+    if (!keepIds.has(category.id) && !protectedIds.has(category.id)) continue;
     const visible = isCategoryVisibleOnStorefront(category, salesChannelId);
     if (visible) {
       stats.skipped += 1;
       continue;
     }
-    stats.toShow.push({ id: category.id, name: category.name });
+    stats.toShow.push({
+      id: category.id,
+      name: category.name,
+      reason: keepIds.has(category.id) ? 'shop' : 'protected',
+    });
   }
 
   if (hideOthers) {
@@ -304,25 +318,23 @@ async function syncPokemonShopStorefrontVisibility({
 
 function isPokemonProduct(product) {
   const brand = String(product?.brand?.name || '');
-  if (/^one\s*piece$/i.test(brand)) return false;
-  if (/^pokemon$/i.test(brand)) return true;
+  const categoryNames = (product?.categories || []).map((category) => String(category?.name || ''));
+  const productName = String(product?.name || '');
 
-  const categories = product?.categories || [];
-  if (categories.some((category) => /^one\s*piece\b/i.test(String(category?.name || '')))) {
+  if (looksLikeNonPokemonProduct({ name: productName, brand, categoryNames })) {
     return false;
   }
 
-  return categories.some((category) => {
-    const name = String(category?.name || '');
-    return /^pokemon\b/i.test(name)
-      || name === 'İngilizce'
-      || name === 'Japonca'
-      || name === 'Çince'
-      || name === 'KAPALI KUTULAR'
-      || name === 'SINGLE KARTLAR'
-      || name === 'GRADED KARTLAR'
-      || PRODUCT_TYPE_LEAVES.includes(name);
-  });
+  if (/^one\s*piece$/i.test(brand) || /\briftbound\b/i.test(brand)) {
+    return false;
+  }
+
+  // Sadece açık Pokemon brand veya gerçek Pokemon set kategorisi
+  if (/^pokemon$/i.test(brand)) {
+    return true;
+  }
+
+  return categoryNames.some((name) => /^pokemon\b/i.test(name));
 }
 
 module.exports = {

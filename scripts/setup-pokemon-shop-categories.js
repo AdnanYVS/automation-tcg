@@ -39,10 +39,11 @@ async function main() {
     console.log('[pokemon-shop] Beklenen yapraklar:', PRODUCT_TYPE_LEAVES.join(', '));
     console.log('[pokemon-shop] DRY-RUN görünürlük:', {
       keepVisible: visibility.keepVisible,
-      protectedOnePiece: visibility.protectedOnePiece,
+      protectedNonPokemon: visibility.protectedNonPokemon,
       toShow: visibility.toShow.length,
       toHide: visibility.toHide.length,
       toHideSample: visibility.toHide.slice(0, 20),
+      toShowSample: visibility.toShow.slice(0, 20),
     });
     return;
   }
@@ -57,7 +58,7 @@ async function main() {
   console.log('[pokemon-shop] Ağaç sonucu:', stats);
   console.log('[pokemon-shop] Görünürlük:', {
     keepVisible: visibility.keepVisible,
-    protectedOnePiece: visibility.protectedOnePiece,
+    protectedNonPokemon: visibility.protectedNonPokemon,
     shown: visibility.shown,
     hidden: visibility.hidden,
     skipped: visibility.skipped,

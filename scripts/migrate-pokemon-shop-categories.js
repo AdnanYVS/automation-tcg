@@ -23,7 +23,7 @@ const {
   LANGUAGE_BRANCHES,
   PRODUCT_TYPE_LEAVES,
 } = require('../services/ikas/pokemonShopCategories');
-const { getTaxonomyOrThrow } = require('../services/ikas/taxonomy');
+const { getTaxonomyOrThrow, detectGameFromCard } = require('../services/ikas/taxonomy');
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -146,6 +146,21 @@ async function main() {
 
     try {
       const card = await getCardById(kartfiyatCardId);
+      const detected = detectGameFromCard(card);
+      if (detected.id !== 'pokemon') {
+        stats.skipped += 1;
+        stats.failures.push({
+          type: 'skip-non-pokemon',
+          productId: product.id,
+          productName: product.name,
+          reason: `Oyun pokemon değil: ${detected.id} (${card.game || card.category?.name || '?'})`,
+        });
+        console.warn(
+          `[pokemon-shop-migrate] SKIP ${product.name}: ${detected.id} (${card.game || card.category?.name})`,
+        );
+        continue;
+      }
+
       const placement = resolvePokemonShopCategories(card, {
         priceLabel,
         productName: product.name,

@@ -324,9 +324,24 @@ async function resolveCategoryForCard(card) {
   }
 
   const taxonomy = detectGameFromCard(card);
-  const isJapanese = isJapaneseCategoryForTaxonomy(categoryName, taxonomy);
-  const rootCategory = await ensureRootCategory(taxonomy.id, { allowCreate: true });
-  const parentId = rootCategory.category?.id
+  const isJapanese = taxonomy.unsupported
+    ? /\bjapanese\b|\bjaponca\b/i.test(categoryName)
+    : isJapaneseCategoryForTaxonomy(categoryName, taxonomy);
+
+  let rootCategoryId = null;
+  if (taxonomy.unsupported) {
+    const rootResult = await ensureCategoryExists({
+      name: taxonomy.rootCategoryName,
+      parentId: null,
+      allowCreate: true,
+    });
+    rootCategoryId = rootResult.category?.id || null;
+  } else {
+    const rootCategory = await ensureRootCategory(taxonomy.id, { allowCreate: true });
+    rootCategoryId = rootCategory.category?.id || null;
+  }
+
+  const parentId = rootCategoryId
     || (isJapanese
       ? (process.env.IKAS_CATEGORY_PARENT_JAPANESE || null)
       : (process.env.IKAS_CATEGORY_PARENT_NORMAL || null));
@@ -356,6 +371,7 @@ async function resolveCategoryForCard(card) {
     kartfiyatGame: taxonomy.kartfiyatGame,
     isJapanese,
     created,
+    unsupported: Boolean(taxonomy.unsupported),
   };
 }
 

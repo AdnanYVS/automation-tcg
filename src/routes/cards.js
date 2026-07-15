@@ -349,9 +349,22 @@ router.post('/import-card', async (req, res) => {
         navigation: [],
         gameId: 'pokemon',
       };
-    } else {
+    } else if (category.game === 'onepiece') {
       await ensureNavigationTaxonomy(category.game, { allowCreate: true });
       productCategoryPlan = resolveProductCategories(card, category, { priceLabel });
+    } else {
+      // Riftbound vb. desteklenmeyen oyunlar: set leaf + kendi kök/brand, Pokemon'a düşmez
+      productCategoryPlan = {
+        categories: [{
+          name: category.name,
+          path: category.productCategoryPath?.length
+            ? category.productCategoryPath
+            : [category.brandName || category.name],
+        }],
+        kind: 'external',
+        navigation: [],
+        gameId: category.game,
+      };
     }
     const barcodeSource = priceLabel ? `${kartfiyatCardId}:${priceLabel}` : kartfiyatCardId;
     const barcode = generateProductBarcode(barcodeSource);
