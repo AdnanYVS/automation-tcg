@@ -167,18 +167,21 @@ function collectPokemonShopCategoryIds(categories, root) {
 function collectProtectedCategoryIds(categories) {
   const protectedIds = new Set();
   const onePieceRootName = getTaxonomyOrThrow('onepiece').rootCategoryName;
+  const pokemonRootName = getTaxonomyOrThrow('pokemon').rootCategoryName;
   const categoriesById = new Map(categories.map((entry) => [entry.id, entry]));
 
   for (const category of categories) {
     const path = buildCategoryPath(category, categoriesById);
     const rootName = path[0] || '';
-    const fullPath = path.join(' > ');
 
-    // One Piece / Riftbound (ve benzeri) — Pokemon shop dışı korunur
+    // Pokemon ağacı menüsünü kirletmesin: shop keep seti ayrı yönetilir
+    if (rootName === pokemonRootName) continue;
+
+    // One Piece / Riftbound (Pokemon dışı) asla gizlenmez
     if (
       rootName === onePieceRootName
-      || /\bone\s*piece\b/i.test(fullPath)
-      || /\briftbound\b/i.test(fullPath)
+      || /\bone\s*piece\b/i.test(path.join(' > '))
+      || /\briftbound\b/i.test(path.join(' > '))
       || /\briftbound\b/i.test(category.name)
       || /\bone\s*piece\b/i.test(category.name)
     ) {
