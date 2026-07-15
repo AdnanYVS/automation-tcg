@@ -3,6 +3,10 @@
  * Pokemon shop kategori ağacını oluşturur, storefront'ta görünür yapar
  * ve (varsayılan) yeni ağaç + One Piece dışındaki kategorileri HIDDEN yapar.
  *
+ * Not (ikas): Pokemon kök sayfası 3 seviyeli ağaçta ara dalları (İngilizce)
+ * sidebar'da göstermez; menüye /ingilizce /japonca /cince alt linkleri
+ * ikas tema editöründen eklenmelidir.
+ *
  * Kullanım:
  *   node scripts/setup-pokemon-shop-categories.js [--dry-run] [--keep-others-visible]
  */

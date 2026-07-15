@@ -89,11 +89,40 @@ function classifyPokemonShopPlacement(card, { priceLabel = null, productName = n
   };
 }
 
+function dedupeCategoryRefs(categories) {
+  const seen = new Set();
+  return categories.filter((entry) => {
+    const key = `${(entry.path || []).join('>')}|${entry.name}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function resolvePokemonShopCategories(card, { priceLabel = null, productName = null } = {}) {
   const placement = classifyPokemonShopPlacement(card, { priceLabel, productName });
+  const rootName = getTaxonomyOrThrow('pokemon').rootCategoryName;
+
+  // ikas üst kategori sayfasında alt menüyü doldurmak için dil + kök de atanır.
+  // Yalnızca leaf atanınca Pokemon sayfasında İngilizce/Japonca resultCount=0 kalır.
+  const categories = dedupeCategoryRefs([
+    {
+      name: placement.leafName,
+      path: [rootName, placement.language],
+    },
+    {
+      name: placement.language,
+      path: [rootName],
+    },
+    {
+      name: rootName,
+      path: [],
+    },
+  ]);
+
   return {
     ...placement,
-    categories: [placement.category],
+    categories,
   };
 }
 
