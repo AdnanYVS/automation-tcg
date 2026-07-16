@@ -1,8 +1,8 @@
 require('dotenv').config();
 
 const cron = require('node-cron');
-const { getAutoTrackedMappings } = require('../db');
-const { getCardById, getPriceChartingUsd } = require('../services/kartfiyat');
+const { getAutoTrackedMappings, updateMappingIkasIds } = require('../db');
+const { getCardById, getPriceChartingUsd, buildKartfiyatSku } = require('../services/kartfiyat');
 const { updateVariantPrices } = require('../services/ikas');
 const { getUsdTryRate } = require('../services/exchangeRate');
 const { calculateFinalPriceTry, getPriceMultiplierForCard } = require('../services/pricing');
@@ -22,9 +22,25 @@ function chunkArray(items, size) {
   return chunks;
 }
 
+function applyIdChanges(idChanges) {
+  if (!idChanges?.length) return 0;
+
+  let fixed = 0;
+  for (const change of idChanges) {
+    if (!change.mappingId) continue;
+    updateMappingIkasIds({
+      mappingId: change.mappingId,
+      ikasProductId: change.productId,
+      ikasVariantId: change.variantId,
+    });
+    fixed += 1;
+  }
+  return fixed;
+}
+
 async function runPriceUpdate() {
   const mappings = getAutoTrackedMappings();
-  if (!mappings.length) return { updated: 0, skipped: 0, failed: 0 };
+  if (!mappings.length) return { updated: 0, skipped: 0, failed: 0, idFixed: 0 };
 
   const usdTryRate = await getUsdTryRate();
   const variantUpdates = [];
@@ -32,7 +48,7 @@ async function runPriceUpdate() {
   let skipped = 0;
 
   for (const mapping of mappings) {
-    if (!mapping.ikas_product_id) {
+    if (!mapping.ikas_product_id && !mapping.barcode && !mapping.kartfiyat_card_id) {
       skipped += 1;
       continue;
     }
@@ -45,9 +61,12 @@ async function runPriceUpdate() {
         continue;
       }
       variantUpdates.push({
+        mappingId: mapping.id,
         productId: mapping.ikas_product_id,
         variantId: mapping.ikas_variant_id,
         sellPrice: calculateFinalPriceTry(usdPrice, usdTryRate, multiplier),
+        sku: buildKartfiyatSku(mapping.kartfiyat_card_id, mapping.price_label),
+        barcode: mapping.barcode || null,
       });
     } catch (error) {
       failed.push({ mapping, reason: error.message });
@@ -56,16 +75,26 @@ async function runPriceUpdate() {
   }
 
   let updated = 0;
+  let idFixed = 0;
   for (const batch of chunkArray(variantUpdates, BATCH_SIZE)) {
     try {
-      await updateVariantPrices(batch);
-      updated += batch.length;
+      const result = await updateVariantPrices(batch);
+      const batchUpdated = result?.updated ?? batch.length;
+      updated += batchUpdated;
+      idFixed += applyIdChanges(result?.idChanges);
+
+      if (result?.failures?.length) {
+        failed.push(...result.failures.map((entry) => ({
+          item: entry,
+          reason: entry.reason,
+        })));
+      }
     } catch (error) {
       failed.push(...batch.map((item) => ({ item, reason: error.message })));
     }
   }
 
-  return { updated, skipped, failed: failed.length };
+  return { updated, skipped, failed: failed.length, idFixed };
 }
 
 function startPriceUpdaterCron() {

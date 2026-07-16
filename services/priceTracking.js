@@ -2,6 +2,7 @@ const {
   getAutoTrackedMappings,
   findMappingById,
   updateMappingPriceSnapshot,
+  updateMappingIkasIds,
   upsertPendingPriceAlert,
   getPriceChangeAlerts,
   getPriceChangeAlertById,
@@ -9,7 +10,7 @@ const {
   countPendingPriceAlerts,
   getLatestPriceCheckSummary,
 } = require('../db');
-const { getCardById, getPriceChartingUsd } = require('./kartfiyat');
+const { getCardById, getPriceChartingUsd, buildKartfiyatSku } = require('./kartfiyat');
 const { updateVariantPrices } = require('./ikas');
 const { getUsdTryRate } = require('./exchangeRate');
 const { calculateFinalPriceTry, getPriceMultiplierForCard } = require('./pricing');
@@ -158,11 +159,23 @@ async function approvePriceChange(alertId) {
   if (!alert) throw new Error('Fiyat değişikliği kaydı bulunamadı.');
   if (alert.status !== 'pending') throw new Error('Bu kayıt zaten işlenmiş.');
 
-  await updateVariantPrices([{
+  const result = await updateVariantPrices([{
+    mappingId: alert.mapping_id,
     productId: alert.ikas_product_id,
     variantId: alert.ikas_variant_id,
     sellPrice: alert.new_try_price,
+    sku: buildKartfiyatSku(alert.kartfiyat_card_id, alert.price_label),
+    barcode: alert.barcode || null,
   }]);
+
+  for (const change of result?.idChanges || []) {
+    if (!change.mappingId) continue;
+    updateMappingIkasIds({
+      mappingId: change.mappingId,
+      ikasProductId: change.productId,
+      ikasVariantId: change.variantId,
+    });
+  }
 
   updateMappingPriceSnapshot({
     mappingId: alert.mapping_id,

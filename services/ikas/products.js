@@ -205,6 +205,218 @@ async function resolveLiveVariant({ productId, variantId = null, sku = null }) {
   };
 }
 
+function findProductBySkuInCatalog(products, sku) {
+  const target = String(sku || '').trim();
+  if (!target || !products?.length) return null;
+
+  for (const product of products) {
+    const variant = (product.variants || []).find(
+      (entry) => String(entry.sku || '').trim() === target,
+    );
+    if (variant?.id) {
+      return { product, variant };
+    }
+  }
+
+  return null;
+}
+
+function findProductByBarcodeInCatalog(products, barcode) {
+  const target = String(barcode || '').trim();
+  if (!target || !products?.length) return null;
+
+  for (const product of products) {
+    for (const variant of product.variants || []) {
+      const barcodes = variant.barcodeList || [];
+      if (barcodes.some((entry) => String(entry || '').trim() === target)) {
+        return { product, variant };
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Geçersiz/silinmiş productId durumunda SKU veya barkod ile canlı ürün+varyant bulur.
+ */
+async function resolveLiveProductVariant({
+  productId,
+  variantId = null,
+  sku = null,
+  barcode = null,
+  products = null,
+} = {}) {
+  let product = null;
+  if (productId) {
+    product = await getProductById(productId);
+  }
+
+  let productChanged = false;
+
+  if (!product?.id) {
+    const catalog = products || await listAllProducts();
+    const found = findProductBySkuInCatalog(catalog, sku)
+      || findProductByBarcodeInCatalog(catalog, barcode);
+
+    if (!found?.product?.id) {
+      throw new Error(
+        `ikas ürünü bulunamadı: ${productId || '?'}${sku ? ` (sku: ${sku})` : ''}`,
+      );
+    }
+
+    product = found.product;
+    productChanged = Boolean(productId && product.id !== productId);
+
+    const variant = pickLiveVariant(product, {
+      preferredVariantId: variantId,
+      sku: sku || found.variant?.sku,
+    }) || found.variant;
+
+    if (!variant?.id) {
+      throw new Error(`ikas ürününde aktif varyant bulunamadı: ${product.id}`);
+    }
+
+    return {
+      product,
+      variant,
+      productChanged,
+      variantChanged: Boolean(variantId && variant.id !== variantId) || productChanged,
+    };
+  }
+
+  const variant = pickLiveVariant(product, {
+    preferredVariantId: variantId,
+    sku,
+  });
+
+  if (!variant?.id) {
+    throw new Error(`ikas ürününde aktif varyant bulunamadı: ${product.id}`);
+  }
+
+  return {
+    product,
+    variant,
+    productChanged: false,
+    variantChanged: Boolean(variantId && variant.id !== variantId),
+  };
+}
+
+async function applyVariantPriceBatch(variantUpdates, { currency = 'TRY', priceListId = null } = {}) {
+  const variantPriceInputs = variantUpdates.map(({ productId, variantId, sellPrice }) => ({
+    deleted: false,
+    productId,
+    variantId,
+    price: { sellPrice: Number(sellPrice), currency },
+  }));
+
+  const data = await graphqlRequest(UPDATE_VARIANT_PRICES_MUTATION, {
+    input: { priceListId, variantPriceInputs },
+  });
+
+  const result = data.updateVariantPrices;
+  const errorCodes = (result?.errors || []).map((entry) => entry.errorCode).filter(Boolean);
+
+  if (errorCodes.length) {
+    const error = new Error(`ikas fiyat güncellenemedi (${errorCodes.join(', ')}).`);
+    error.errorCodes = errorCodes;
+    throw error;
+  }
+
+  return result;
+}
+
+async function updateVariantPrices(variantUpdates, {
+  currency = 'TRY',
+  priceListId = null,
+  products = null,
+} = {}) {
+  if (!variantUpdates?.length) {
+    return { isSuccess: true, idChanges: [] };
+  }
+
+  try {
+    const result = await applyVariantPriceBatch(variantUpdates, { currency, priceListId });
+    return { ...result, idChanges: [] };
+  } catch (error) {
+    const isRecoverable = /INVALID_PRODUCT_ID|INVALID_VARIANT_ID/i.test(error.message)
+      || (error.errorCodes || []).some((code) => /INVALID_PRODUCT_ID|INVALID_VARIANT_ID/i.test(code));
+
+    if (!isRecoverable) {
+      throw error;
+    }
+
+    console.warn(
+      `[ikas] Fiyat güncellemede geçersiz ürün/varyant (${error.message}), canlı ID'ler çözülecek (${variantUpdates.length} kayıt)`,
+    );
+
+    const catalog = products || await listAllProducts();
+    const resolvedUpdates = [];
+    const idChanges = [];
+    const failures = [];
+
+    for (const update of variantUpdates) {
+      try {
+        const live = await resolveLiveProductVariant({
+          productId: update.productId,
+          variantId: update.variantId,
+          sku: update.sku,
+          barcode: update.barcode,
+          products: catalog,
+        });
+
+        if (live.productChanged || live.variantChanged) {
+          idChanges.push({
+            mappingId: update.mappingId || null,
+            fromProductId: update.productId,
+            fromVariantId: update.variantId,
+            productId: live.product.id,
+            variantId: live.variant.id,
+            sku: update.sku || live.variant.sku || null,
+          });
+          console.warn(
+            `[ikas] Mapping ID düzeltildi: ${update.productId}/${update.variantId}`
+            + ` → ${live.product.id}/${live.variant.id}`
+            + (update.sku ? ` (sku: ${update.sku})` : ''),
+          );
+        }
+
+        resolvedUpdates.push({
+          productId: live.product.id,
+          variantId: live.variant.id,
+          sellPrice: update.sellPrice,
+        });
+      } catch (resolveError) {
+        failures.push({
+          productId: update.productId,
+          variantId: update.variantId,
+          sku: update.sku,
+          reason: resolveError.message,
+        });
+      }
+    }
+
+    if (!resolvedUpdates.length) {
+      const detail = failures.map((entry) => entry.reason).join('; ');
+      throw new Error(`ikas fiyat güncellenemedi (INVALID_PRODUCT_ID). ${detail}`);
+    }
+
+    const result = await applyVariantPriceBatch(resolvedUpdates, { currency, priceListId });
+
+    if (failures.length) {
+      console.warn(`[ikas] ${failures.length} fiyat kaydı çözülemedi:`, failures.slice(0, 10));
+    }
+
+    return {
+      ...result,
+      idChanges,
+      failures,
+      updated: resolvedUpdates.length,
+    };
+  }
+}
+
+
 async function saveVariantStock({ productId, variantId, stockCount, stockLocationId, sku = null }) {
   if (stockCount === undefined || stockCount === null) {
     return null;
@@ -523,29 +735,6 @@ async function addVariantToProduct({ productId, sku, sellPrice, currency = 'TRY'
   return data.addVariantToProduct;
 }
 
-async function updateVariantPrices(variantUpdates, { currency = 'TRY', priceListId = null } = {}) {
-  const variantPriceInputs = variantUpdates.map(({ productId, variantId, sellPrice }) => ({
-    deleted: false,
-    productId,
-    variantId,
-    price: { sellPrice: Number(sellPrice) },
-  }));
-
-  const data = await graphqlRequest(UPDATE_VARIANT_PRICES_MUTATION, {
-    input: { priceListId, variantPriceInputs },
-  });
-
-  const result = data.updateVariantPrices;
-  if (result?.errors?.length) {
-    const errors = result.errors
-      .map((entry) => entry.errorCode || JSON.stringify(entry))
-      .join(', ');
-    throw new Error(`ikas fiyat güncellenemedi (${errors}).`);
-  }
-
-  return result;
-}
-
 module.exports = {
   createBasicProduct,
   createProductWithVariants,
@@ -557,6 +746,7 @@ module.exports = {
   listAllProducts,
   getProductById,
   resolveLiveVariant,
+  resolveLiveProductVariant,
   saveVariantStock,
   getVariantStockAtLocation,
   listAllVariantStocks,

@@ -188,6 +188,13 @@ function normalizePriceLabel(label) {
   return value;
 }
 
+function buildKartfiyatSku(kartfiyatCardId, priceLabel = null) {
+  const base = `KF-${kartfiyatCardId}`;
+  const normalized = normalizePriceLabel(priceLabel);
+  if (!normalized) return base;
+  return `${base}-${normalized.replace(/\s+/g, '').toUpperCase()}`;
+}
+
 function isGradedPriceLabel(label) {
   return GRADED_LABEL_PATTERN.test(String(label || '').trim());
 }
@@ -340,6 +347,7 @@ module.exports = {
   getCardById,
   parseUsdPrice,
   normalizePriceLabel,
+  buildKartfiyatSku,
   isGradedPriceLabel,
   getPriceChartingUsd,
   getPriceChartingEntry,

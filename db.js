@@ -360,7 +360,7 @@ function getPriceChangeAlerts({ status } = {}) {
   try {
     if (status) {
       return db.prepare(`
-        SELECT a.*, m.ikas_variant_id, m.ikas_product_id
+        SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.price_label
         FROM price_change_alerts a
         JOIN card_mappings m ON m.id = a.mapping_id
         WHERE a.status = ?
@@ -369,7 +369,7 @@ function getPriceChangeAlerts({ status } = {}) {
     }
 
     return db.prepare(`
-      SELECT a.*, m.ikas_variant_id, m.ikas_product_id
+      SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.price_label
       FROM price_change_alerts a
       JOIN card_mappings m ON m.id = a.mapping_id
       ORDER BY a.detected_at DESC
@@ -383,7 +383,7 @@ function getPriceChangeAlertById(id) {
   const db = getDatabase();
   try {
     return db.prepare(`
-      SELECT a.*, m.ikas_variant_id, m.ikas_product_id
+      SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.price_label
       FROM price_change_alerts a
       JOIN card_mappings m ON m.id = a.mapping_id
       WHERE a.id = ?
