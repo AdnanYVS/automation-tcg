@@ -302,12 +302,12 @@ async function resolveLiveProductVariant({
   };
 }
 
-async function applyVariantPriceBatch(variantUpdates, { currency = 'TRY', priceListId = null } = {}) {
+async function applyVariantPriceBatch(variantUpdates, { priceListId = null } = {}) {
   const variantPriceInputs = variantUpdates.map(({ productId, variantId, sellPrice }) => ({
     deleted: false,
     productId,
     variantId,
-    price: { sellPrice: Number(sellPrice), currency },
+    price: { sellPrice: Number(sellPrice) },
   }));
 
   const data = await graphqlRequest(UPDATE_VARIANT_PRICES_MUTATION, {
@@ -327,7 +327,6 @@ async function applyVariantPriceBatch(variantUpdates, { currency = 'TRY', priceL
 }
 
 async function updateVariantPrices(variantUpdates, {
-  currency = 'TRY',
   priceListId = null,
   products = null,
 } = {}) {
@@ -336,7 +335,7 @@ async function updateVariantPrices(variantUpdates, {
   }
 
   try {
-    const result = await applyVariantPriceBatch(variantUpdates, { currency, priceListId });
+    const result = await applyVariantPriceBatch(variantUpdates, { priceListId });
     return { ...result, idChanges: [] };
   } catch (error) {
     const isRecoverable = /INVALID_PRODUCT_ID|INVALID_VARIANT_ID/i.test(error.message)
@@ -401,7 +400,7 @@ async function updateVariantPrices(variantUpdates, {
       throw new Error(`ikas fiyat güncellenemedi (INVALID_PRODUCT_ID). ${detail}`);
     }
 
-    const result = await applyVariantPriceBatch(resolvedUpdates, { currency, priceListId });
+    const result = await applyVariantPriceBatch(resolvedUpdates, { priceListId });
 
     if (failures.length) {
       console.warn(`[ikas] ${failures.length} fiyat kaydı çözülemedi:`, failures.slice(0, 10));
