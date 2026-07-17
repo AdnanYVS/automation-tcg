@@ -85,6 +85,7 @@ const LIST_PRODUCTS_QUERY = `
           id
           sku
           barcodeList
+          isActive
         }
       }
     }
@@ -92,8 +93,42 @@ const LIST_PRODUCTS_QUERY = `
 `;
 
 const GET_PRODUCT_QUERY = `
-  query GetProduct($id: String!) {
-    listProduct(id: { eq: $id }) {
+  query GetProduct($id: StringFilterInput!) {
+    listProduct(id: $id) {
+      data {
+        id
+        name
+        variants {
+          id
+          sku
+          barcodeList
+          isActive
+        }
+      }
+    }
+  }
+`;
+
+const LIST_PRODUCT_BY_SKU_QUERY = `
+  query ListProductBySku($sku: StringFilterInput!) {
+    listProduct(sku: $sku) {
+      data {
+        id
+        name
+        variants {
+          id
+          sku
+          barcodeList
+          isActive
+        }
+      }
+    }
+  }
+`;
+
+const LIST_PRODUCT_BY_BARCODE_QUERY = `
+  query ListProductByBarcode($barcodeList: StringFilterInput!) {
+    listProduct(barcodeList: $barcodeList) {
       data {
         id
         name
@@ -126,6 +161,9 @@ const UPDATE_PRODUCT_MUTATION = `
 `;
 
 let cachedStockLocations = null;
+let cachedProductCatalog = null;
+let cachedProductCatalogAt = 0;
+const PRODUCT_CATALOG_CACHE_MS = Number(process.env.IKAS_PRODUCT_CATALOG_CACHE_MS || 120000);
 
 async function listStockLocations() {
   if (cachedStockLocations) {
@@ -155,7 +193,7 @@ async function getProductById(productId) {
   if (!productId) return null;
 
   try {
-    const data = await graphqlRequest(GET_PRODUCT_QUERY, { id: productId });
+    const data = await graphqlRequest(GET_PRODUCT_QUERY, { id: { eq: String(productId) } });
     return data.listProduct?.data?.[0] || null;
   } catch (error) {
     // Bazı ikas tenantlarında id filtresi farklı olabilir; fallback listeleme.
@@ -164,6 +202,123 @@ async function getProductById(productId) {
 
   const products = await listAllProducts();
   return products.find((product) => product.id === productId) || null;
+}
+
+async function listProductsBySku(sku) {
+  const target = String(sku || '').trim();
+  if (!target) return [];
+
+  try {
+    const data = await graphqlRequest(LIST_PRODUCT_BY_SKU_QUERY, {
+      sku: { eq: target },
+    });
+    return data.listProduct?.data || [];
+  } catch (error) {
+    console.warn(`[ikas] SKU ile ürün arama başarısız (${target}):`, error.message);
+    return [];
+  }
+}
+
+async function listProductsByBarcode(barcode) {
+  const target = String(barcode || '').trim();
+  if (!target) return [];
+
+  try {
+    const data = await graphqlRequest(LIST_PRODUCT_BY_BARCODE_QUERY, {
+      barcodeList: { eq: target },
+    });
+    return data.listProduct?.data || [];
+  } catch (error) {
+    console.warn(`[ikas] Barkod ile ürün arama başarısız (${target}):`, error.message);
+    return [];
+  }
+}
+
+function findExactVariantBySku(product, sku) {
+  const target = String(sku || '').trim();
+  if (!target || !product) return null;
+  return (product.variants || []).find(
+    (entry) => String(entry.sku || '').trim() === target,
+  ) || null;
+}
+
+function findExactVariantByBarcode(product, barcode) {
+  const target = String(barcode || '').trim();
+  if (!target || !product) return null;
+  return (product.variants || []).find((entry) =>
+    (entry.barcodeList || []).some((code) => String(code || '').trim() === target),
+  ) || null;
+}
+
+/**
+ * Yalnızca tam SKU veya barkod ile eşleştir.
+ * Graded (KF-123-PSA10) asla base (KF-123) ürününe düşmez.
+ */
+async function findProductBySkuOrBarcode({ sku = null, barcode = null, products = null } = {}) {
+  const targetSku = String(sku || '').trim();
+
+  if (targetSku) {
+    const matches = await listProductsBySku(targetSku);
+    for (const product of matches) {
+      const variant = findExactVariantBySku(product, targetSku);
+      if (variant?.id) {
+        return { product, variant };
+      }
+    }
+  }
+
+  if (barcode) {
+    const matches = await listProductsByBarcode(barcode);
+    for (const product of matches) {
+      const variant = findExactVariantByBarcode(product, barcode);
+      if (variant?.id) {
+        // SKU verildiyse barkod sonucu da aynı SKU'yu taşımalı
+        if (targetSku && String(variant.sku || '').trim() !== targetSku) {
+          continue;
+        }
+        return { product, variant };
+      }
+    }
+  }
+
+  const catalog = products || null;
+  if (catalog?.length) {
+    if (targetSku) {
+      const foundBySku = findProductBySkuInCatalog(catalog, targetSku);
+      if (foundBySku) return foundBySku;
+    }
+    if (barcode) {
+      const foundByBarcode = findProductByBarcodeInCatalog(catalog, barcode);
+      if (foundByBarcode) {
+        if (!targetSku || String(foundByBarcode.variant.sku || '').trim() === targetSku) {
+          return foundByBarcode;
+        }
+      }
+    }
+  }
+
+  // Son çare: tam katalog (yavaş, kısa süre cache'lenir). Yine yalnızca exact match.
+  if (targetSku || barcode) {
+    try {
+      const fullCatalog = await getCachedProductCatalog();
+      if (targetSku) {
+        const foundBySku = findProductBySkuInCatalog(fullCatalog, targetSku);
+        if (foundBySku) return foundBySku;
+      }
+      if (barcode) {
+        const foundByBarcode = findProductByBarcodeInCatalog(fullCatalog, barcode);
+        if (foundByBarcode) {
+          if (!targetSku || String(foundByBarcode.variant.sku || '').trim() === targetSku) {
+            return foundByBarcode;
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('[ikas] Katalog taraması başarısız:', error.message);
+    }
+  }
+
+  return null;
 }
 
 function pickLiveVariant(product, { preferredVariantId = null, sku = null } = {}) {
@@ -239,6 +394,7 @@ function findProductByBarcodeInCatalog(products, barcode) {
 
 /**
  * Geçersiz/silinmiş productId durumunda SKU veya barkod ile canlı ürün+varyant bulur.
+ * Kategori ağacı değişikliği ürün ID'sini değiştirmez; asıl sorun genelde eski mapping ID'leridir.
  */
 async function resolveLiveProductVariant({
   productId,
@@ -255,23 +411,19 @@ async function resolveLiveProductVariant({
   let productChanged = false;
 
   if (!product?.id) {
-    const catalog = products || await listAllProducts();
-    const found = findProductBySkuInCatalog(catalog, sku)
-      || findProductByBarcodeInCatalog(catalog, barcode);
+    const found = await findProductBySkuOrBarcode({ sku, barcode, products });
 
     if (!found?.product?.id) {
       throw new Error(
-        `ikas ürünü bulunamadı: ${productId || '?'}${sku ? ` (sku: ${sku})` : ''}`,
+        `ikas ürünü bulunamadı: ${productId || '?'}${sku ? ` (sku: ${sku})` : ''}${barcode ? ` (barcode: ${barcode})` : ''}`,
       );
     }
 
     product = found.product;
     productChanged = Boolean(productId && product.id !== productId);
 
-    const variant = pickLiveVariant(product, {
-      preferredVariantId: variantId,
-      sku: sku || found.variant?.sku,
-    }) || found.variant;
+    // found.variant zaten exact SKU/barkod eşleşmesi; tekrar variants[0]'a düşme
+    const variant = found.variant;
 
     if (!variant?.id) {
       throw new Error(`ikas ürününde aktif varyant bulunamadı: ${product.id}`);
@@ -285,13 +437,22 @@ async function resolveLiveProductVariant({
     };
   }
 
-  const variant = pickLiveVariant(product, {
-    preferredVariantId: variantId,
-    sku,
-  });
+  // Ürün ID geçerliyse: önce preferred variant, sonra exact SKU; SKU verilmişse variants[0]'a düşme
+  let variant = null;
+  if (variantId) {
+    variant = (product.variants || []).find((entry) => entry.id === variantId) || null;
+  }
+  if (!variant && sku) {
+    variant = findExactVariantBySku(product, sku);
+  }
+  if (!variant && !sku) {
+    variant = pickLiveVariant(product, { preferredVariantId: variantId });
+  }
 
   if (!variant?.id) {
-    throw new Error(`ikas ürününde aktif varyant bulunamadı: ${product.id}`);
+    throw new Error(
+      `ikas ürününde aktif varyant bulunamadı: ${product.id}${sku ? ` (sku: ${sku})` : ''}`,
+    );
   }
 
   return {
@@ -349,7 +510,7 @@ async function updateVariantPrices(variantUpdates, {
       `[ikas] Fiyat güncellemede geçersiz ürün/varyant (${error.message}), canlı ID'ler çözülecek (${variantUpdates.length} kayıt)`,
     );
 
-    const catalog = products || await listAllProducts();
+    // SKU/barkod API ile çöz; tam katalog findProductBySkuOrBarcode içinde son çare olarak yüklenir.
     const resolvedUpdates = [];
     const idChanges = [];
     const failures = [];
@@ -361,7 +522,7 @@ async function updateVariantPrices(variantUpdates, {
           variantId: update.variantId,
           sku: update.sku,
           barcode: update.barcode,
-          products: catalog,
+          products,
         });
 
         if (live.productChanged || live.variantChanged) {
@@ -539,23 +700,40 @@ function buildVariantInput({ sku, sellPrice, currency = 'TRY', isActive = true, 
   return variant;
 }
 
-async function listAllProducts({ pageSize = 50 } = {}) {
+async function listAllProducts({ pageSize = 200 } = {}) {
   let page = 1;
   const products = [];
+  let totalCount = null;
 
   while (true) {
     const data = await graphqlRequest(LIST_PRODUCTS_QUERY, {
       pagination: { page, limit: pageSize },
     });
     const items = data.listProduct?.data || [];
+    if (totalCount == null && Number.isFinite(data.listProduct?.count)) {
+      totalCount = data.listProduct.count;
+    }
     if (!items.length) break;
 
     products.push(...items);
     if (items.length < pageSize) break;
+    if (totalCount != null && products.length >= totalCount) break;
     page += 1;
   }
 
+  cachedProductCatalog = products;
+  cachedProductCatalogAt = Date.now();
   return products;
+}
+
+async function getCachedProductCatalog() {
+  if (
+    cachedProductCatalog
+    && (Date.now() - cachedProductCatalogAt) < PRODUCT_CATALOG_CACHE_MS
+  ) {
+    return cachedProductCatalog;
+  }
+  return listAllProducts();
 }
 
 async function updateProductCategories({ productId, categoryName, categoryPath = [], categories = null }) {
