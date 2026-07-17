@@ -197,14 +197,50 @@ async function rejectPriceChange(alertId) {
   return resolved;
 }
 
-async function approveAllPendingPriceChanges() {
-  const pending = getPriceChangeAlerts({ status: 'pending' });
-  const results = { approved: 0, failed: [] };
+async function approveAllPendingPriceChanges(filter = 'all') {
+  return bulkResolvePendingPriceChanges({ action: 'approve', filter });
+}
+
+async function rejectAllPendingPriceChanges(filter = 'all') {
+  return bulkResolvePendingPriceChanges({ action: 'reject', filter });
+}
+
+function matchesPriceFilter(alert, filter = 'all') {
+  const change = Number(alert.change_percent);
+  if (filter === 'rising') return Number.isFinite(change) && change > 0;
+  if (filter === 'falling') return Number.isFinite(change) && change < 0;
+  return true;
+}
+
+async function bulkResolvePendingPriceChanges({ action = 'approve', filter = 'all' } = {}) {
+  if (!['approve', 'reject'].includes(action)) {
+    throw new Error('Geçersiz toplu işlem.');
+  }
+  if (!['all', 'rising', 'falling'].includes(filter)) {
+    throw new Error('Geçersiz filtre. all, rising veya falling olmalı.');
+  }
+
+  const pending = getPriceChangeAlerts({ status: 'pending' })
+    .filter((alert) => matchesPriceFilter(alert, filter));
+
+  const results = {
+    action,
+    filter,
+    matched: pending.length,
+    approved: 0,
+    rejected: 0,
+    failed: [],
+  };
 
   for (const alert of pending) {
     try {
-      await approvePriceChange(alert.id);
-      results.approved += 1;
+      if (action === 'approve') {
+        await approvePriceChange(alert.id);
+        results.approved += 1;
+      } else {
+        await rejectPriceChange(alert.id);
+        results.rejected += 1;
+      }
     } catch (error) {
       results.failed.push({ id: alert.id, cardName: alert.card_name, reason: error.message });
     }
@@ -227,6 +263,8 @@ module.exports = {
   approvePriceChange,
   rejectPriceChange,
   approveAllPendingPriceChanges,
+  rejectAllPendingPriceChanges,
+  bulkResolvePendingPriceChanges,
   getPriceDashboardData,
   calculateChangePercent,
   exceedsThreshold,

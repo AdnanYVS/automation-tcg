@@ -241,6 +241,33 @@
     .stat-value.pending { color: var(--accent); }
     .stat-sub { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
 
+    .bulk-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .bulk-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bulk-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-right: 2px;
+    }
+
     .panel {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -494,7 +521,6 @@
         <span class="user-badge" id="user-badge" hidden>👤 <strong id="user-name"></strong></span>
         <button type="button" class="logout-btn" id="logout-btn" hidden>Çıkış</button>
         <button type="button" class="btn btn-secondary" id="check-now-btn">Şimdi Kontrol Et</button>
-        <button type="button" class="btn btn-primary" id="approve-all-btn">Tümünü Onayla</button>
       </div>
     </header>
 
@@ -526,6 +552,21 @@
         <div class="stat-label">Kur</div>
         <div class="stat-value" style="font-size:1.1rem" id="stat-rate">—</div>
         <div class="stat-sub">Son alert'teki USD/TRY</div>
+      </div>
+    </section>
+
+    <section class="bulk-actions" id="bulk-actions">
+      <div class="bulk-group">
+        <span class="bulk-label">Onayla</span>
+        <button type="button" class="btn btn-success btn-sm" data-bulk-action="approve" data-bulk-filter="rising">Yükselenleri</button>
+        <button type="button" class="btn btn-success btn-sm" data-bulk-action="approve" data-bulk-filter="falling">Düşenleri</button>
+        <button type="button" class="btn btn-primary btn-sm" data-bulk-action="approve" data-bulk-filter="all">Hepsini</button>
+      </div>
+      <div class="bulk-group">
+        <span class="bulk-label">Reddet</span>
+        <button type="button" class="btn btn-danger btn-sm" data-bulk-action="reject" data-bulk-filter="rising">Yükselenleri</button>
+        <button type="button" class="btn btn-danger btn-sm" data-bulk-action="reject" data-bulk-filter="falling">Düşenleri</button>
+        <button type="button" class="btn btn-danger btn-sm" data-bulk-action="reject" data-bulk-filter="all">Hepsini</button>
       </div>
     </section>
 
@@ -597,7 +638,7 @@
     const alertsBody = document.getElementById('alerts-body');
     const tabsEl = document.getElementById('tabs');
     const checkNowBtn = document.getElementById('check-now-btn');
-    const approveAllBtn = document.getElementById('approve-all-btn');
+    const bulkActionsEl = document.getElementById('bulk-actions');
     const mainTabsEl = document.getElementById('main-tabs');
     const alertsView = document.getElementById('alerts-view');
     const portfolioView = document.getElementById('portfolio-view');
@@ -605,6 +646,11 @@
     const portfolioBody = document.getElementById('portfolio-body');
     const portfolioHeadRow = document.getElementById('portfolio-head-row');
     const refreshPortfolioBtn = document.getElementById('refresh-portfolio-btn');
+
+    const BULK_LABELS = {
+      approve: { all: 'tüm bekleyen', rising: 'yükselen', falling: 'düşen' },
+      reject: { all: 'tüm bekleyen', rising: 'yükselen', falling: 'düşen' },
+    };
 
     let currentStatus = 'pending';
     let currentView = 'alerts';
@@ -667,7 +713,17 @@
         ? `${Number(latestAlert.usd_try_rate).toFixed(2)} ₺`
         : '—';
 
-      approveAllBtn.disabled = !(data.pendingCount > 0);
+      const pending = (data.alerts || []).filter((a) => a.status === 'pending');
+      const risingCount = pending.filter((a) => Number(a.change_percent) > 0).length;
+      const fallingCount = pending.filter((a) => Number(a.change_percent) < 0).length;
+
+      bulkActionsEl.querySelectorAll('[data-bulk-action]').forEach((btn) => {
+        const filter = btn.dataset.bulkFilter;
+        let enabled = pending.length > 0;
+        if (filter === 'rising') enabled = risingCount > 0;
+        if (filter === 'falling') enabled = fallingCount > 0;
+        btn.disabled = !enabled;
+      });
     }
 
     function renderTable(alerts) {
@@ -842,7 +898,7 @@
       alertsView.hidden = view !== 'alerts';
       portfolioView.hidden = view !== 'portfolio';
       checkNowBtn.hidden = view !== 'alerts';
-      approveAllBtn.hidden = view !== 'alerts';
+      bulkActionsEl.hidden = view !== 'alerts';
 
       if (view === 'portfolio' && !portfolioLoaded) {
         loadPortfolio().catch(() => {});
@@ -917,23 +973,50 @@
       }
     });
 
-    approveAllBtn.addEventListener('click', async () => {
-      if (!confirm('Tüm bekleyen fiyat değişikliklerini ikas\'ta güncellemek istiyor musunuz?')) return;
-      approveAllBtn.disabled = true;
-      showToast('Tüm değişiklikler onaylanıyor...', 'info');
+    bulkActionsEl.addEventListener('click', async (event) => {
+      const button = event.target.closest('[data-bulk-action]');
+      if (!button || button.disabled) return;
+
+      const action = button.dataset.bulkAction;
+      const filter = button.dataset.bulkFilter;
+      const scope = BULK_LABELS[action]?.[filter] || 'seçili';
+      const confirmMsg = action === 'approve'
+        ? `${scope} fiyat değişikliklerini ikas'ta güncellemek istiyor musunuz?`
+        : `${scope} fiyat değişikliklerini reddetmek istiyor musunuz?`;
+
+      if (!confirm(confirmMsg)) return;
+
+      const buttons = [...bulkActionsEl.querySelectorAll('[data-bulk-action]')];
+      buttons.forEach((btn) => { btn.disabled = true; });
+      showToast(`${scope} değişiklikler ${action === 'approve' ? 'onaylanıyor' : 'reddediliyor'}...`, 'info');
+
       try {
-        const response = await AUTH.apiFetch('/api/price-changes/approve-all', { method: 'POST' });
+        const response = await AUTH.apiFetch('/api/price-changes/bulk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action, filter }),
+        });
         const payload = await response.json();
-        if (!response.ok || !payload.success) throw new Error(payload.error || 'Toplu onay başarısız.');
-        showToast(`${payload.data.approved} fiyat güncellendi.`, 'success');
+        if (!response.ok || !payload.success) throw new Error(payload.error || 'Toplu işlem başarısız.');
+
+        const done = action === 'approve' ? payload.data.approved : payload.data.rejected;
+        if (!payload.data.matched) {
+          showToast('Filtreye uyan bekleyen kayıt yok.', 'info');
+        } else {
+          showToast(
+            action === 'approve'
+              ? `${done} fiyat güncellendi.`
+              : `${done} değişiklik reddedildi.`,
+            'success',
+          );
+        }
         if (payload.data.failed?.length) {
-          showToast(`${payload.data.failed.length} kart güncellenemedi.`, 'error');
+          showToast(`${payload.data.failed.length} kart işlenemedi.`, 'error');
         }
         await loadDashboard();
       } catch (error) {
         showToast(error.message, 'error');
-      } finally {
-        approveAllBtn.disabled = false;
+        if (dashboardData) renderStats(dashboardData);
       }
     });
 
