@@ -159,12 +159,16 @@ async function approvePriceChange(alertId) {
   if (!alert) throw new Error('Fiyat değişikliği kaydı bulunamadı.');
   if (alert.status !== 'pending') throw new Error('Bu kayıt zaten işlenmiş.');
 
+  const fallbackSku = buildKartfiyatSku(alert.kartfiyat_card_id, alert.price_label);
+  const sku = alert.sku || fallbackSku;
+
   const result = await updateVariantPrices([{
     mappingId: alert.mapping_id,
     productId: alert.ikas_product_id,
     variantId: alert.ikas_variant_id,
     sellPrice: alert.new_try_price,
-    sku: buildKartfiyatSku(alert.kartfiyat_card_id, alert.price_label),
+    sku,
+    skuCandidates: [alert.sku, fallbackSku].filter(Boolean),
     barcode: alert.barcode || null,
   }]);
 
@@ -174,6 +178,7 @@ async function approvePriceChange(alertId) {
       mappingId: change.mappingId,
       ikasProductId: change.productId,
       ikasVariantId: change.variantId,
+      sku: change.sku || null,
     });
   }
 

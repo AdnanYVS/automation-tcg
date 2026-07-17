@@ -400,9 +400,16 @@ async function resolveLiveProductVariant({
   productId,
   variantId = null,
   sku = null,
+  skuCandidates = [],
   barcode = null,
   products = null,
 } = {}) {
+  const candidateSkus = [...new Set(
+    [sku, ...(Array.isArray(skuCandidates) ? skuCandidates : [])]
+      .map((value) => String(value || '').trim())
+      .filter(Boolean),
+  )];
+
   let product = null;
   if (productId) {
     product = await getProductById(productId);
@@ -411,18 +418,26 @@ async function resolveLiveProductVariant({
   let productChanged = false;
 
   if (!product?.id) {
-    const found = await findProductBySkuOrBarcode({ sku, barcode, products });
+    let found = null;
+    for (const candidate of candidateSkus) {
+      found = await findProductBySkuOrBarcode({ sku: candidate, barcode, products });
+      if (found?.product?.id) break;
+    }
+    if (!found?.product?.id && barcode && !candidateSkus.length) {
+      found = await findProductBySkuOrBarcode({ barcode, products });
+    }
 
     if (!found?.product?.id) {
       throw new Error(
-        `ikas ürünü bulunamadı: ${productId || '?'}${sku ? ` (sku: ${sku})` : ''}${barcode ? ` (barcode: ${barcode})` : ''}`,
+        `ikas ürünü bulunamadı: ${productId || '?'}`
+        + (candidateSkus.length ? ` (sku: ${candidateSkus.join(' | ')})` : '')
+        + (barcode ? ` (barcode: ${barcode})` : ''),
       );
     }
 
     product = found.product;
     productChanged = Boolean(productId && product.id !== productId);
 
-    // found.variant zaten exact SKU/barkod eşleşmesi; tekrar variants[0]'a düşme
     const variant = found.variant;
 
     if (!variant?.id) {
@@ -437,21 +452,48 @@ async function resolveLiveProductVariant({
     };
   }
 
-  // Ürün ID geçerliyse: önce preferred variant, sonra exact SKU; SKU verilmişse variants[0]'a düşme
+  // Ürün ID geçerliyse: önce preferred variant, sonra exact SKU adayları
   let variant = null;
   if (variantId) {
     variant = (product.variants || []).find((entry) => entry.id === variantId) || null;
   }
-  if (!variant && sku) {
-    variant = findExactVariantBySku(product, sku);
+  if (!variant) {
+    for (const candidate of candidateSkus) {
+      variant = findExactVariantBySku(product, candidate);
+      if (variant) break;
+    }
   }
-  if (!variant && !sku) {
+  if (!variant && barcode) {
+    variant = findExactVariantByBarcode(product, barcode);
+  }
+  if (!variant && !candidateSkus.length && !barcode) {
     variant = pickLiveVariant(product, { preferredVariantId: variantId });
+  }
+
+  // ID/variant uyuşmazlığında exact SKU/barkod ile yeniden çöz
+  if (!variant?.id && (candidateSkus.length || barcode)) {
+    let found = null;
+    for (const candidate of candidateSkus) {
+      found = await findProductBySkuOrBarcode({ sku: candidate, barcode, products });
+      if (found?.product?.id) break;
+    }
+    if (!found?.product?.id && barcode) {
+      found = await findProductBySkuOrBarcode({ barcode, products });
+    }
+    if (found?.product?.id && found?.variant?.id) {
+      return {
+        product: found.product,
+        variant: found.variant,
+        productChanged: found.product.id !== productId,
+        variantChanged: true,
+      };
+    }
   }
 
   if (!variant?.id) {
     throw new Error(
-      `ikas ürününde aktif varyant bulunamadı: ${product.id}${sku ? ` (sku: ${sku})` : ''}`,
+      `ikas ürününde aktif varyant bulunamadı: ${product.id}`
+      + (candidateSkus.length ? ` (sku: ${candidateSkus.join(' | ')})` : ''),
     );
   }
 
@@ -521,6 +563,7 @@ async function updateVariantPrices(variantUpdates, {
           productId: update.productId,
           variantId: update.variantId,
           sku: update.sku,
+          skuCandidates: update.skuCandidates,
           barcode: update.barcode,
           products,
         });
@@ -532,7 +575,7 @@ async function updateVariantPrices(variantUpdates, {
             fromVariantId: update.variantId,
             productId: live.product.id,
             variantId: live.variant.id,
-            sku: update.sku || live.variant.sku || null,
+            sku: live.variant.sku || update.sku || null,
           });
           console.warn(
             `[ikas] Mapping ID düzeltildi: ${update.productId}/${update.variantId}`

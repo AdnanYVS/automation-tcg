@@ -32,6 +32,7 @@ function applyIdChanges(idChanges) {
       mappingId: change.mappingId,
       ikasProductId: change.productId,
       ikasVariantId: change.variantId,
+      sku: change.sku || null,
     });
     fixed += 1;
   }
@@ -65,7 +66,11 @@ async function runPriceUpdate() {
         productId: mapping.ikas_product_id,
         variantId: mapping.ikas_variant_id,
         sellPrice: calculateFinalPriceTry(usdPrice, usdTryRate, multiplier),
-        sku: buildKartfiyatSku(mapping.kartfiyat_card_id, mapping.price_label),
+        sku: mapping.sku || buildKartfiyatSku(mapping.kartfiyat_card_id, mapping.price_label),
+        skuCandidates: [
+          mapping.sku,
+          buildKartfiyatSku(mapping.kartfiyat_card_id, mapping.price_label),
+        ].filter(Boolean),
         barcode: mapping.barcode || null,
       });
     } catch (error) {

@@ -401,6 +401,8 @@ router.post('/import-card', async (req, res) => {
         mappingId: brokenExistingMapping.id,
         ikasProductId: product.id,
         ikasVariantId: variant.id,
+        sku: variant.sku || sku,
+        barcode: variant.barcodeList?.[0] || barcode || null,
       });
       mapping = { id: brokenExistingMapping.id };
     } else {
@@ -409,6 +411,7 @@ router.post('/import-card', async (req, res) => {
         ikasProductId: product.id,
         kartfiyatCardId,
         barcode,
+        sku: variant.sku || sku,
         priceManual: hasManualSellPrice,
         priceLabel,
       });

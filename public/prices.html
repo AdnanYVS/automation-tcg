@@ -478,13 +478,15 @@
 
     .toast {
       display: none;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
       padding: 12px 16px;
       border-radius: var(--radius-sm);
       margin-bottom: 20px;
       font-size: 0.9rem;
       font-weight: 500;
+      white-space: pre-line;
+      max-width: 100%;
     }
 
     .toast.visible { display: flex; }
@@ -662,7 +664,8 @@
       toastEl.textContent = message;
       toastEl.className = `toast visible ${type}`;
       clearTimeout(showToast._timer);
-      showToast._timer = setTimeout(() => toastEl.classList.remove('visible'), 4000);
+      const duration = type === 'error' && String(message).includes('\n') ? 10000 : 4000;
+      showToast._timer = setTimeout(() => toastEl.classList.remove('visible'), duration);
     }
 
     function escapeHtml(str) {
@@ -1011,7 +1014,18 @@
           );
         }
         if (payload.data.failed?.length) {
-          showToast(`${payload.data.failed.length} kart işlenemedi.`, 'error');
+          const preview = payload.data.failed
+            .slice(0, 5)
+            .map((entry) => `${entry.cardName || entry.id}: ${entry.reason}`)
+            .join('\n');
+          const more = payload.data.failed.length > 5
+            ? `\n… +${payload.data.failed.length - 5} kart daha`
+            : '';
+          showToast(
+            `${payload.data.failed.length} kart işlenemedi.\n${preview}${more}`,
+            'error',
+          );
+          console.warn('[price-bulk] failed:', payload.data.failed);
         }
         await loadDashboard();
       } catch (error) {

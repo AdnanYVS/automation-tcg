@@ -19,6 +19,7 @@ const MAPPING_EXTRA_COLUMNS = [
   { name: 'last_try_price', ddl: 'REAL' },
   { name: 'last_price_checked_at', ddl: 'TEXT' },
   { name: 'barcode', ddl: 'TEXT' },
+  { name: 'sku', ddl: 'TEXT' },
   { name: 'price_manual', ddl: 'INTEGER DEFAULT 0' },
   { name: 'price_label', ddl: 'TEXT' },
 ];
@@ -152,6 +153,7 @@ function insertMapping({
   kartfiyatCardId,
   ikasProductId = null,
   barcode = null,
+  sku = null,
   priceManual = false,
   priceLabel = null,
 }) {
@@ -163,6 +165,7 @@ function insertMapping({
         ikas_product_id,
         kartfiyat_card_id,
         barcode,
+        sku,
         price_manual,
         price_label
       )
@@ -171,6 +174,7 @@ function insertMapping({
         @ikasProductId,
         @kartfiyatCardId,
         @barcode,
+        @sku,
         @priceManual,
         @priceLabel
       )
@@ -179,6 +183,7 @@ function insertMapping({
       ikasProductId,
       kartfiyatCardId,
       barcode,
+      sku: sku || null,
       priceManual: priceManual ? 1 : 0,
       priceLabel: priceLabel || null,
     });
@@ -268,16 +273,30 @@ function updateMappingPriceSnapshot({
   }
 }
 
-function updateMappingIkasIds({ mappingId, ikasProductId = null, ikasVariantId = null }) {
+function updateMappingIkasIds({
+  mappingId,
+  ikasProductId = null,
+  ikasVariantId = null,
+  sku = null,
+  barcode = null,
+}) {
   const db = getDatabase();
   try {
     db.prepare(`
       UPDATE card_mappings
       SET ikas_product_id = COALESCE(@ikasProductId, ikas_product_id),
           ikas_variant_id = COALESCE(@ikasVariantId, ikas_variant_id),
+          sku = COALESCE(@sku, sku),
+          barcode = COALESCE(@barcode, barcode),
           updated_at = datetime('now')
       WHERE id = @mappingId
-    `).run({ mappingId, ikasProductId, ikasVariantId });
+    `).run({
+      mappingId,
+      ikasProductId,
+      ikasVariantId,
+      sku: sku || null,
+      barcode: barcode || null,
+    });
   } finally {
     db.close();
   }
@@ -360,7 +379,7 @@ function getPriceChangeAlerts({ status } = {}) {
   try {
     if (status) {
       return db.prepare(`
-        SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.price_label
+        SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.sku, m.price_label
         FROM price_change_alerts a
         JOIN card_mappings m ON m.id = a.mapping_id
         WHERE a.status = ?
@@ -369,7 +388,7 @@ function getPriceChangeAlerts({ status } = {}) {
     }
 
     return db.prepare(`
-      SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.price_label
+      SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.sku, m.price_label
       FROM price_change_alerts a
       JOIN card_mappings m ON m.id = a.mapping_id
       ORDER BY a.detected_at DESC
@@ -383,7 +402,7 @@ function getPriceChangeAlertById(id) {
   const db = getDatabase();
   try {
     return db.prepare(`
-      SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.price_label
+      SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.sku, m.price_label
       FROM price_change_alerts a
       JOIN card_mappings m ON m.id = a.mapping_id
       WHERE a.id = ?
