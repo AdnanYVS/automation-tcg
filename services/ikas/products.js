@@ -110,8 +110,8 @@ const GET_PRODUCT_QUERY = `
 `;
 
 const LIST_PRODUCT_BY_SKU_QUERY = `
-  query ListProductBySku($sku: StringFilterInput!) {
-    listProduct(sku: $sku) {
+  query ListProductBySku($sku: StringFilterInput!, $includeDeleted: Boolean) {
+    listProduct(sku: $sku, includeDeleted: $includeDeleted) {
       data {
         id
         name
@@ -127,8 +127,8 @@ const LIST_PRODUCT_BY_SKU_QUERY = `
 `;
 
 const LIST_PRODUCT_BY_BARCODE_QUERY = `
-  query ListProductByBarcode($barcodeList: StringFilterInput!) {
-    listProduct(barcodeList: $barcodeList) {
+  query ListProductByBarcode($barcodeList: StringFilterInput!, $includeDeleted: Boolean) {
+    listProduct(barcodeList: $barcodeList, includeDeleted: $includeDeleted) {
       data {
         id
         name
@@ -211,8 +211,16 @@ async function listProductsBySku(sku) {
   try {
     const data = await graphqlRequest(LIST_PRODUCT_BY_SKU_QUERY, {
       sku: { eq: target },
+      includeDeleted: false,
     });
-    return data.listProduct?.data || [];
+    const active = data.listProduct?.data || [];
+    if (active.length) return active;
+
+    const deleted = await graphqlRequest(LIST_PRODUCT_BY_SKU_QUERY, {
+      sku: { eq: target },
+      includeDeleted: true,
+    });
+    return deleted.listProduct?.data || [];
   } catch (error) {
     console.warn(`[ikas] SKU ile ürün arama başarısız (${target}):`, error.message);
     return [];
@@ -223,11 +231,23 @@ async function listProductsByBarcode(barcode) {
   const target = String(barcode || '').trim();
   if (!target) return [];
 
-  try {
+  async function query(filter, includeDeleted) {
     const data = await graphqlRequest(LIST_PRODUCT_BY_BARCODE_QUERY, {
-      barcodeList: { eq: target },
+      barcodeList: filter,
+      includeDeleted,
     });
     return data.listProduct?.data || [];
+  }
+
+  try {
+    // Bazı tenantlarda array alan için eq, bazılarında in çalışır
+    for (const filter of [{ eq: target }, { in: [target] }]) {
+      const active = await query(filter, false);
+      if (active.length) return active;
+      const withDeleted = await query(filter, true);
+      if (withDeleted.length) return withDeleted;
+    }
+    return [];
   } catch (error) {
     console.warn(`[ikas] Barkod ile ürün arama başarısız (${target}):`, error.message);
     return [];
@@ -251,11 +271,13 @@ function findExactVariantByBarcode(product, barcode) {
 }
 
 /**
- * Yalnızca tam SKU veya barkod ile eşleştir.
- * Graded (KF-123-PSA10) asla base (KF-123) ürününe düşmez.
+ * Önce exact SKU, sonra exact barkod.
+ * Barkod eşleşmesi SKU tahmininden bağımsızdır (ikas SKU'su KF-{id} olmayabilir).
+ * Graded SKU asla base SKU'ya düşmez.
  */
 async function findProductBySkuOrBarcode({ sku = null, barcode = null, products = null } = {}) {
   const targetSku = String(sku || '').trim();
+  const targetBarcode = String(barcode || '').trim();
 
   if (targetSku) {
     const matches = await listProductsBySku(targetSku);
@@ -267,51 +289,54 @@ async function findProductBySkuOrBarcode({ sku = null, barcode = null, products 
     }
   }
 
-  if (barcode) {
-    const matches = await listProductsByBarcode(barcode);
+  if (targetBarcode) {
+    const matches = await listProductsByBarcode(targetBarcode);
     for (const product of matches) {
-      const variant = findExactVariantByBarcode(product, barcode);
+      const variant = findExactVariantByBarcode(product, targetBarcode);
       if (variant?.id) {
-        // SKU verildiyse barkod sonucu da aynı SKU'yu taşımalı
         if (targetSku && String(variant.sku || '').trim() !== targetSku) {
-          continue;
+          console.warn(
+            `[ikas] Barkod eşleşti ama SKU farklı: barcode=${targetBarcode}`
+            + ` beklenen=${targetSku} gerçek=${variant.sku || '?'}`
+            + ` → barkod güvenilir kabul edildi`,
+          );
         }
         return { product, variant };
       }
     }
   }
 
-  const catalog = products || null;
-  if (catalog?.length) {
+  const catalog = products?.length ? products : null;
+  if (catalog) {
     if (targetSku) {
       const foundBySku = findProductBySkuInCatalog(catalog, targetSku);
       if (foundBySku) return foundBySku;
     }
-    if (barcode) {
-      const foundByBarcode = findProductByBarcodeInCatalog(catalog, barcode);
+    if (targetBarcode) {
+      const foundByBarcode = findProductByBarcodeInCatalog(catalog, targetBarcode);
       if (foundByBarcode) {
-        if (!targetSku || String(foundByBarcode.variant.sku || '').trim() === targetSku) {
-          return foundByBarcode;
+        if (targetSku && String(foundByBarcode.variant.sku || '').trim() !== targetSku) {
+          console.warn(
+            `[ikas] Katalog barkod eşleşti, SKU farklı: barcode=${targetBarcode}`
+            + ` beklenen=${targetSku} gerçek=${foundByBarcode.variant.sku || '?'}`,
+          );
         }
+        return foundByBarcode;
       }
     }
   }
 
-  // Son çare: tam katalog (yavaş, kısa süre cache'lenir). Yine yalnızca exact match.
-  if (targetSku || barcode) {
+  // Son çare: tam katalog
+  if (targetSku || targetBarcode) {
     try {
       const fullCatalog = await getCachedProductCatalog();
       if (targetSku) {
         const foundBySku = findProductBySkuInCatalog(fullCatalog, targetSku);
         if (foundBySku) return foundBySku;
       }
-      if (barcode) {
-        const foundByBarcode = findProductByBarcodeInCatalog(fullCatalog, barcode);
-        if (foundByBarcode) {
-          if (!targetSku || String(foundByBarcode.variant.sku || '').trim() === targetSku) {
-            return foundByBarcode;
-          }
-        }
+      if (targetBarcode) {
+        const foundByBarcode = findProductByBarcodeInCatalog(fullCatalog, targetBarcode);
+        if (foundByBarcode) return foundByBarcode;
       }
     } catch (error) {
       console.warn('[ikas] Katalog taraması başarısız:', error.message);
@@ -423,7 +448,8 @@ async function resolveLiveProductVariant({
       found = await findProductBySkuOrBarcode({ sku: candidate, barcode, products });
       if (found?.product?.id) break;
     }
-    if (!found?.product?.id && barcode && !candidateSkus.length) {
+    // SKU adayları tutmazsa yalnızca barkod dene (SKU KF-{id} olmayabilir)
+    if (!found?.product?.id && barcode) {
       found = await findProductBySkuOrBarcode({ barcode, products });
     }
 
