@@ -7,6 +7,7 @@ const {
   getGradedPrices,
   getCardPricesPayload,
   getCardImageUrl,
+  buildCardSeriesDescription,
   normalizePriceLabel,
   isGradedPriceLabel,
 } = require('../../services/kartfiyat');
@@ -42,6 +43,24 @@ function buildGradedSku(baseSku, priceLabel) {
   const normalized = normalizePriceLabel(priceLabel);
   if (!normalized) return baseSku;
   return `${baseSku}-${normalized.replace(/\s+/g, '').toUpperCase()}`;
+}
+
+function parseBulkFlag(value) {
+  if (value === true || value === 1) return true;
+  const normalized = String(value ?? '').trim().toLowerCase();
+  return normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'on';
+}
+
+function buildMappingPriceLabel(priceLabel, isBulk) {
+  if (!isBulk) return priceLabel;
+  if (priceLabel) return `Bulk:${priceLabel}`;
+  return 'Bulk';
+}
+
+function buildImportSku(baseSku, priceLabel, isBulk) {
+  let sku = buildGradedSku(baseSku, priceLabel);
+  if (isBulk) sku = `${sku}-BULK`;
+  return sku;
 }
 
 router.use(requireAuth);
@@ -227,7 +246,9 @@ router.post('/import-card', async (req, res) => {
     if (!cardId) return res.status(400).json({ success: false, error: 'cardId zorunludur.' });
 
     const kartfiyatCardId = String(cardId);
+    const isBulk = parseBulkFlag(req.body.isBulk);
     const priceLabel = normalizePriceLabel(req.body.priceLabel);
+    const mappingPriceLabel = buildMappingPriceLabel(priceLabel, isBulk);
     const stockLocationId = req.body.stockLocationId;
     if (!stockLocationId) {
       return res.status(400).json({
@@ -244,13 +265,14 @@ router.post('/import-card', async (req, res) => {
       });
     }
 
-    const existing = findByKartfiyatCardId(kartfiyatCardId, { priceLabel });
+    const existing = findByKartfiyatCardId(kartfiyatCardId, { priceLabel: mappingPriceLabel });
     let brokenExistingMapping = null;
     if (existing?.ikas_product_id && existing?.ikas_variant_id) {
       try {
-        const expectedSku = buildGradedSku(
+        const expectedSku = buildImportSku(
           req.body.code || `KF-${kartfiyatCardId}`,
           priceLabel,
+          isBulk,
         );
         const stockResult = await incrementVariantStock({
           productId: existing.ikas_product_id,
@@ -311,7 +333,7 @@ router.post('/import-card', async (req, res) => {
     if (!name) return res.status(400).json({ success: false, error: 'Ürün adı bulunamadı.' });
 
     const baseSku = req.body.code || card.code || `KF-${kartfiyatCardId}`;
-    const sku = buildGradedSku(baseSku, priceLabel);
+    const sku = buildImportSku(baseSku, priceLabel, isBulk);
     const hasManualSellPrice = req.body.sellPrice !== undefined
       && req.body.sellPrice !== null
       && String(req.body.sellPrice).trim() !== '';
@@ -321,6 +343,13 @@ router.post('/import-card', async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'sellPrice pozitif bir sayı olmalıdır.',
+      });
+    }
+
+    if (isBulk && !hasManualSellPrice) {
+      return res.status(400).json({
+        success: false,
+        error: 'Bulk kartlar için sellPrice zorunludur.',
       });
     }
 
@@ -345,7 +374,7 @@ router.post('/import-card', async (req, res) => {
     let productCategoryPlan;
     if (category.game === 'pokemon') {
       await ensurePokemonShopTaxonomy({ allowCreate: true });
-      const shopPlacement = resolvePokemonShopCategories(card, { priceLabel, productName: name });
+      const shopPlacement = resolvePokemonShopCategories(card, { priceLabel, productName: name, isBulk });
       productCategoryPlan = {
         ...shopPlacement,
         kind: shopPlacement.productType,
@@ -354,7 +383,7 @@ router.post('/import-card', async (req, res) => {
       };
     } else if (category.game === 'onepiece') {
       await ensureOnePieceShopTaxonomy({ allowCreate: true });
-      const shopPlacement = resolveOnePieceShopCategories(card, { priceLabel, productName: name });
+      const shopPlacement = resolveOnePieceShopCategories(card, { priceLabel, productName: name, isBulk });
       productCategoryPlan = {
         ...shopPlacement,
         kind: shopPlacement.productType,
@@ -375,8 +404,14 @@ router.post('/import-card', async (req, res) => {
         gameId: category.game,
       };
     }
-    const barcodeSource = priceLabel ? `${kartfiyatCardId}:${priceLabel}` : kartfiyatCardId;
+    const barcodeSource = [
+      kartfiyatCardId,
+      isBulk ? 'bulk' : null,
+      priceLabel || null,
+    ].filter(Boolean).join(':');
     const barcode = generateProductBarcode(barcodeSource);
+
+    const description = buildCardSeriesDescription(card);
 
     const product = await createBasicProduct({
       name,
@@ -389,6 +424,7 @@ router.post('/import-card', async (req, res) => {
       categories: productCategoryPlan.categories,
       brandName: category.brandName,
       barcode,
+      description,
     });
     const variant = product.variants?.[0];
     if (!variant?.id || !product.id) {
@@ -413,7 +449,7 @@ router.post('/import-card', async (req, res) => {
         barcode,
         sku: variant.sku || sku,
         priceManual: hasManualSellPrice,
-        priceLabel,
+        priceLabel: mappingPriceLabel,
       });
     }
 
@@ -444,8 +480,12 @@ router.post('/import-card', async (req, res) => {
       quantity: stockCount,
       eventType: 'import',
       note: hasManualSellPrice
-        ? (priceLabel ? `Yeni graded ürün (manuel fiyat: ${priceLabel})` : 'Yeni ürün (manuel fiyat)')
-        : (priceLabel ? `Yeni graded ürün (${priceLabel})` : 'Yeni ürün'),
+        ? (isBulk
+          ? `Yeni bulk ürün (manuel fiyat${priceLabel ? `: ${priceLabel}` : ''})`
+          : (priceLabel ? `Yeni graded ürün (manuel fiyat: ${priceLabel})` : 'Yeni ürün (manuel fiyat)'))
+        : (isBulk
+          ? `Yeni bulk ürün${priceLabel ? ` (${priceLabel})` : ''}`
+          : (priceLabel ? `Yeni graded ürün (${priceLabel})` : 'Yeni ürün')),
     });
 
     return res.status(201).json({
@@ -461,7 +501,8 @@ router.post('/import-card', async (req, res) => {
         barcode: variant.barcodeList?.[0] || barcode,
         sellPrice,
         priceManual: hasManualSellPrice,
-        priceLabel,
+        priceLabel: mappingPriceLabel,
+        isBulk,
         isGraded: Boolean(priceLabel && isGradedPriceLabel(priceLabel)),
         multiplier: hasManualSellPrice ? null : multiplier,
         gameId,

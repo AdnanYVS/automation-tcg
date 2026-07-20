@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-07T13:13:24.438Z",
+  "updatedAt": "2026-07-20T12:10:08.163Z",
   "codes": {
     "MEW": {
       "setName": "Scarlet & Violet 151",
@@ -2977,21 +2977,29 @@
       "language": "ja",
       "setCode": "S1A"
     },
-    "SVK": {
-      "setName": "デッキビルドBOX ステラミラクル",
-      "categoryId": 84,
-      "categoryName": "Pokemon Japanese 2005 Gift Box",
+    "S12a": {
+      "setName": "VSTARユニバース",
+      "categoryId": 610,
+      "categoryName": "Pokemon Japanese VStar Premium Trainer SK",
       "source": "tcgdex",
       "language": "ja",
-      "setCode": "SVK"
+      "setCode": "S12A"
     },
-    "svk": {
-      "setName": "デッキビルドBOX ステラミラクル",
-      "categoryId": 84,
-      "categoryName": "Pokemon Japanese 2005 Gift Box",
+    "S12A": {
+      "setName": "VSTARユニバース",
+      "categoryId": 610,
+      "categoryName": "Pokemon Japanese VStar Premium Trainer SK",
       "source": "tcgdex",
       "language": "ja",
-      "setCode": "SVK"
+      "setCode": "S12A"
+    },
+    "s12a": {
+      "setName": "VSTARユニバース",
+      "categoryId": 610,
+      "categoryName": "Pokemon Japanese VStar Premium Trainer SK",
+      "source": "tcgdex",
+      "language": "ja",
+      "setCode": "S12A"
     },
     "SV2a": {
       "setName": "ポケモンカード151",
@@ -3017,29 +3025,37 @@
       "language": "ja",
       "setCode": "SV2A"
     },
-    "S12a": {
-      "setName": "VSTARユニバース",
-      "categoryId": 610,
-      "categoryName": "Pokemon Japanese VStar Premium Trainer SK",
+    "SVK": {
+      "setName": "デッキビルドBOX ステラミラクル",
+      "categoryId": 84,
+      "categoryName": "Pokemon Japanese 2005 Gift Box",
       "source": "tcgdex",
       "language": "ja",
-      "setCode": "S12A"
+      "setCode": "SVK"
     },
-    "S12A": {
-      "setName": "VSTARユニバース",
-      "categoryId": 610,
-      "categoryName": "Pokemon Japanese VStar Premium Trainer SK",
+    "svk": {
+      "setName": "デッキビルドBOX ステラミラクル",
+      "categoryId": 84,
+      "categoryName": "Pokemon Japanese 2005 Gift Box",
       "source": "tcgdex",
       "language": "ja",
-      "setCode": "S12A"
+      "setCode": "SVK"
     },
-    "s12a": {
-      "setName": "VSTARユニバース",
-      "categoryId": 610,
-      "categoryName": "Pokemon Japanese VStar Premium Trainer SK",
+    "MC": {
+      "setName": "スタートデッキ100 バトルコレクション",
+      "categoryId": 185,
+      "categoryName": "Pokemon Japanese Start Deck 100",
       "source": "tcgdex",
       "language": "ja",
-      "setCode": "S12A"
+      "setCode": "MC"
+    },
+    "mc": {
+      "setName": "スタートデッキ100 バトルコレクション",
+      "categoryId": 185,
+      "categoryName": "Pokemon Japanese Start Deck 100",
+      "source": "tcgdex",
+      "language": "ja",
+      "setCode": "MC"
     },
     "BS": {
       "setName": "Base",
@@ -5089,6 +5105,22 @@
       "language": "en",
       "setCode": "CRI"
     },
+    "PBL": {
+      "setName": "Pitch Black",
+      "categoryId": 1446,
+      "categoryName": "Pokemon Pitch Black",
+      "source": "ptcgo-en",
+      "language": "en",
+      "setCode": "PBL"
+    },
+    "pbl": {
+      "setName": "Pitch Black",
+      "categoryId": 1446,
+      "categoryName": "Pokemon Pitch Black",
+      "source": "ptcgo-en",
+      "language": "en",
+      "setCode": "PBL"
+    },
     "SI1": {
       "setName": "Southern Islands",
       "categoryId": 270,
@@ -5105,22 +5137,6 @@
       "language": "en",
       "setCode": "SI1"
     },
-    "EX5.5": {
-      "setName": "Poké Card Creator Pack",
-      "categoryId": 334,
-      "categoryName": "Pokemon 2004 Poke Card Creator",
-      "source": "tcgdex-en",
-      "language": "en",
-      "setCode": "EX5.5"
-    },
-    "ex5.5": {
-      "setName": "Poké Card Creator Pack",
-      "categoryId": 334,
-      "categoryName": "Pokemon 2004 Poke Card Creator",
-      "source": "tcgdex-en",
-      "language": "en",
-      "setCode": "EX5.5"
-    },
     "TK-EX-LATIA": {
       "setName": "EX trainer Kit (Latias)",
       "categoryId": 57,
@@ -5136,6 +5152,22 @@
       "source": "tcgdex-en",
       "language": "en",
       "setCode": "TK-EX-LATIA"
+    },
+    "EX5.5": {
+      "setName": "Poké Card Creator Pack",
+      "categoryId": 334,
+      "categoryName": "Pokemon 2004 Poke Card Creator",
+      "source": "tcgdex-en",
+      "language": "en",
+      "setCode": "EX5.5"
+    },
+    "ex5.5": {
+      "setName": "Poké Card Creator Pack",
+      "categoryId": 334,
+      "categoryName": "Pokemon 2004 Poke Card Creator",
+      "source": "tcgdex-en",
+      "language": "en",
+      "setCode": "EX5.5"
     },
     "POP1": {
       "setName": "POP Series 1",
@@ -7777,22 +7809,6 @@
       "language": "ja",
       "setCode": "SI"
     },
-    "SD1": {
-      "setName": "start deck 100",
-      "categoryId": 185,
-      "categoryName": "Pokemon Japanese Start Deck 100",
-      "source": "slug",
-      "language": "ja",
-      "setCode": "SD1"
-    },
-    "sd1": {
-      "setName": "start deck 100",
-      "categoryId": 185,
-      "categoryName": "Pokemon Japanese Start Deck 100",
-      "source": "slug",
-      "language": "ja",
-      "setCode": "SD1"
-    },
     "SD1BC": {
       "setName": "start deck 100 battle collection",
       "categoryId": 568,
@@ -8652,22 +8668,22 @@
       "reason": "ptcgo_en_no_match"
     }
   ],
-  "totalCodes": 520,
+  "totalCodes": 521,
   "totalCategories": 373,
-  "coveredCategories": 528,
-  "totalEnglishCategories": 251,
-  "coveredEnglishCategories": 155,
+  "coveredCategories": 529,
+  "totalEnglishCategories": 254,
+  "coveredEnglishCategories": 156,
   "sources": {
     "vendortools": 181,
-    "tcgdex": 6,
+    "tcgdex": 7,
     "tcgdex-en": 28,
-    "ptcgo-en": 128,
+    "ptcgo-en": 129,
     "override-en": 1,
     "ptcgo": 0,
     "override": 0,
     "name": 16,
-    "slug": 160
+    "slug": 159
   },
-  "englishCodeCount": 157,
+  "englishCodeCount": 158,
   "japaneseCodeCount": 363
 }

@@ -22,6 +22,7 @@ const PRODUCT_TYPE_LEAVES = [
   'Kutular',
   'Single Cards',
   'Graded Cards',
+  'Bulk',
 ];
 
 const TYPE_RULES = [
@@ -76,9 +77,11 @@ function detectProductType(card, { priceLabel, productName } = {}) {
   return 'Single Cards';
 }
 
-function classifyOnePieceShopPlacement(card, { priceLabel = null, productName = null } = {}) {
+function classifyOnePieceShopPlacement(card, { priceLabel = null, productName = null, isBulk = false } = {}) {
   const language = detectLanguageBranch(card, { productName });
-  const productType = detectProductType(card, { priceLabel, productName });
+  const productType = isBulk
+    ? 'Bulk'
+    : detectProductType(card, { priceLabel, productName });
   const rootName = getTaxonomyOrThrow('onepiece').rootCategoryName;
 
   return {
@@ -103,8 +106,8 @@ function dedupeCategoryRefs(categories) {
   });
 }
 
-function resolveOnePieceShopCategories(card, { priceLabel = null, productName = null } = {}) {
-  const placement = classifyOnePieceShopPlacement(card, { priceLabel, productName });
+function resolveOnePieceShopCategories(card, { priceLabel = null, productName = null, isBulk = false } = {}) {
+  const placement = classifyOnePieceShopPlacement(card, { priceLabel, productName, isBulk });
   const rootName = getTaxonomyOrThrow('onepiece').rootCategoryName;
 
   // ikas üst kategori sayfasında alt menü için dil + kök de atanır

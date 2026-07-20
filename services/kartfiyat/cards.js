@@ -339,6 +339,17 @@ function getCardImageUrl(card) {
   return sorted[0]?.url || null;
 }
 
+function getCardSeriesName(card) {
+  const seriesName = String(card?.category?.setName || card?.category?.name || '').trim();
+  return seriesName || null;
+}
+
+function buildCardSeriesDescription(card) {
+  const seriesName = getCardSeriesName(card);
+  if (!seriesName) return null;
+  return `Bu kart, ${seriesName} serisine aittir.`;
+}
+
 module.exports = {
   searchCards,
   searchBySetCode,
@@ -356,4 +367,6 @@ module.exports = {
   getCardPriceInfo,
   getCardPricesPayload,
   getCardImageUrl,
+  getCardSeriesName,
+  buildCardSeriesDescription,
 };

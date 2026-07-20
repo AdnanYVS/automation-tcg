@@ -22,6 +22,7 @@ const PRODUCT_TYPE_LEAVES = [
   'Kutular',
   'Single Cards',
   'Graded Cards',
+  'Bulk',
 ];
 
 const TYPE_RULES = [
@@ -73,9 +74,11 @@ function detectProductType(card, { priceLabel, productName } = {}) {
   return 'Single Cards';
 }
 
-function classifyPokemonShopPlacement(card, { priceLabel = null, productName = null } = {}) {
+function classifyPokemonShopPlacement(card, { priceLabel = null, productName = null, isBulk = false } = {}) {
   const language = detectLanguageBranch(card, { productName });
-  const productType = detectProductType(card, { priceLabel, productName });
+  const productType = isBulk
+    ? 'Bulk'
+    : detectProductType(card, { priceLabel, productName });
 
   return {
     language,
@@ -99,8 +102,8 @@ function dedupeCategoryRefs(categories) {
   });
 }
 
-function resolvePokemonShopCategories(card, { priceLabel = null, productName = null } = {}) {
-  const placement = classifyPokemonShopPlacement(card, { priceLabel, productName });
+function resolvePokemonShopCategories(card, { priceLabel = null, productName = null, isBulk = false } = {}) {
+  const placement = classifyPokemonShopPlacement(card, { priceLabel, productName, isBulk });
   const rootName = getTaxonomyOrThrow('pokemon').rootCategoryName;
 
   // ikas üst kategori sayfasında alt menüyü doldurmak için dil + kök de atanır.

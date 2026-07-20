@@ -98,6 +98,7 @@ const GET_PRODUCT_QUERY = `
       data {
         id
         name
+        description
         variants {
           id
           sku
@@ -991,6 +992,17 @@ async function updateProductBrand({ productId, brandName }) {
   return data.updateProduct;
 }
 
+async function updateProductDescription({ productId, description }) {
+  const data = await graphqlRequest(UPDATE_PRODUCT_MUTATION, {
+    input: {
+      id: productId,
+      description,
+    },
+  });
+
+  return data.updateProduct;
+}
+
 async function updateProductTaxonomy({
   productId,
   brandName,
@@ -1033,6 +1045,7 @@ async function createBasicProduct({
   categories = null,
   brandName,
   barcode,
+  description,
 }) {
   const input = {
     name,
@@ -1045,6 +1058,10 @@ async function createBasicProduct({
       barcodeList: barcode ? [barcode] : [],
     })],
   };
+
+  if (description) {
+    input.description = description;
+  }
 
   if (brandName) {
     input.brand = { name: brandName };
@@ -1148,6 +1165,7 @@ module.exports = {
   updateVariantPrices,
   updateProductCategories,
   updateProductBrand,
+  updateProductDescription,
   updateProductTaxonomy,
   listAllProducts,
   getProductById,

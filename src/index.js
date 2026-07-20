@@ -12,6 +12,8 @@ const categoryLogosRouter = require('./routes/categoryLogos');
 const authRouter = require('./routes/auth');
 const { requireAuthPage } = require('./middleware/requireAuth');
 const { startPriceCheckerCron } = require('../cron/priceChecker');
+const { startProductDescriptionSyncCron } = require('../cron/productDescriptionSync');
+const { syncAllProductSeriesDescriptions } = require('../services/productDescriptions');
 const { seedAdminUsersFromEnv } = require('../services/auth');
 
 const PORT = Number(process.env.PORT || 3000);
@@ -66,5 +68,16 @@ Promise.all([getSetCodeRegistry(), getOnePieceSetCodeRegistry()])
 app.listen(PORT, () => {
   console.log(`API sunucusu çalışıyor: http://localhost:${PORT}`);
   startPriceCheckerCron();
+  startProductDescriptionSyncCron();
+
+  if (String(process.env.PRODUCT_DESCRIPTION_SYNC_ON_START).toLowerCase() !== 'false') {
+    syncAllProductSeriesDescriptions({ dryRun: false, skipIfUnchanged: true })
+      .then((summary) => {
+        console.log('[productDescriptionSync] Başlangıç senkronizasyonu:', summary);
+      })
+      .catch((error) => {
+        console.error('[productDescriptionSync] Başlangıç senkronizasyonu hatası:', error.message);
+      });
+  }
 });
 module.exports = app;
