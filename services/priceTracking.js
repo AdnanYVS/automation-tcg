@@ -299,35 +299,66 @@ async function bulkResolvePendingPriceChanges({ action = 'approve', filter = 'al
  * ikas kataloğunda bulunamayan mapping'leri işaretler, pending alert'lerini reddeder.
  */
 async function pruneMissingIkasMappings({ apply = false } = {}) {
-  const { getAllMappings } = require('../db');
+  const { getAllMappings, findByIkasVariantId } = require('../db');
   const mappings = getAllMappings().filter((m) => !m.ikas_missing && m.ikas_product_id);
   console.log(`[prune-missing] ${mappings.length} mapping kontrol edilecek (apply=${apply})`);
 
   const catalog = await listAllProducts();
+  if (!catalog.length) {
+    throw new Error('ikas kataloğu boş geldi; prune iptal (yanlış işaretlemeyi önlemek için).');
+  }
+
   const byId = new Set(catalog.map((p) => p.id));
-  const stats = { checked: 0, missing: 0, alive: 0, alertsRejected: 0 };
+  const stats = {
+    checked: 0,
+    missing: 0,
+    alive: 0,
+    remapped: 0,
+    remapSkipped: 0,
+    alertsRejected: 0,
+    catalogSize: catalog.length,
+  };
 
   for (const mapping of mappings) {
     stats.checked += 1;
     let found = byId.has(mapping.ikas_product_id);
+    let resolved = null;
 
     if (!found) {
       const fallbackSku = buildKartfiyatSku(mapping.kartfiyat_card_id, mapping.price_label);
-      const resolved = await findProductBySkuOrBarcode({
+      resolved = await findProductBySkuOrBarcode({
         sku: mapping.sku || fallbackSku,
         barcode: mapping.barcode || null,
         products: catalog,
+        catalogOnly: true,
       });
       found = Boolean(resolved?.product?.id);
 
       if (found && apply) {
-        updateMappingIkasIds({
-          mappingId: mapping.id,
-          ikasProductId: resolved.product.id,
-          ikasVariantId: resolved.variant.id,
-          sku: resolved.variant.sku || null,
-          clearMissing: true,
-        });
+        try {
+          const conflict = findByIkasVariantId(resolved.variant.id);
+          if (conflict && conflict.id !== mapping.id) {
+            stats.remapSkipped += 1;
+            console.warn(
+              `[prune-missing] Remap atlandı (variant başka mapping'de):`
+              + ` mapping=${mapping.id} → variant=${resolved.variant.id} owner=${conflict.id}`,
+            );
+          } else {
+            updateMappingIkasIds({
+              mappingId: mapping.id,
+              ikasProductId: resolved.product.id,
+              ikasVariantId: resolved.variant.id,
+              sku: resolved.variant.sku || null,
+              clearMissing: true,
+            });
+            stats.remapped += 1;
+          }
+        } catch (error) {
+          stats.remapSkipped += 1;
+          console.warn(
+            `[prune-missing] Remap hatası mapping=${mapping.id}: ${error.message}`,
+          );
+        }
       }
     }
 

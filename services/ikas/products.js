@@ -93,8 +93,8 @@ const LIST_PRODUCTS_QUERY = `
 `;
 
 const GET_PRODUCT_QUERY = `
-  query GetProduct($id: StringFilterInput!, $includeDeleted: Boolean) {
-    listProduct(id: $id, includeDeleted: $includeDeleted) {
+  query GetProduct($id: StringFilterInput!) {
+    listProduct(id: $id) {
       data {
         id
         name
@@ -110,8 +110,8 @@ const GET_PRODUCT_QUERY = `
 `;
 
 const LIST_PRODUCT_BY_SKU_QUERY = `
-  query ListProductBySku($sku: StringFilterInput!, $includeDeleted: Boolean) {
-    listProduct(sku: $sku, includeDeleted: $includeDeleted) {
+  query ListProductBySku($sku: StringFilterInput!) {
+    listProduct(sku: $sku) {
       data {
         id
         name
@@ -127,8 +127,8 @@ const LIST_PRODUCT_BY_SKU_QUERY = `
 `;
 
 const LIST_PRODUCT_BY_BARCODE_QUERY = `
-  query ListProductByBarcode($barcodeList: StringFilterInput!, $includeDeleted: Boolean) {
-    listProduct(barcodeList: $barcodeList, includeDeleted: $includeDeleted) {
+  query ListProductByBarcode($barcodeList: StringFilterInput!) {
+    listProduct(barcodeList: $barcodeList) {
       data {
         id
         name
@@ -209,16 +209,8 @@ async function getProductById(productId) {
   try {
     const data = await graphqlRequest(GET_PRODUCT_QUERY, {
       id: { eq: String(productId) },
-      includeDeleted: false,
     });
-    const active = data.listProduct?.data?.[0] || null;
-    if (active) return active;
-
-    const deleted = await graphqlRequest(GET_PRODUCT_QUERY, {
-      id: { eq: String(productId) },
-      includeDeleted: true,
-    });
-    return deleted.listProduct?.data?.[0] || null;
+    return data.listProduct?.data?.[0] || null;
   } catch (error) {
     console.warn(`[ikas] getProductById filtre başarısız (${productId}):`, error.message);
   }
@@ -238,16 +230,8 @@ async function listProductsBySku(sku) {
   try {
     const data = await graphqlRequest(LIST_PRODUCT_BY_SKU_QUERY, {
       sku: { eq: target },
-      includeDeleted: false,
     });
-    const active = data.listProduct?.data || [];
-    if (active.length) return active;
-
-    const deleted = await graphqlRequest(LIST_PRODUCT_BY_SKU_QUERY, {
-      sku: { eq: target },
-      includeDeleted: true,
-    });
-    return deleted.listProduct?.data || [];
+    return data.listProduct?.data || [];
   } catch (error) {
     console.warn(`[ikas] SKU ile ürün arama başarısız (${target}):`, error.message);
     return [];
@@ -258,21 +242,17 @@ async function listProductsByBarcode(barcode) {
   const target = String(barcode || '').trim();
   if (!target) return [];
 
-  async function query(filter, includeDeleted) {
+  async function query(filter) {
     const data = await graphqlRequest(LIST_PRODUCT_BY_BARCODE_QUERY, {
       barcodeList: filter,
-      includeDeleted,
     });
     return data.listProduct?.data || [];
   }
 
   try {
-    // Bazı tenantlarda array alan için eq, bazılarında in çalışır
     for (const filter of [{ eq: target }, { in: [target] }]) {
-      const active = await query(filter, false);
-      if (active.length) return active;
-      const withDeleted = await query(filter, true);
-      if (withDeleted.length) return withDeleted;
+      const matches = await query(filter);
+      if (matches.length) return matches;
     }
     return [];
   } catch (error) {
@@ -341,6 +321,7 @@ async function findProductBySkuOrBarcode({
   barcode = null,
   products = null,
   indexes = null,
+  catalogOnly = false,
 } = {}) {
   const targetSku = String(sku || '').trim();
   const targetBarcode = normalizeBarcodeValue(barcode);
@@ -368,6 +349,18 @@ async function findProductBySkuOrBarcode({
     return fromIndex;
   }
 
+  // Katalog verildiyse API'ye düşme — eksik ürün yanlış pozitif "yok" üretmesin diye
+  // prune gibi tam tarama senaryolarında catalogOnly kullanılır.
+  if (catalogOnly || products?.length) {
+    if (!localIndexes && products?.length) {
+      return findInProductIndexes(buildProductIndexes(products), {
+        sku: targetSku,
+        barcode: targetBarcode,
+      });
+    }
+    return null;
+  }
+
   if (targetSku) {
     const matches = await listProductsBySku(targetSku);
     for (const product of matches) {
@@ -389,15 +382,13 @@ async function findProductBySkuOrBarcode({
         }
         return { product, variant };
       }
-      // API ürün döndü ama barcodeList boş gelebilir; tek varyantsa kabul et
       if ((product.variants || []).length === 1 && product.variants[0]?.id) {
         return { product, variant: product.variants[0] };
       }
     }
   }
 
-  // Index yoksa katalogu yükle ve tekrar dene
-  if (!localIndexes && (targetSku || targetBarcode)) {
+  if (targetSku || targetBarcode) {
     try {
       const catalog = await getCachedProductCatalog();
       return findInProductIndexes(cachedProductIndexes || buildProductIndexes(catalog), {
@@ -872,86 +863,59 @@ function buildVariantInput({ sku, sellPrice, currency = 'TRY', isActive = true, 
 
 async function listAllProducts({ pageSize = 100 } = {}) {
   const products = [];
+  const seen = new Set();
   let totalCount = null;
-  // Bazı tenantlarda sayfa 0, bazılarında 1 tabanlı
-  let page = 0;
-  let emptyStreak = 0;
-  let startedFromOne = false;
+  // Bu tenant 1-tabanlı; 0+1 overlap unique count'u erken doldurup katalogu yarım bırakıyordu
+  let page = 1;
 
-  while (true) {
-    let data;
-    try {
-      data = await graphqlRequest(LIST_PRODUCTS_QUERY, {
-        pagination: { page, limit: pageSize },
-      });
-    } catch (error) {
-      if (page === 0 && /pagination|page|invalid/i.test(error.message)) {
-        page = 1;
-        startedFromOne = true;
-        continue;
-      }
-      // Kısmi katalog yine de kullanılabilir
-      if (products.length) {
-        console.warn(
-          `[ikas] Katalog sayfa ${page} başarısız (${error.message}), `
-          + `${products.length} ürünle devam`,
-        );
-        break;
-      }
-      throw error;
-    }
+  while (page <= 500) {
+    const data = await graphqlRequest(LIST_PRODUCTS_QUERY, {
+      pagination: { page, limit: pageSize },
+    });
 
     const items = data.listProduct?.data || [];
     if (totalCount == null && Number.isFinite(data.listProduct?.count)) {
       totalCount = data.listProduct.count;
     }
 
-    if (!items.length) {
-      emptyStreak += 1;
-      if (page === 0 && emptyStreak === 1) {
-        page = 1;
-        startedFromOne = true;
-        continue;
-      }
-      break;
-    }
+    if (!items.length) break;
 
-    emptyStreak = 0;
-    products.push(...items);
+    let added = 0;
+    for (const product of items) {
+      if (!product?.id || seen.has(product.id)) continue;
+      seen.add(product.id);
+      products.push(product);
+      added += 1;
+    }
 
     if (items.length < pageSize) break;
     if (totalCount != null && products.length >= totalCount) break;
+    // Sayfa tamamen duplicate geldiyse ilerle ama boşa dönme
+    if (added === 0 && page > 1) break;
 
     page += 1;
     if (PRODUCT_CATALOG_PAGE_DELAY_MS > 0) {
       await sleep(PRODUCT_CATALOG_PAGE_DELAY_MS);
     }
-
-    // Güvenlik: sonsuz döngü
-    if (page > 500) break;
   }
 
-  // Deduplicate by id (page 0+1 overlap risk)
-  const unique = [];
-  const seen = new Set();
-  for (const product of products) {
-    if (!product?.id || seen.has(product.id)) continue;
-    seen.add(product.id);
-    unique.push(product);
+  if (totalCount != null && products.length < totalCount) {
+    console.warn(
+      `[ikas] Katalog eksik olabilir: ${products.length}/${totalCount} ürün yüklendi`,
+    );
   }
 
-  cachedProductCatalog = unique;
+  cachedProductCatalog = products;
   cachedProductCatalogAt = Date.now();
-  cachedProductIndexes = buildProductIndexes(unique);
+  cachedProductIndexes = buildProductIndexes(products);
 
   console.warn(
-    `[ikas] Katalog yüklendi: ${unique.length} ürün`
+    `[ikas] Katalog yüklendi: ${products.length} ürün`
     + (totalCount != null ? ` / count=${totalCount}` : '')
-    + ` (sku=${cachedProductIndexes.bySku.size}, barcode=${cachedProductIndexes.byBarcode.size})`
-    + (startedFromOne ? ' [page>=1]' : ' [page>=0]'),
+    + ` (sku=${cachedProductIndexes.bySku.size}, barcode=${cachedProductIndexes.byBarcode.size})`,
   );
 
-  return unique;
+  return products;
 }
 
 async function getCachedProductCatalog() {
