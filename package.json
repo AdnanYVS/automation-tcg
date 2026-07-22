@@ -31,6 +31,8 @@
     "price:update": "node cron/priceUpdater.js --run-once",
     "mappings:backfill-skus": "node scripts/backfill-mapping-skus.js --dry-run",
     "mappings:backfill-skus:apply": "node scripts/backfill-mapping-skus.js --apply",
+    "mappings:prune-missing": "node scripts/prune-missing-ikas-products.js --dry-run",
+    "mappings:prune-missing:apply": "node scripts/prune-missing-ikas-products.js --apply",
     "price:check": "node cron/priceChecker.js --run-once",
     "price:cron": "node cron/priceUpdater.js",
     "admin:create": "node scripts/create-admin.js",

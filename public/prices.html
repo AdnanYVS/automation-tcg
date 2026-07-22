@@ -1013,6 +1013,12 @@
             'success',
           );
         }
+        if (payload.data.missing) {
+          showToast(
+            `${payload.data.missing} ürün ikas'ta yok — takip dışı bırakıldı / alert reddedildi.`,
+            'info',
+          );
+        }
         if (payload.data.failed?.length) {
           const preview = payload.data.failed
             .slice(0, 5)

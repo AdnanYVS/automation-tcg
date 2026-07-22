@@ -264,6 +264,12 @@ router.post('/import-card', async (req, res) => {
           updateMappingIkasIds({
             mappingId: existing.id,
             ikasVariantId: stockResult.variantId,
+            clearMissing: true,
+          });
+        } else {
+          updateMappingIkasIds({
+            mappingId: existing.id,
+            clearMissing: true,
           });
         }
 
@@ -403,6 +409,7 @@ router.post('/import-card', async (req, res) => {
         ikasVariantId: variant.id,
         sku: variant.sku || sku,
         barcode: variant.barcodeList?.[0] || barcode || null,
+        clearMissing: true,
       });
       mapping = { id: brokenExistingMapping.id };
     } else {

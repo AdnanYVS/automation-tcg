@@ -22,6 +22,8 @@ const MAPPING_EXTRA_COLUMNS = [
   { name: 'sku', ddl: 'TEXT' },
   { name: 'price_manual', ddl: 'INTEGER DEFAULT 0' },
   { name: 'price_label', ddl: 'TEXT' },
+  { name: 'ikas_missing', ddl: 'INTEGER DEFAULT 0' },
+  { name: 'ikas_missing_at', ddl: 'TEXT' },
 ];
 
 function ensureMappingExtraColumns(db) {
@@ -234,8 +236,40 @@ function getAutoTrackedMappings() {
     return db.prepare(`
       SELECT * FROM card_mappings
       WHERE COALESCE(price_manual, 0) = 0
+        AND COALESCE(ikas_missing, 0) = 0
       ORDER BY created_at DESC
     `).all();
+  } finally {
+    db.close();
+  }
+}
+
+function markMappingIkasMissing(mappingId, missing = true) {
+  const db = getDatabase();
+  try {
+    db.prepare(`
+      UPDATE card_mappings
+      SET ikas_missing = @missing,
+          ikas_missing_at = CASE WHEN @missing = 1 THEN datetime('now') ELSE NULL END,
+          updated_at = datetime('now')
+      WHERE id = @mappingId
+    `).run({ mappingId, missing: missing ? 1 : 0 });
+  } finally {
+    db.close();
+  }
+}
+
+function rejectPendingAlertsForMapping(mappingId, note = null) {
+  const db = getDatabase();
+  try {
+    const result = db.prepare(`
+      UPDATE price_change_alerts
+      SET status = 'rejected',
+          resolved_at = datetime('now')
+      WHERE mapping_id = @mappingId
+        AND status = 'pending'
+    `).run({ mappingId });
+    return result.changes || 0;
   } finally {
     db.close();
   }
@@ -279,6 +313,7 @@ function updateMappingIkasIds({
   ikasVariantId = null,
   sku = null,
   barcode = null,
+  clearMissing = false,
 }) {
   const db = getDatabase();
   try {
@@ -288,6 +323,8 @@ function updateMappingIkasIds({
           ikas_variant_id = COALESCE(@ikasVariantId, ikas_variant_id),
           sku = COALESCE(@sku, sku),
           barcode = COALESCE(@barcode, barcode),
+          ikas_missing = CASE WHEN @clearMissing = 1 THEN 0 ELSE ikas_missing END,
+          ikas_missing_at = CASE WHEN @clearMissing = 1 THEN NULL ELSE ikas_missing_at END,
           updated_at = datetime('now')
       WHERE id = @mappingId
     `).run({
@@ -296,6 +333,7 @@ function updateMappingIkasIds({
       ikasVariantId,
       sku: sku || null,
       barcode: barcode || null,
+      clearMissing: clearMissing ? 1 : 0,
     });
   } finally {
     db.close();
@@ -687,6 +725,8 @@ module.exports = {
   findMappingById,
   getAllMappings,
   getAutoTrackedMappings,
+  markMappingIkasMissing,
+  rejectPendingAlertsForMapping,
   updateMappingPriceSnapshot,
   updateMappingIkasIds,
   upsertPendingPriceAlert,

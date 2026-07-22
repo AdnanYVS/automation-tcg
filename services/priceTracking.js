@@ -1,8 +1,9 @@
 const {
   getAutoTrackedMappings,
-  findMappingById,
   updateMappingPriceSnapshot,
   updateMappingIkasIds,
+  markMappingIkasMissing,
+  rejectPendingAlertsForMapping,
   upsertPendingPriceAlert,
   getPriceChangeAlerts,
   getPriceChangeAlertById,
@@ -11,7 +12,7 @@ const {
   getLatestPriceCheckSummary,
 } = require('../db');
 const { getCardById, getPriceChartingUsd, buildKartfiyatSku } = require('./kartfiyat');
-const { updateVariantPrices } = require('./ikas');
+const { updateVariantPrices, listAllProducts, findProductBySkuOrBarcode } = require('./ikas');
 const { getUsdTryRate } = require('./exchangeRate');
 const { calculateFinalPriceTry, getPriceMultiplierForCard } = require('./pricing');
 
@@ -31,9 +32,29 @@ function exceedsThreshold(changePercent, threshold = THRESHOLD_PERCENT) {
   return Math.abs(changePercent) >= threshold;
 }
 
+function isMissingProductError(error) {
+  const message = error?.message || String(error || '');
+  return /ikas ürünü bulunamadı|INVALID_PRODUCT_ID/i.test(message);
+}
+
+function markMissingAndRejectAlerts(mappingId, reason) {
+  markMappingIkasMissing(mappingId, true);
+  const rejected = rejectPendingAlertsForMapping(mappingId);
+  console.warn(
+    `[price] Mapping ${mappingId} ikas'ta yok olarak işaretlendi`
+    + (reason ? ` (${reason})` : '')
+    + (rejected ? `, ${rejected} pending alert reddedildi` : ''),
+  );
+  return rejected;
+}
+
 async function checkMappingPrice(mapping, { usdTryRate, threshold }) {
   if (mapping.price_manual) {
     return { status: 'skipped', reason: 'Manuel fiyat' };
+  }
+
+  if (mapping.ikas_missing) {
+    return { status: 'skipped', reason: 'ikas ürünü yok' };
   }
 
   if (!mapping.ikas_product_id) {
@@ -162,35 +183,49 @@ async function approvePriceChange(alertId) {
   const fallbackSku = buildKartfiyatSku(alert.kartfiyat_card_id, alert.price_label);
   const sku = alert.sku || fallbackSku;
 
-  const result = await updateVariantPrices([{
-    mappingId: alert.mapping_id,
-    productId: alert.ikas_product_id,
-    variantId: alert.ikas_variant_id,
-    sellPrice: alert.new_try_price,
-    sku,
-    skuCandidates: [alert.sku, fallbackSku].filter(Boolean),
-    barcode: alert.barcode || null,
-  }]);
+  try {
+    const result = await updateVariantPrices([{
+      mappingId: alert.mapping_id,
+      productId: alert.ikas_product_id,
+      variantId: alert.ikas_variant_id,
+      sellPrice: alert.new_try_price,
+      sku,
+      skuCandidates: [alert.sku, fallbackSku].filter(Boolean),
+      barcode: alert.barcode || null,
+    }]);
 
-  for (const change of result?.idChanges || []) {
-    if (!change.mappingId) continue;
-    updateMappingIkasIds({
-      mappingId: change.mappingId,
-      ikasProductId: change.productId,
-      ikasVariantId: change.variantId,
-      sku: change.sku || null,
+    for (const change of result?.idChanges || []) {
+      if (!change.mappingId) continue;
+      updateMappingIkasIds({
+        mappingId: change.mappingId,
+        ikasProductId: change.productId,
+        ikasVariantId: change.variantId,
+        sku: change.sku || null,
+        clearMissing: true,
+      });
+    }
+
+    updateMappingPriceSnapshot({
+      mappingId: alert.mapping_id,
+      usdPrice: alert.new_usd_price,
+      tryPrice: alert.new_try_price,
+      checkedAt: new Date().toISOString(),
     });
+
+    return resolvePriceChangeAlert(alertId, 'approved');
+  } catch (error) {
+    if (isMissingProductError(error) && alert.mapping_id) {
+      markMissingAndRejectAlerts(
+        alert.mapping_id,
+        error.message,
+      );
+      throw new Error(
+        `ikas'ta ürün yok — mapping takip dışı bırakıldı ve alert reddedildi. `
+        + `Yeniden import edin. (${error.message})`,
+      );
+    }
+    throw error;
   }
-
-  updateMappingPriceSnapshot({
-    mappingId: alert.mapping_id,
-    usdPrice: alert.new_usd_price,
-    tryPrice: alert.new_try_price,
-    checkedAt: new Date().toISOString(),
-  });
-
-  const resolved = resolvePriceChangeAlert(alertId, 'approved');
-  return resolved;
 }
 
 async function rejectPriceChange(alertId) {
@@ -234,6 +269,7 @@ async function bulkResolvePendingPriceChanges({ action = 'approve', filter = 'al
     matched: pending.length,
     approved: 0,
     rejected: 0,
+    missing: 0,
     failed: [],
   };
 
@@ -247,11 +283,73 @@ async function bulkResolvePendingPriceChanges({ action = 'approve', filter = 'al
         results.rejected += 1;
       }
     } catch (error) {
-      results.failed.push({ id: alert.id, cardName: alert.card_name, reason: error.message });
+      if (action === 'approve' && isMissingProductError(error)) {
+        results.missing += 1;
+        results.rejected += 1;
+      } else {
+        results.failed.push({ id: alert.id, cardName: alert.card_name, reason: error.message });
+      }
     }
   }
 
   return results;
+}
+
+/**
+ * ikas kataloğunda bulunamayan mapping'leri işaretler, pending alert'lerini reddeder.
+ */
+async function pruneMissingIkasMappings({ apply = false } = {}) {
+  const { getAllMappings } = require('../db');
+  const mappings = getAllMappings().filter((m) => !m.ikas_missing && m.ikas_product_id);
+  console.log(`[prune-missing] ${mappings.length} mapping kontrol edilecek (apply=${apply})`);
+
+  const catalog = await listAllProducts();
+  const byId = new Set(catalog.map((p) => p.id));
+  const stats = { checked: 0, missing: 0, alive: 0, alertsRejected: 0 };
+
+  for (const mapping of mappings) {
+    stats.checked += 1;
+    let found = byId.has(mapping.ikas_product_id);
+
+    if (!found) {
+      const fallbackSku = buildKartfiyatSku(mapping.kartfiyat_card_id, mapping.price_label);
+      const resolved = await findProductBySkuOrBarcode({
+        sku: mapping.sku || fallbackSku,
+        barcode: mapping.barcode || null,
+        products: catalog,
+      });
+      found = Boolean(resolved?.product?.id);
+
+      if (found && apply) {
+        updateMappingIkasIds({
+          mappingId: mapping.id,
+          ikasProductId: resolved.product.id,
+          ikasVariantId: resolved.variant.id,
+          sku: resolved.variant.sku || null,
+          clearMissing: true,
+        });
+      }
+    }
+
+    if (found) {
+      stats.alive += 1;
+      continue;
+    }
+
+    stats.missing += 1;
+    console.warn(
+      `[prune-missing] YOK mapping=${mapping.id} card=${mapping.kartfiyat_card_id}`
+      + ` product=${mapping.ikas_product_id} sku=${mapping.sku || '?'} barcode=${mapping.barcode || '?'}`,
+    );
+
+    if (apply) {
+      markMappingIkasMissing(mapping.id, true);
+      stats.alertsRejected += rejectPendingAlertsForMapping(mapping.id);
+    }
+  }
+
+  console.log('[prune-missing] Tamamlandı:', stats);
+  return stats;
 }
 
 function getPriceDashboardData() {
@@ -270,6 +368,7 @@ module.exports = {
   approveAllPendingPriceChanges,
   rejectAllPendingPriceChanges,
   bulkResolvePendingPriceChanges,
+  pruneMissingIkasMappings,
   getPriceDashboardData,
   calculateChangePercent,
   exceedsThreshold,
