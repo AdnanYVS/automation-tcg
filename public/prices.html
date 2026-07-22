@@ -610,7 +610,7 @@
         <div class="panel-header">
           <div>
             <strong>ikas Envanteri · Güncel PriceCharting</strong>
-            <div class="portfolio-meta">PriceCharting USD × kur × stok (satış çarpanı yok) · manuel ürünler manuel TRY</div>
+            <div class="portfolio-meta">PriceCharting USD × kur × stok (satış çarpanı yok) · manuel fiyatlı ürünler dahil değil</div>
           </div>
           <button type="button" class="btn btn-secondary" id="refresh-portfolio-btn">Yenile</button>
         </div>
@@ -817,7 +817,7 @@
           sub: [
             summary.liveCount != null ? `${summary.liveCount} canlı PC` : null,
             summary.snapshotCount ? `${summary.snapshotCount} snapshot` : null,
-            summary.manualCount ? `${summary.manualCount} manuel` : null,
+            summary.manualSkippedCount ? `${summary.manualSkippedCount} manuel hariç` : null,
             summary.skippedCount ? `${summary.skippedCount} atlandı` : null,
           ].filter(Boolean).join(' · ') || formatDate(generatedAt),
         },

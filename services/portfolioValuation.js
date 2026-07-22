@@ -117,7 +117,7 @@ async function getPortfolioValuation() {
   let totalValueUsd = 0;
   let liveCount = 0;
   let snapshotCount = 0;
-  let manualCount = 0;
+  let manualSkippedCount = 0;
 
   function skip(entry) {
     skipped.push(entry);
@@ -128,46 +128,12 @@ async function getPortfolioValuation() {
   for (const mapping of mappings) {
     try {
       if (mapping.price_manual) {
-        const unitTryPrice = mapping.last_try_price;
-        const cardName = mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`;
-
-        if (!unitTryPrice) {
-          skip({
-            mappingId: mapping.id,
-            cardName,
-            kartfiyatCardId: mapping.kartfiyat_card_id,
-            reason: 'Manuel fiyat kaydı yok',
-          });
-          continue;
-        }
-
-        const variantStocks = stockByVariant.get(mapping.ikas_variant_id) || new Map();
-        const locations = accumulateLocations({
-          stockLocations,
-          variantStocks,
-          unitTryPrice,
-          locationTotals,
-        });
-
-        const totalQuantity = locations.reduce((sum, entry) => sum + entry.quantity, 0);
-        const rowValueTry = locations.reduce((sum, entry) => sum + entry.valueTry, 0);
-        totalValueTry += rowValueTry;
-        totalUnits += totalQuantity;
-        manualCount += 1;
-
-        items.push({
+        manualSkippedCount += 1;
+        skip({
           mappingId: mapping.id,
-          cardName,
+          cardName: mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`,
           kartfiyatCardId: mapping.kartfiyat_card_id,
-          ikasProductId: mapping.ikas_product_id,
-          ikasVariantId: mapping.ikas_variant_id,
-          usdPrice: null,
-          unitTryPrice,
-          priceManual: true,
-          priceSource: 'manual',
-          totalQuantity,
-          totalValueTry: rowValueTry,
-          locations,
+          reason: 'Manuel fiyat (envanter dışı)',
         });
         continue;
       }
@@ -247,7 +213,7 @@ async function getPortfolioValuation() {
       withoutVariantCount: allMappings.length - mappings.length,
       liveCount,
       snapshotCount,
-      manualCount,
+      manualSkippedCount,
       totalUnits,
       totalValueTry,
       totalValueUsd,
