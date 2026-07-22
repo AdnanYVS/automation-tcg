@@ -787,6 +787,11 @@
 
     function renderPortfolioStats(data) {
       const { summary, usdTryRate, generatedAt } = data;
+      const skipParts = Object.entries(summary.skipReasons || {})
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([reason, count]) => `${count}× ${reason}`)
+        .join(' · ');
       const cards = [
         {
           label: 'Toplam PC Değeri',
@@ -807,11 +812,24 @@
           sub: 'PC USD × kur (çarpan yok)',
         },
         {
-          label: 'Son Güncelleme',
-          value: formatDate(generatedAt),
-          sub: `${summary.productCount} ürün · ${summary.skippedCount} atlandı`,
+          label: 'Kapsam',
+          value: `${summary.productCount}/${summary.totalMappings || summary.productCount}`,
+          sub: [
+            summary.liveCount != null ? `${summary.liveCount} canlı PC` : null,
+            summary.snapshotCount ? `${summary.snapshotCount} snapshot` : null,
+            summary.manualCount ? `${summary.manualCount} manuel` : null,
+            summary.skippedCount ? `${summary.skippedCount} atlandı` : null,
+          ].filter(Boolean).join(' · ') || formatDate(generatedAt),
         },
       ];
+
+      if (skipParts) {
+        cards.push({
+          label: 'Atlanma Nedenleri',
+          value: String(summary.skippedCount || 0),
+          sub: skipParts,
+        });
+      }
 
       portfolioStats.innerHTML = cards.map((card) => `
         <div class="stat-card">

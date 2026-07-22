@@ -4,7 +4,11 @@ const { listStockLocations, listAllVariantStocks } = require('./ikas');
 const { getUsdTryRate } = require('./exchangeRate');
 const { calculateInventoryValueTry } = require('./pricing');
 
-const REQUEST_DELAY_MS = Number(process.env.KARTFIYAT_REQUEST_DELAY_MS || 200);
+const REQUEST_DELAY_MS = Number(
+  process.env.PORTFOLIO_KARTFIYAT_DELAY_MS
+  || process.env.KARTFIYAT_REQUEST_DELAY_MS
+  || 50,
+);
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -36,8 +40,67 @@ function initLocationTotals(stockLocations) {
   return totals;
 }
 
+function accumulateLocations({
+  stockLocations,
+  variantStocks,
+  unitTryPrice,
+  locationTotals,
+}) {
+  return stockLocations.map((location) => {
+    const quantity = Number(variantStocks.get(location.id) || 0);
+    const valueTry = quantity * unitTryPrice;
+    locationTotals[location.id].units += quantity;
+    locationTotals[location.id].valueTry += valueTry;
+    return {
+      locationId: location.id,
+      name: location.name,
+      quantity,
+      valueTry,
+    };
+  });
+}
+
+async function resolveUsdPrice(mapping) {
+  // 1) Canlı PriceCharting
+  try {
+    const card = await getCardById(mapping.kartfiyat_card_id);
+    const liveUsd = getPriceChartingUsd(card, { label: mapping.price_label });
+    if (liveUsd) {
+      return {
+        usdPrice: liveUsd,
+        cardName: card.name || mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`,
+        source: 'live',
+      };
+    }
+  } catch (error) {
+    // Snapshot'a düş
+    return {
+      usdPrice: Number(mapping.last_usd_price) > 0 ? Number(mapping.last_usd_price) : null,
+      cardName: mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`,
+      source: Number(mapping.last_usd_price) > 0 ? 'snapshot' : null,
+      error: error.message,
+    };
+  }
+
+  // 2) Son bilinen PC snapshot (satış çarpanı uygulanmamış USD)
+  if (Number(mapping.last_usd_price) > 0) {
+    return {
+      usdPrice: Number(mapping.last_usd_price),
+      cardName: mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`,
+      source: 'snapshot',
+    };
+  }
+
+  return {
+    usdPrice: null,
+    cardName: mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`,
+    source: null,
+  };
+}
+
 async function getPortfolioValuation() {
-  const mappings = getAllMappings().filter((mapping) => mapping.ikas_variant_id);
+  const allMappings = getAllMappings();
+  const mappings = allMappings.filter((mapping) => mapping.ikas_variant_id);
   const [usdTryRate, stockLocations, stockRows] = await Promise.all([
     getUsdTryRate(),
     listStockLocations(),
@@ -48,9 +111,19 @@ async function getPortfolioValuation() {
 
   const items = [];
   const skipped = [];
+  const skipReasons = {};
   let totalValueTry = 0;
   let totalUnits = 0;
   let totalValueUsd = 0;
+  let liveCount = 0;
+  let snapshotCount = 0;
+  let manualCount = 0;
+
+  function skip(entry) {
+    skipped.push(entry);
+    const key = entry.reason || 'bilinmeyen';
+    skipReasons[key] = (skipReasons[key] || 0) + 1;
+  }
 
   for (const mapping of mappings) {
     try {
@@ -59,7 +132,7 @@ async function getPortfolioValuation() {
         const cardName = mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`;
 
         if (!unitTryPrice) {
-          skipped.push({
+          skip({
             mappingId: mapping.id,
             cardName,
             kartfiyatCardId: mapping.kartfiyat_card_id,
@@ -69,23 +142,18 @@ async function getPortfolioValuation() {
         }
 
         const variantStocks = stockByVariant.get(mapping.ikas_variant_id) || new Map();
-        const locations = stockLocations.map((location) => {
-          const quantity = Number(variantStocks.get(location.id) || 0);
-          const valueTry = quantity * unitTryPrice;
-          locationTotals[location.id].units += quantity;
-          locationTotals[location.id].valueTry += valueTry;
-          return {
-            locationId: location.id,
-            name: location.name,
-            quantity,
-            valueTry,
-          };
+        const locations = accumulateLocations({
+          stockLocations,
+          variantStocks,
+          unitTryPrice,
+          locationTotals,
         });
 
         const totalQuantity = locations.reduce((sum, entry) => sum + entry.quantity, 0);
         const rowValueTry = locations.reduce((sum, entry) => sum + entry.valueTry, 0);
         totalValueTry += rowValueTry;
         totalUnits += totalQuantity;
+        manualCount += 1;
 
         items.push({
           mappingId: mapping.id,
@@ -96,6 +164,7 @@ async function getPortfolioValuation() {
           usdPrice: null,
           unitTryPrice,
           priceManual: true,
+          priceSource: 'manual',
           totalQuantity,
           totalValueTry: rowValueTry,
           locations,
@@ -103,58 +172,55 @@ async function getPortfolioValuation() {
         continue;
       }
 
-      const card = await getCardById(mapping.kartfiyat_card_id);
-      const usdPrice = getPriceChartingUsd(card, { label: mapping.price_label });
-      const cardName = card.name || mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`;
-
-      if (!usdPrice) {
-        skipped.push({
+      const resolved = await resolveUsdPrice(mapping);
+      if (!resolved.usdPrice) {
+        skip({
           mappingId: mapping.id,
-          cardName,
+          cardName: resolved.cardName,
           kartfiyatCardId: mapping.kartfiyat_card_id,
-          reason: 'PriceCharting fiyatı yok',
+          reason: resolved.error
+            ? `Kartfiyat hatası / PC yok (${resolved.error})`
+            : 'PriceCharting fiyatı yok',
         });
+        if (REQUEST_DELAY_MS > 0) await sleep(REQUEST_DELAY_MS);
         continue;
       }
 
-      // Envanter: satış çarpanı yok — PC USD × kur
-      const unitTryPrice = calculateInventoryValueTry(usdPrice, usdTryRate);
+      const unitTryPrice = calculateInventoryValueTry(resolved.usdPrice, usdTryRate);
       const variantStocks = stockByVariant.get(mapping.ikas_variant_id) || new Map();
-      const locations = stockLocations.map((location) => {
-        const quantity = Number(variantStocks.get(location.id) || 0);
-        const valueTry = quantity * unitTryPrice;
-        locationTotals[location.id].units += quantity;
-        locationTotals[location.id].valueTry += valueTry;
-        return {
-          locationId: location.id,
-          name: location.name,
-          quantity,
-          valueTry,
-        };
+      const locations = accumulateLocations({
+        stockLocations,
+        variantStocks,
+        unitTryPrice,
+        locationTotals,
       });
 
       const totalQuantity = locations.reduce((sum, entry) => sum + entry.quantity, 0);
       const rowValueTry = locations.reduce((sum, entry) => sum + entry.valueTry, 0);
       totalValueTry += rowValueTry;
       totalUnits += totalQuantity;
-      totalValueUsd += usdPrice * totalQuantity;
+      totalValueUsd += resolved.usdPrice * totalQuantity;
+
+      if (resolved.source === 'live') liveCount += 1;
+      else snapshotCount += 1;
 
       items.push({
         mappingId: mapping.id,
-        cardName,
+        cardName: resolved.cardName,
         kartfiyatCardId: mapping.kartfiyat_card_id,
         ikasProductId: mapping.ikas_product_id,
         ikasVariantId: mapping.ikas_variant_id,
-        usdPrice,
+        usdPrice: resolved.usdPrice,
         unitTryPrice,
         priceManual: false,
+        priceSource: resolved.source,
         totalQuantity,
         totalValueTry: rowValueTry,
-        totalValueUsd: usdPrice * totalQuantity,
+        totalValueUsd: resolved.usdPrice * totalQuantity,
         locations,
       });
     } catch (error) {
-      skipped.push({
+      skip({
         mappingId: mapping.id,
         cardName: mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`,
         kartfiyatCardId: mapping.kartfiyat_card_id,
@@ -177,9 +243,15 @@ async function getPortfolioValuation() {
       productCount: items.length,
       skippedCount: skipped.length,
       totalMappings: mappings.length,
+      allMappingsCount: allMappings.length,
+      withoutVariantCount: allMappings.length - mappings.length,
+      liveCount,
+      snapshotCount,
+      manualCount,
       totalUnits,
       totalValueTry,
       totalValueUsd,
+      skipReasons,
       locations: stockLocations.map((location) => locationTotals[location.id]),
     },
     items,
