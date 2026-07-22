@@ -610,7 +610,7 @@
         <div class="panel-header">
           <div>
             <strong>ikas Envanteri · Güncel PriceCharting</strong>
-            <div class="portfolio-meta">Sisteme aktarılmış kartların güncel PC fiyatı × stok adedi</div>
+            <div class="portfolio-meta">PriceCharting USD × kur × stok (satış çarpanı yok) · manuel ürünler manuel TRY</div>
           </div>
           <button type="button" class="btn btn-secondary" id="refresh-portfolio-btn">Yenile</button>
         </div>
@@ -786,15 +786,14 @@
     }
 
     function renderPortfolioStats(data) {
-      const { summary, usdTryRate, multipliers, generatedAt } = data;
-      const multiplierText = multipliers
-        ? `Pokemon ×${multipliers.pokemon} · One Piece ×${multipliers.onepiece}`
-        : 'Çarpan bilgisi yok';
+      const { summary, usdTryRate, generatedAt } = data;
       const cards = [
         {
           label: 'Toplam PC Değeri',
           value: formatTry(summary.totalValueTry),
-          sub: `${summary.totalUnits} adet stok`,
+          sub: summary.totalValueUsd != null
+            ? `${summary.totalUnits} adet · ~$${Number(summary.totalValueUsd).toFixed(0)} PC`
+            : `${summary.totalUnits} adet stok`,
           highlight: true,
         },
         ...summary.locations.map((location) => ({
@@ -805,7 +804,7 @@
         {
           label: 'Güncel Kur',
           value: `${Number(usdTryRate).toFixed(2)} ₺`,
-          sub: multiplierText,
+          sub: 'PC USD × kur (çarpan yok)',
         },
         {
           label: 'Son Güncelleme',

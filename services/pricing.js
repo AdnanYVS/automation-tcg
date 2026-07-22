@@ -34,9 +34,16 @@ function calculateFinalPriceTry(usdPrice, usdTryRate, multiplier = 1.86) {
   return Math.ceil(rawPrice);
 }
 
+/** Envanter değeri: satış çarpanı yok, yalnızca PC USD × kur. */
+function calculateInventoryValueTry(usdPrice, usdTryRate) {
+  const rawPrice = Number(usdPrice) * Number(usdTryRate);
+  return Math.ceil(rawPrice);
+}
+
 module.exports = {
   DEFAULT_MULTIPLIERS,
   calculateFinalPriceTry,
+  calculateInventoryValueTry,
   getPriceMultiplier,
   getPriceMultiplierForCard,
 };

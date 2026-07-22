@@ -2,7 +2,7 @@ const { getAllMappings } = require('../db');
 const { getCardById, getPriceChartingUsd } = require('./kartfiyat');
 const { listStockLocations, listAllVariantStocks } = require('./ikas');
 const { getUsdTryRate } = require('./exchangeRate');
-const { calculateFinalPriceTry, getPriceMultiplier, getPriceMultiplierForCard } = require('./pricing');
+const { calculateInventoryValueTry } = require('./pricing');
 
 const REQUEST_DELAY_MS = Number(process.env.KARTFIYAT_REQUEST_DELAY_MS || 200);
 
@@ -50,6 +50,7 @@ async function getPortfolioValuation() {
   const skipped = [];
   let totalValueTry = 0;
   let totalUnits = 0;
+  let totalValueUsd = 0;
 
   for (const mapping of mappings) {
     try {
@@ -104,7 +105,6 @@ async function getPortfolioValuation() {
 
       const card = await getCardById(mapping.kartfiyat_card_id);
       const usdPrice = getPriceChartingUsd(card, { label: mapping.price_label });
-      const { multiplier } = getPriceMultiplierForCard(card);
       const cardName = card.name || mapping.card_name || `Kart #${mapping.kartfiyat_card_id}`;
 
       if (!usdPrice) {
@@ -117,7 +117,8 @@ async function getPortfolioValuation() {
         continue;
       }
 
-      const unitTryPrice = calculateFinalPriceTry(usdPrice, usdTryRate, multiplier);
+      // Envanter: satış çarpanı yok — PC USD × kur
+      const unitTryPrice = calculateInventoryValueTry(usdPrice, usdTryRate);
       const variantStocks = stockByVariant.get(mapping.ikas_variant_id) || new Map();
       const locations = stockLocations.map((location) => {
         const quantity = Number(variantStocks.get(location.id) || 0);
@@ -136,6 +137,7 @@ async function getPortfolioValuation() {
       const rowValueTry = locations.reduce((sum, entry) => sum + entry.valueTry, 0);
       totalValueTry += rowValueTry;
       totalUnits += totalQuantity;
+      totalValueUsd += usdPrice * totalQuantity;
 
       items.push({
         mappingId: mapping.id,
@@ -145,9 +147,10 @@ async function getPortfolioValuation() {
         ikasVariantId: mapping.ikas_variant_id,
         usdPrice,
         unitTryPrice,
-        multiplier,
+        priceManual: false,
         totalQuantity,
         totalValueTry: rowValueTry,
+        totalValueUsd: usdPrice * totalQuantity,
         locations,
       });
     } catch (error) {
@@ -169,16 +172,14 @@ async function getPortfolioValuation() {
   return {
     generatedAt: new Date().toISOString(),
     usdTryRate,
-    multipliers: {
-      pokemon: getPriceMultiplier('pokemon'),
-      onepiece: getPriceMultiplier('onepiece'),
-    },
+    valuationMode: 'pricecharting',
     summary: {
       productCount: items.length,
       skippedCount: skipped.length,
       totalMappings: mappings.length,
       totalUnits,
       totalValueTry,
+      totalValueUsd,
       locations: stockLocations.map((location) => locationTotals[location.id]),
     },
     items,
