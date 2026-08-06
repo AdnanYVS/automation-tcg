@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Mağaza navigasyon kategorilerini oluşturur:
- * KAPALI KUTULAR, SINGLE KARTLAR, GRADED KARTLAR
+ * Single Kartlar, Graded Kartlar, Sealed Ürünler, Bulk / İngilizce-Japonca
  *
  * Kullanım:
  *   node scripts/setup-navigation-categories.js [--dry-run]

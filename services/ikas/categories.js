@@ -14,6 +14,7 @@ const LIST_CATEGORIES_QUERY = `
       name
       parentId
       categoryPath
+      isAutomated
       salesChannelIds
       salesChannels {
         id
@@ -235,10 +236,17 @@ function isDuplicateCategoryError(error) {
   return /E11000|duplicate key|merchantId_1_name_1_parentId_1/i.test(String(error?.message || ''));
 }
 
-async function createCategory({ name, parentId }) {
+async function createCategory({ name, parentId, isAutomated = false, conditions = null, shouldMatchAllConditions = true }) {
   const input = { name: String(name).trim() };
   if (parentId) {
     input.parentId = parentId;
+  }
+  if (isAutomated) {
+    input.isAutomated = true;
+    input.shouldMatchAllConditions = shouldMatchAllConditions;
+    if (conditions?.length) {
+      input.conditions = conditions;
+    }
   }
 
   const data = await graphqlRequest(CREATE_CATEGORY_MUTATION, { input });
@@ -253,6 +261,37 @@ async function createCategory({ name, parentId }) {
 
   await enableCategoryForStorefront(category.id);
   return category;
+}
+
+async function createDynamicCategory({
+  name,
+  conditions,
+  shouldMatchAllConditions = true,
+  allowCreate = true,
+}) {
+  if (!conditions?.length) {
+    throw new Error('Dinamik kategori için en az bir koşul gerekli.');
+  }
+
+  const categories = await listCategories({ refresh: true });
+  const existing = categories.find(
+    (entry) => entry.name === name && entry.isAutomated,
+  );
+  if (existing) {
+    return { category: existing, created: false };
+  }
+
+  if (!allowCreate) {
+    return { category: null, created: false };
+  }
+
+  const category = await createCategory({
+    name,
+    isAutomated: true,
+    conditions,
+    shouldMatchAllConditions,
+  });
+  return { category, created: true };
 }
 
 async function deleteCategoryList({ categoryIds }) {
@@ -524,6 +563,7 @@ module.exports = {
   findCategoryByName,
   findCategoryByNameAndParent,
   createCategory,
+  createDynamicCategory,
   updateCategory,
   deleteCategoryList,
   enableCategoryForStorefront,

@@ -20,6 +20,9 @@ const {
 const {
   resolveProductCategories,
   ensureNavigationTaxonomy,
+  NAV_ROOT_GROUPS,
+  LEGACY_NAV_GROUP_NAMES,
+  BULK_SUBCATEGORIES,
 } = require('../services/ikas/navigationCategories');
 const {
   detectGameFromCard,
@@ -54,10 +57,16 @@ function extractPriceLabelFromProduct(product) {
 
 function isShopOrNavLeafOnly(categoryNames) {
   if (!categoryNames.length) return true;
+  const navGroupNames = [
+    ...Object.values(NAV_ROOT_GROUPS),
+    ...LEGACY_NAV_GROUP_NAMES,
+    ...BULK_SUBCATEGORIES,
+    'Diğer Ürünler',
+  ];
   return categoryNames.every((name) => (
     LANGUAGE_BRANCHES.includes(name)
     || PRODUCT_TYPE_LEAVES.includes(name)
-    || ['KAPALI KUTULAR', 'SINGLE KARTLAR', 'GRADED KARTLAR', 'Diğer Ürünler'].includes(name)
+    || navGroupNames.includes(name)
     || /^(İngilizce|Japonca|Çince) Kartlar$/i.test(name)
   ));
 }

@@ -961,11 +961,18 @@ async function updateProductTaxonomy({
   categoryName,
   categoryPath = [],
   categories = null,
+  tags = null,
 }) {
   const input = { id: productId };
 
   if (brandName) {
     input.brand = { name: brandName };
+  }
+
+  if (tags?.length) {
+    input.tags = tags.map((tag) => (
+      typeof tag === 'string' ? { name: tag } : tag
+    ));
   }
 
   if (categories?.length) {
@@ -997,6 +1004,7 @@ async function createBasicProduct({
   categories = null,
   brandName,
   barcode,
+  tags = null,
 }) {
   const input = {
     name,
@@ -1012,6 +1020,12 @@ async function createBasicProduct({
 
   if (brandName) {
     input.brand = { name: brandName };
+  }
+
+  if (tags?.length) {
+    input.tags = tags.map((tag) => (
+      typeof tag === 'string' ? { name: tag } : tag
+    ));
   }
 
   if (categories?.length) {

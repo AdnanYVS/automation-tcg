@@ -12,15 +12,14 @@ const {
 } = require('../../services/kartfiyat');
 const { getSetCodeRegistry } = require('../../services/kartfiyat/setRegistry');
 const { getOnePieceSetCodeRegistry } = require('../../services/kartfiyat/onepieceSetRegistry');
-const { createBasicProduct, listStockLocations, resolveCategoryForCard, incrementVariantStock } = require('../../services/ikas');
 const {
-  ensurePokemonShopTaxonomy,
-  resolvePokemonShopCategories,
-} = require('../../services/ikas/pokemonShopCategories');
-const {
-  ensureOnePieceShopTaxonomy,
-  resolveOnePieceShopCategories,
-} = require('../../services/ikas/onePieceShopCategories');
+  createBasicProduct,
+  listStockLocations,
+  resolveCategoryForCard,
+  incrementVariantStock,
+  ensureNavigationTaxonomy,
+  resolveProductCategories,
+} = require('../../services/ikas');
 const { getUsdTryRate } = require('../../services/exchangeRate');
 const { calculateFinalPriceTry, getPriceMultiplierForCard } = require('../../services/pricing');
 const { generateProductBarcode } = require('../../services/barcode');
@@ -348,25 +347,18 @@ router.post('/import-card', async (req, res) => {
     const imageUrl = req.body.imageUrl || getCardImageUrl(card);
 
     const category = await resolveCategoryForCard(card);
+    const productKindInput = req.body.productKind === 'bulk' ? 'bulk' : null;
+    const bulkLanguage = req.body.bulkLanguage || null;
+
     let productCategoryPlan;
-    if (category.game === 'pokemon') {
-      await ensurePokemonShopTaxonomy({ allowCreate: true });
-      const shopPlacement = resolvePokemonShopCategories(card, { priceLabel, productName: name });
-      productCategoryPlan = {
-        ...shopPlacement,
-        kind: shopPlacement.productType,
-        navigation: [],
-        gameId: 'pokemon',
-      };
-    } else if (category.game === 'onepiece') {
-      await ensureOnePieceShopTaxonomy({ allowCreate: true });
-      const shopPlacement = resolveOnePieceShopCategories(card, { priceLabel, productName: name });
-      productCategoryPlan = {
-        ...shopPlacement,
-        kind: shopPlacement.productType,
-        navigation: [],
-        gameId: 'onepiece',
-      };
+    if (category.game === 'pokemon' || category.game === 'onepiece') {
+      await ensureNavigationTaxonomy(category.game, { allowCreate: true });
+      productCategoryPlan = resolveProductCategories(card, category, {
+        priceLabel,
+        productName: name,
+        productKind: productKindInput,
+        bulkLanguage,
+      });
     } else {
       // Riftbound vb. desteklenmeyen oyunlar: set leaf + kendi kök/brand
       productCategoryPlan = {
@@ -378,7 +370,9 @@ router.post('/import-card', async (req, res) => {
         }],
         kind: 'external',
         navigation: [],
+        tags: [],
         gameId: category.game,
+        brandName: category.brandName,
       };
     }
     const barcodeSource = priceLabel ? `${kartfiyatCardId}:${priceLabel}` : kartfiyatCardId;
@@ -393,7 +387,8 @@ router.post('/import-card', async (req, res) => {
       currency: 'TRY',
       imageUrl,
       categories: productCategoryPlan.categories,
-      brandName: category.brandName,
+      brandName: productCategoryPlan.brandName || category.brandName,
+      tags: productCategoryPlan.tags,
       barcode,
     });
     const variant = product.variants?.[0];
@@ -474,6 +469,7 @@ router.post('/import-card', async (req, res) => {
         gameId,
         gameLabel,
         productKind: productCategoryPlan.kind,
+        tags: productCategoryPlan.tags || [],
         navigationCategories: productCategoryPlan.navigation.map((entry) => entry.name),
         categories: productCategoryPlan.categories.map((entry) => ({
           name: entry.name,

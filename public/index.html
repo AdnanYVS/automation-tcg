@@ -997,6 +997,13 @@
         <select id="stock-location">
           <option value="">Yükleniyor...</option>
         </select>
+        <label for="product-kind">Ürün Kategorisi</label>
+        <select id="product-kind">
+          <option value="auto">Otomatik (Single / Graded / Sealed)</option>
+          <option value="bulk-en">Bulk / İngilizce</option>
+          <option value="bulk-ja">Bulk / Japonca</option>
+        </select>
+        <p class="field-hint">Bulk seçerseniz kart otomatik olarak ilgili bulk kategorisine gider.</p>
         <label for="stock-count">Stok Adedi</label>
         <input id="stock-count" type="number" min="1" step="1" value="1" inputmode="numeric">
         <div class="graded-prices-section" id="graded-prices-section" hidden>
@@ -1028,6 +1035,7 @@
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
     const stockLocationSelect = document.getElementById('stock-location');
+    const productKindSelect = document.getElementById('product-kind');
     const stockCountInput = document.getElementById('stock-count');
     const sellPriceInput = document.getElementById('sell-price');
     const sellPriceHint = document.getElementById('sell-price-hint');
@@ -1409,6 +1417,7 @@
 
       importModal.classList.add('open');
       stockCountInput.value = '1';
+      productKindSelect.value = 'auto';
       sellPriceInput.value = '';
       sellPriceHint.textContent = 'Fiyatlar yükleniyor...';
       document.body.style.overflow = 'hidden';
@@ -1456,6 +1465,15 @@
         body.sellPrice = sellPrice;
       } else if (selectedPriceLabel) {
         body.priceLabel = selectedPriceLabel;
+      }
+
+      const productKindValue = productKindSelect.value;
+      if (productKindValue === 'bulk-en') {
+        body.productKind = 'bulk';
+        body.bulkLanguage = 'en';
+      } else if (productKindValue === 'bulk-ja') {
+        body.productKind = 'bulk';
+        body.bulkLanguage = 'ja';
       }
 
       const locationName = stockLocationSelect.options[stockLocationSelect.selectedIndex].text;
