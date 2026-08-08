@@ -130,7 +130,10 @@ async function getWarehouseInventory({
   search = null,
   inStockOnly = false,
 } = {}) {
-  const mappings = getAllMappings().filter((mapping) => mapping.ikas_variant_id);
+  // ikas'tan silinmiş ürünleri panelde gösterme
+  const mappings = getAllMappings().filter(
+    (mapping) => mapping.ikas_variant_id && !mapping.ikas_missing,
+  );
   const mappingByVariantId = new Map(
     mappings.map((mapping) => [mapping.ikas_variant_id, mapping]),
   );
@@ -170,6 +173,8 @@ async function getWarehouseInventory({
 
     // Yalnızca stok satırı olan, KF-SKU'suz ve mapping'siz ürünleri gösterme
     if (!mapping && !catalogEntry) continue;
+    // Yerel mapping var ama ikas kataloğunda yoksa (silinmiş ürün) gösterme
+    if (mapping && !catalogEntry) continue;
     if (!mapping && catalogEntry && !isAutomationProductSku(catalogEntry.variant.sku)) continue;
 
     const item = buildInventoryItem({
