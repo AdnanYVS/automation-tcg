@@ -5,6 +5,8 @@
    ============================================================ */
 
 :root {
+  color-scheme: light;
+
   --paper: #F3EDDF;
   --paper-deep: #E9E1CC;
   --card: #FDFBF3;
@@ -13,16 +15,23 @@
   --ink-faint: #8A8069;
   --line-soft: rgba(23, 19, 14, 0.16);
   --line-faint: rgba(23, 19, 14, 0.09);
+  --dot: rgba(23, 19, 14, 0.055);
+  --count-bg: rgba(23, 19, 14, 0.12);
 
   --yellow: #F3C532;
   --yellow-soft: #FAE9B4;
   --yellow-deep: #D9A90F;
+  --yellow-ink: #8a6d00;
   --red: #C24238;
   --red-soft: #F5DCD8;
   --blue: #2F6D9C;
   --blue-soft: #DCE8F1;
   --green: #3E7A4E;
   --green-soft: #DEEBDF;
+
+  /* Topbar her iki temada da koyu kalır */
+  --bar-bg: #17130E;
+  --bar-fg: #F3EDDF;
 
   --radius: 12px;
   --radius-sm: 8px;
@@ -34,6 +43,38 @@
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
+/* ---------- Koyu tema ---------- */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper: #15110B;
+  --paper-deep: #241E14;
+  --card: #1E1912;
+  --ink: #EFE7D4;
+  --ink-soft: #C7BCA3;
+  --ink-faint: #8D826C;
+  --line-soft: rgba(239, 231, 212, 0.2);
+  --line-faint: rgba(239, 231, 212, 0.1);
+  --dot: rgba(239, 231, 212, 0.045);
+  --count-bg: rgba(239, 231, 212, 0.14);
+
+  --yellow-soft: #453A12;
+  --yellow-deep: #E8B92B;
+  --yellow-ink: #F3C532;
+  --red: #E0685C;
+  --red-soft: #40211D;
+  --blue: #6FA7D4;
+  --blue-soft: #1C2B38;
+  --green: #7CB98A;
+  --green-soft: #20301F;
+
+  --bar-bg: #0D0A06;
+
+  --press: 3px 3px 0 rgba(0, 0, 0, 0.6);
+  --press-lg: 6px 6px 0 rgba(0, 0, 0, 0.45);
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 [hidden] { display: none !important; }
@@ -43,7 +84,7 @@ html { scrollbar-color: var(--ink-faint) var(--paper); }
 body {
   font-family: var(--font-body);
   background-color: var(--paper);
-  background-image: radial-gradient(rgba(23, 19, 14, 0.055) 1px, transparent 1.4px);
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.4px);
   background-size: 22px 22px;
   color: var(--ink);
   min-height: 100vh;
@@ -51,13 +92,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: var(--yellow); color: var(--ink); }
+::selection { background: var(--yellow); color: #17130E; }
 
 /* ---------- Topbar ---------- */
 
 .cd-topbar {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--bar-bg);
+  color: var(--bar-fg);
   border-bottom: 4px solid var(--yellow);
   position: sticky;
   top: 0;
@@ -118,11 +159,11 @@ body {
   transition: color 0.15s;
 }
 
-.cd-nav a:hover { color: var(--paper); }
+.cd-nav a:hover { color: var(--bar-fg); }
 
 .cd-nav a.active {
   color: var(--yellow);
-  border-bottom-color: var(--paper);
+  border-bottom-color: var(--bar-fg);
 }
 
 .cd-nav a.has-pending { color: var(--yellow); }
@@ -159,7 +200,7 @@ body {
   color: rgba(243, 237, 223, 0.6);
 }
 
-.user-badge strong { color: var(--paper); font-weight: 600; }
+.user-badge strong { color: var(--bar-fg); font-weight: 600; }
 
 .logout-btn {
   background: transparent;
@@ -176,6 +217,26 @@ body {
 }
 
 .logout-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1.5px solid rgba(243, 237, 223, 0.3);
+  border-radius: var(--radius-sm);
+  color: rgba(243, 237, 223, 0.75);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.theme-toggle:hover { border-color: var(--yellow); color: var(--yellow); }
+.theme-toggle::before { content: '☾'; }
+[data-theme="dark"] .theme-toggle::before { content: '☀'; }
 
 /* ---------- Sayfa iskeleti ---------- */
 
@@ -390,7 +451,7 @@ body {
 .main-tab:hover { color: var(--ink); }
 
 .main-tab.active {
-  background: var(--ink);
+  background: var(--bar-bg);
   color: var(--yellow);
 }
 
@@ -417,7 +478,7 @@ body {
   min-width: 18px;
   padding: 0 5px;
   margin-left: 4px;
-  background: rgba(23, 19, 14, 0.12);
+  background: var(--count-bg);
   border-radius: 999px;
   font-family: var(--font-mono);
   font-size: 0.68rem;
@@ -461,7 +522,7 @@ body {
 }
 
 .filter-btn:hover { color: var(--ink); }
-.filter-btn.active { background: var(--ink); color: var(--yellow); }
+.filter-btn.active { background: var(--bar-bg); color: var(--yellow); }
 
 /* ---------- Tablolar ---------- */
 
@@ -562,9 +623,9 @@ tbody tr:hover td { background: rgba(243, 197, 50, 0.07); }
   color: var(--ink-soft);
 }
 
-.tag.manual { background: var(--yellow-soft); border-color: var(--yellow-deep); color: #8a6d00; }
+.tag.manual { background: var(--yellow-soft); border-color: var(--yellow-deep); color: var(--yellow-ink); }
 .tag.unmapped { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
-.tag.pending { background: var(--yellow-soft); border-color: var(--yellow-deep); color: #8a6d00; }
+.tag.pending { background: var(--yellow-soft); border-color: var(--yellow-deep); color: var(--yellow-ink); }
 .tag.approved { background: var(--green-soft); border-color: var(--green); color: var(--green); }
 .tag.rejected, .tag.failed { background: var(--red-soft); border-color: var(--red); color: var(--red); }
 .tag.uploaded { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
@@ -592,7 +653,7 @@ tbody tr:hover td { background: rgba(243, 197, 50, 0.07); }
   font-weight: 700;
 }
 
-.status-badge.pending { background: var(--yellow-soft); border: 1.5px solid var(--yellow-deep); color: #8a6d00; }
+.status-badge.pending { background: var(--yellow-soft); border: 1.5px solid var(--yellow-deep); color: var(--yellow-ink); }
 .status-badge.approved { background: var(--green-soft); border: 1.5px solid var(--green); color: var(--green); }
 .status-badge.rejected { background: var(--red-soft); border: 1.5px solid var(--red); color: var(--red); }
 
