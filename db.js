@@ -572,11 +572,25 @@ function cleanupResolvedPriceAlerts({ olderThanDays = 90 } = {}) {
 function getLatestPriceCheckSummary() {
   const db = getDatabase();
   try {
+    // Silinen (ikas_missing) ve manuel fiyatlı ürünler takip sayısına dahil edilmez.
     return db.prepare(`
       SELECT
-        COUNT(*) AS total_mappings,
-        SUM(CASE WHEN last_try_price IS NOT NULL THEN 1 ELSE 0 END) AS tracked_mappings,
-        MAX(last_price_checked_at) AS last_checked_at
+        SUM(CASE WHEN COALESCE(ikas_missing, 0) = 0 THEN 1 ELSE 0 END) AS total_mappings,
+        SUM(
+          CASE
+            WHEN COALESCE(ikas_missing, 0) = 0
+              AND COALESCE(price_manual, 0) = 0
+              AND last_try_price IS NOT NULL
+            THEN 1 ELSE 0
+          END
+        ) AS tracked_mappings,
+        MAX(
+          CASE
+            WHEN COALESCE(ikas_missing, 0) = 0 AND COALESCE(price_manual, 0) = 0
+            THEN last_price_checked_at
+            ELSE NULL
+          END
+        ) AS last_checked_at
       FROM card_mappings
     `).get();
   } finally {

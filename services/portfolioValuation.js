@@ -100,7 +100,9 @@ async function resolveUsdPrice(mapping) {
 
 async function getPortfolioValuation() {
   const allMappings = getAllMappings();
-  const mappings = allMappings.filter((mapping) => mapping.ikas_variant_id);
+  const mappings = allMappings.filter(
+    (mapping) => mapping.ikas_variant_id && !mapping.ikas_missing,
+  );
   const [usdTryRate, stockLocations, stockRows] = await Promise.all([
     getUsdTryRate(),
     listStockLocations(),
