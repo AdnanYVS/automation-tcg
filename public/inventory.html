@@ -11,6 +11,10 @@
   <link rel="stylesheet" href="/css/cd.css">
   <style>
     #stock-filter-wrap { display: inline-flex; gap: 8px; }
+    .tag.sale-web { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+    .tag.sale-store { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+    .tag.sale-cancel { background: var(--red-soft); border-color: var(--red); color: var(--red); }
+    .qty-badge.out { background: var(--red-soft); border-color: var(--red); color: var(--red); }
   </style>
 </head>
 <body>
@@ -124,8 +128,9 @@
         <div class="panel-header">
           <div>
             <strong>Depo Hareketleri</strong>
-            <div class="panel-meta">Panele eklenen kartların depo giriş kayıtları</div>
+            <div class="panel-meta" id="events-meta">Depo girişleri, mağaza (QR) ve web satışları</div>
           </div>
+          <button type="button" class="btn btn-sm" id="sync-web-sales-btn">Web satışlarını senkronla</button>
         </div>
         <div class="table-wrap">
           <table>
@@ -264,11 +269,24 @@
       }
 
       if (currentView === 'events' && eventsData) {
-        const imports = eventsData.events.filter((event) => event.event_type === 'import');
-        const totalQty = imports.reduce((sum, event) => sum + Number(event.quantity || 0), 0);
+        const summary = eventsData.summary || [];
+        const sumBy = (type) => summary
+          .filter((row) => row.event_type === type)
+          .reduce((acc, row) => ({
+            qty: acc.qty + Number(row.total_quantity || 0),
+            count: acc.count + Number(row.event_count || 0),
+          }), { qty: 0, count: 0 });
+
+        const imports = sumBy('import');
+        const storeSales = sumBy('sale_store');
+        const webSales = sumBy('sale_web');
+        const webCancels = sumBy('sale_web_cancel');
+        const netWebQty = webSales.qty - webCancels.qty;
+
         statsEl.innerHTML = `
-          <div class="stat-card"><div class="stat-label">Giriş Kaydı</div><div class="stat-value">${imports.length}</div><div class="stat-sub">Panele eklenen hareket</div></div>
-          <div class="stat-card"><div class="stat-label">Eklenen Adet</div><div class="stat-value">${totalQty}</div><div class="stat-sub">Toplam giriş miktarı</div></div>
+          <div class="stat-card"><div class="stat-label">Depo Girişi</div><div class="stat-value">${imports.qty}</div><div class="stat-sub">${imports.count} hareket</div></div>
+          <div class="stat-card"><div class="stat-label">Mağaza Satışı (QR)</div><div class="stat-value">${storeSales.qty}</div><div class="stat-sub">${storeSales.count} satış</div></div>
+          <div class="stat-card"><div class="stat-label">Web Satışı</div><div class="stat-value">${netWebQty}</div><div class="stat-sub">${webSales.count} satış${webCancels.count ? ` · ${webCancels.count} iptal/iade` : ''}</div></div>
         `;
       }
     }
@@ -335,26 +353,51 @@
       `).join('');
     }
 
+    const EVENT_TYPE_META = {
+      import: { label: 'Depo girişi', tagClass: '', sign: '+' },
+      sale_store: { label: 'Mağaza satışı', tagClass: 'sale-store', sign: '−' },
+      sale_web: { label: 'Web satışı', tagClass: 'sale-web', sign: '−' },
+      sale_web_cancel: { label: 'İptal / iade', tagClass: 'sale-cancel', sign: '+' },
+    };
+
     function renderEventsTable() {
       if (!eventsData) return;
+
+      const metaEl = document.getElementById('events-meta');
+      if (metaEl && eventsData.lastWebSalesSyncAt) {
+        metaEl.textContent = `Depo girişleri, mağaza (QR) ve web satışları · son web senkronu: ${formatDate(eventsData.lastWebSalesSyncAt)}`;
+      }
+
       if (!eventsData.events.length) {
         eventsBody.innerHTML = '<tr class="empty-state"><td colspan="6">Henüz depo hareketi kaydı yok.</td></tr>';
         return;
       }
 
-      eventsBody.innerHTML = eventsData.events.map((event) => `
+      eventsBody.innerHTML = eventsData.events.map((event) => {
+        const meta = EVENT_TYPE_META[event.event_type] || { label: event.event_type, tagClass: '', sign: '' };
+        const isSale = event.event_type === 'sale_store' || event.event_type === 'sale_web';
+        const cardLabel = event.card_name
+          || (event.note && event.note.includes('·') ? event.note.split('·').pop().trim() : null)
+          || `Kart #${event.kartfiyat_card_id || '?'}`;
+        const noteParts = [];
+        if (event.order_number) noteParts.push(`Sipariş #${event.order_number}`);
+        if (event.unit_price) noteParts.push(formatTry(event.unit_price));
+        if (event.note) noteParts.push(event.note);
+
+        return `
         <tr>
           <td>
-            <strong>${escapeHtml(event.card_name || `Kart #${event.kartfiyat_card_id}`)}</strong>
-            <span class="card-id">KF #${escapeHtml(event.kartfiyat_card_id || '—')}</span>
+            <strong>${escapeHtml(cardLabel)}</strong>
+            <span class="card-id">${event.kartfiyat_card_id ? `KF #${escapeHtml(event.kartfiyat_card_id)}` : 'Eşleşmemiş ürün'}</span>
           </td>
-          <td><span class="qty-badge">+${event.quantity}</span></td>
+          <td><span class="qty-badge ${isSale ? 'out' : ''}">${meta.sign}${event.quantity}</span></td>
           <td>${escapeHtml(locationMap.get(event.stock_location_id) || event.stock_location_id || '—')}</td>
-          <td><span class="tag">${escapeHtml(event.event_type)}</span></td>
-          <td>${escapeHtml(event.note || '—')}</td>
+          <td><span class="tag ${meta.tagClass}">${escapeHtml(meta.label)}</span></td>
+          <td>${escapeHtml(noteParts.join(' · ') || '—')}</td>
           <td>${formatDate(event.created_at)}</td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     }
 
     async function loadInventory() {
@@ -439,7 +482,29 @@
     stockFilterInstock.addEventListener('click', () => setStockFilter('instock'));
     refreshBtn.addEventListener('click', loadCurrentView);
     syncMappingsBtn.addEventListener('click', syncUnmappedProducts);
+    document.getElementById('sync-web-sales-btn').addEventListener('click', syncWebSalesNow);
     document.getElementById('logout-btn').addEventListener('click', () => AUTH.logout());
+
+    async function syncWebSalesNow() {
+      const btn = document.getElementById('sync-web-sales-btn');
+      btn.disabled = true;
+      try {
+        showToast('Web satışları ikas siparişlerinden çekiliyor...', 'info');
+        const response = await AUTH.apiFetch('/api/inventory/sync-web-sales', { method: 'POST' });
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || 'Web satış senkronu başarısız.');
+        const stats = payload.data;
+        showToast(
+          `Senkron tamam: ${stats.recorded} yeni satış, ${stats.cancelled} iptal/iade (${stats.ordersScanned} sipariş tarandı)`,
+          'success',
+        );
+        if (currentView === 'events') await loadEvents();
+      } catch (error) {
+        showToast(error.message, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
 
     async function syncUnmappedProducts() {
       syncMappingsBtn.disabled = true;

@@ -13,6 +13,7 @@ const qrRouter = require('./routes/qr');
 const authRouter = require('./routes/auth');
 const { requireAuthPage } = require('./middleware/requireAuth');
 const { startPriceCheckerCron } = require('../cron/priceChecker');
+const { startWebSalesSyncCron } = require('../cron/webSalesSync');
 const { seedAdminUsersFromEnv } = require('../services/auth');
 
 const PORT = Number(process.env.PORT || 3000);
@@ -70,5 +71,6 @@ Promise.all([getSetCodeRegistry(), getOnePieceSetCodeRegistry()])
 app.listen(PORT, () => {
   console.log(`API sunucusu çalışıyor: http://localhost:${PORT}`);
   startPriceCheckerCron();
+  startWebSalesSyncCron();
 });
 module.exports = app;

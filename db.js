@@ -37,6 +37,21 @@ function ensureMappingExtraColumns(db) {
   }
 }
 
+const INVENTORY_EVENT_EXTRA_COLUMNS = [
+  // Web satış senkronunda sipariş satırı bazlı tekilleştirme anahtarı
+  { name: 'order_line_key', ddl: 'TEXT' },
+  { name: 'unit_price', ddl: 'REAL' },
+];
+
+function ensureInventoryEventExtraColumns(db) {
+  const columns = db.prepare('PRAGMA table_info(inventory_events)').all().map((col) => col.name);
+  for (const column of INVENTORY_EVENT_EXTRA_COLUMNS) {
+    if (!columns.includes(column.name)) {
+      db.exec(`ALTER TABLE inventory_events ADD COLUMN ${column.name} ${column.ddl}`);
+    }
+  }
+}
+
 function createTables(db) {
   db.exec(`
     CREATE TABLE IF NOT EXISTS card_mappings (
@@ -128,13 +143,24 @@ function createTables(db) {
 
     CREATE INDEX IF NOT EXISTS idx_inventory_events_event_type
       ON inventory_events(event_type);
+
+    CREATE TABLE IF NOT EXISTS sync_state (
+      key TEXT PRIMARY KEY,
+      value TEXT,
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `);
 
   ensureMappingExtraColumns(db);
+  ensureInventoryEventExtraColumns(db);
   db.exec(`
     CREATE UNIQUE INDEX IF NOT EXISTS idx_card_mappings_qr_token
       ON card_mappings(qr_token)
       WHERE qr_token IS NOT NULL;
+
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_inventory_events_order_line_key
+      ON inventory_events(order_line_key)
+      WHERE order_line_key IS NOT NULL;
   `);
 }
 
@@ -674,6 +700,9 @@ function insertInventoryEvent({
   orderId = null,
   orderNumber = null,
   note = null,
+  orderLineKey = null,
+  unitPrice = null,
+  createdAt = null,
 }) {
   const db = getDatabase();
   try {
@@ -687,7 +716,10 @@ function insertInventoryEvent({
         event_type,
         order_id,
         order_number,
-        note
+        note,
+        order_line_key,
+        unit_price,
+        created_at
       ) VALUES (
         @mappingId,
         @kartfiyatCardId,
@@ -697,7 +729,10 @@ function insertInventoryEvent({
         @eventType,
         @orderId,
         @orderNumber,
-        @note
+        @note,
+        @orderLineKey,
+        @unitPrice,
+        COALESCE(@createdAt, datetime('now'))
       )
     `).run({
       mappingId,
@@ -709,8 +744,51 @@ function insertInventoryEvent({
       orderId,
       orderNumber,
       note,
+      orderLineKey,
+      unitPrice,
+      createdAt,
     });
     return { id: result.lastInsertRowid };
+  } finally {
+    db.close();
+  }
+}
+
+function getExistingOrderLineKeys(prefix = null) {
+  const db = getDatabase();
+  try {
+    const rows = prefix
+      ? db.prepare(`
+          SELECT order_line_key FROM inventory_events
+          WHERE order_line_key IS NOT NULL AND order_line_key LIKE ?
+        `).all(`${prefix}%`)
+      : db.prepare(`
+          SELECT order_line_key FROM inventory_events
+          WHERE order_line_key IS NOT NULL
+        `).all();
+    return new Set(rows.map((row) => row.order_line_key));
+  } finally {
+    db.close();
+  }
+}
+
+function getSyncState(key) {
+  const db = getDatabase();
+  try {
+    return db.prepare('SELECT value FROM sync_state WHERE key = ?').get(key)?.value ?? null;
+  } finally {
+    db.close();
+  }
+}
+
+function setSyncState(key, value) {
+  const db = getDatabase();
+  try {
+    db.prepare(`
+      INSERT INTO sync_state (key, value, updated_at)
+      VALUES (@key, @value, datetime('now'))
+      ON CONFLICT(key) DO UPDATE SET value = @value, updated_at = datetime('now')
+    `).run({ key, value: String(value) });
   } finally {
     db.close();
   }
@@ -816,5 +894,8 @@ module.exports = {
   getInventoryEvents,
   getInventoryEventSummary,
   insertInventoryEvent,
+  getExistingOrderLineKeys,
+  getSyncState,
+  setSyncState,
   listAdminUsers,
 };

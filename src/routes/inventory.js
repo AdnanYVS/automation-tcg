@@ -2,6 +2,7 @@ const express = require('express');
 const { getWarehouseInventory } = require('../../services/warehouseInventory');
 const { getSalesHistory } = require('../../services/salesHistory');
 const { backfillIkasMappings, refreshMappingPriceSnapshots } = require('../../services/mappingBackfill');
+const { syncWebSales, getLastWebSalesSyncAt } = require('../../services/webSalesSync');
 const { getInventoryEvents, getInventoryEventSummary } = require('../../db');
 const { requireAuth } = require('../middleware/requireAuth');
 
@@ -74,9 +75,22 @@ router.get('/inventory-events', (req, res) => {
       limit: req.query.limit ? Number(req.query.limit) : 100,
     });
     const summary = getInventoryEventSummary();
-    return res.json({ success: true, data: { events, summary } });
+    return res.json({
+      success: true,
+      data: { events, summary, lastWebSalesSyncAt: getLastWebSalesSyncAt() },
+    });
   } catch (error) {
     console.error('GET /api/inventory-events hatası:', error.message);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post('/inventory/sync-web-sales', async (req, res) => {
+  try {
+    const stats = await syncWebSales();
+    return res.json({ success: true, data: stats });
+  } catch (error) {
+    console.error('POST /api/inventory/sync-web-sales hatası:', error.message);
     return res.status(500).json({ success: false, error: error.message });
   }
 });
