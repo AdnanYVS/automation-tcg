@@ -13,6 +13,9 @@ node_modules/
 *.db-shm
 data/category-logo-approvals.json
 
+# Yerel arşiv yedekleri
+backups/*.tar.gz
+
 # Loglar ve OS
 *.log
 .DS_Store

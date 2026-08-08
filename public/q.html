@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kart · Card Dünyası</title>
+  <link rel="icon" type="image/png" href="/assets/logo-ball.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #F3EDDF;
+      --paper-deep: #E9E1CC;
+      --card-bg: #FDFBF3;
+      --ink: #17130E;
+      --ink-soft: #4A4436;
+      --ink-faint: #8A8069;
+      --line-soft: rgba(23, 19, 14, 0.16);
+      --yellow: #F3C532;
+      --yellow-deep: #D9A90F;
+      --red: #C24238;
+      --red-soft: #F5DCD8;
+      --green: #3E7A4E;
+      --green-soft: #DEEBDF;
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Archivo', sans-serif;
+      background-color: var(--paper);
+      background-image: radial-gradient(rgba(23, 19, 14, 0.055) 1px, transparent 1.4px);
+      background-size: 22px 22px;
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 26px 16px 56px;
+    }
+
+    .brand {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+
+    .brand img { width: 130px; }
+
+    .card {
+      background: var(--card-bg);
+      border: 3px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 8px 8px 0 rgba(23, 19, 14, 0.16);
+      animation: cardIn 0.35s ease both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      aspect-ratio: 3 / 4;
+      background: var(--paper-deep);
+      background-image: radial-gradient(rgba(23, 19, 14, 0.06) 1px, transparent 1.3px);
+      background-size: 14px 14px;
+      display: grid;
+      place-items: center;
+      border-bottom: 3px solid var(--ink);
+    }
+
+    .hero img { width: 100%; height: 100%; object-fit: contain; padding: 18px; }
+    .hero .placeholder { font-size: 4rem; opacity: 0.3; }
+
+    .body { padding: 22px 20px 24px; }
+
+    h1 {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.2rem;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    .meta { color: var(--ink-faint); font-size: 0.88rem; margin-bottom: 16px; }
+
+    .price {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 14px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 13px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      border: 2px solid;
+    }
+
+    .badge.in-stock { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+    .badge.out-stock { background: var(--red-soft); border-color: var(--red); color: var(--red); }
+
+    .stock-list {
+      margin-top: 4px;
+      color: var(--ink-soft);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+    }
+
+    .admin-box {
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 2px dashed var(--line-soft);
+    }
+
+    .admin-box h2 {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.64rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 6px;
+    }
+
+    select, input, textarea {
+      width: 100%;
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      color: var(--ink);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      font: inherit;
+      outline: none;
+    }
+
+    select:focus, input:focus, textarea:focus { box-shadow: 3px 3px 0 var(--ink); }
+
+    button {
+      width: 100%;
+      border: 2px solid var(--ink);
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--yellow);
+      color: var(--ink);
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+
+    button:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+    button:active:not(:disabled) { transform: none; box-shadow: none; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .login-link {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      color: var(--ink-faint);
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .login-link:hover { color: var(--ink); }
+
+    .error-box, .loading {
+      text-align: center;
+      padding: 52px 16px;
+      color: var(--ink-faint);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ink);
+      color: var(--paper);
+      border-left: 5px solid var(--yellow);
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 500;
+      box-shadow: 6px 6px 0 rgba(23, 19, 14, 0.2);
+      display: none;
+      max-width: min(440px, calc(100vw - 32px));
+    }
+
+    .toast.show { display: block; }
+
+    .footer-note {
+      margin-top: 26px;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.64rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand"><img src="/assets/logo-transparent.png" alt="Card Dünyası"></div>
+    <div id="content" class="loading">Kart yükleniyor...</div>
+    <p class="footer-note">carddunyasi.com</p>
+  </div>
+  <div id="toast" class="toast"></div>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    const contentEl = document.getElementById('content');
+    const toastEl = document.getElementById('toast');
+
+    function getTokenFromPath() {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const qIndex = parts.indexOf('q');
+      if (qIndex >= 0 && parts[qIndex + 1]) return parts[qIndex + 1];
+      return null;
+    }
+
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      setTimeout(() => toastEl.classList.remove('show'), 3500);
+    }
+
+    function formatTry(value) {
+      if (value == null || !Number.isFinite(Number(value))) return '—';
+      return `${Number(value).toLocaleString('tr-TR')} ₺`;
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>"']/g, (ch) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+      }[ch]));
+    }
+
+    function renderCard(data) {
+      const imageHtml = data.imageUrl
+        ? `<img src="${escapeHtml(data.imageUrl)}" alt="${escapeHtml(data.cardName)}">`
+        : '<div class="placeholder">🃏</div>';
+
+      const stockLines = (data.stock?.byLocation || [])
+        .map((entry) => `<div>${escapeHtml(entry.name)}: ${entry.quantity} adet</div>`)
+        .join('');
+
+      const adminHtml = data.isAdmin ? `
+        <div class="admin-box">
+          <h2>Mağaza Satışı</h2>
+          <form id="sell-form">
+            <label for="sell-location">Stok lokasyonu</label>
+            <select id="sell-location" required>
+              ${(data.stock?.byLocation || []).map((entry) => `
+                <option value="${escapeHtml(entry.locationId)}" ${entry.quantity <= 0 ? 'disabled' : ''}>
+                  ${escapeHtml(entry.name)} (${entry.quantity} adet)
+                </option>
+              `).join('')}
+            </select>
+            <label for="sell-price">Satış fiyatı (TRY)</label>
+            <input id="sell-price" type="number" min="0.01" step="0.01" value="${data.sellPriceTry || ''}">
+            <label for="sell-note">Not (opsiyonel)</label>
+            <textarea id="sell-note" rows="2" placeholder="Nakit, müşteri notu vb."></textarea>
+            <button type="submit" ${data.inStock ? '' : 'disabled'}>Satışı kaydet · ikas stok −1</button>
+          </form>
+        </div>
+      ` : `
+        <a class="login-link" href="/login.html?next=${encodeURIComponent(window.location.pathname)}">Yetkili girişi → satış kaydı</a>
+      `;
+
+      contentEl.innerHTML = `
+        <article class="card">
+          <div class="hero">${imageHtml}</div>
+          <div class="body">
+            <h1>${escapeHtml(data.cardName)}</h1>
+            <div class="meta">
+              ${data.setName ? escapeHtml(data.setName) : 'Set bilgisi yok'}
+              ${data.priceLabel ? ` · ${escapeHtml(data.priceLabel)}` : ''}
+            </div>
+            <div class="price">${formatTry(data.sellPriceTry)}</div>
+            <span class="badge ${data.inStock ? 'in-stock' : 'out-stock'}">
+              ${data.inStock ? `${data.stock.totalQuantity} adet mevcut` : 'Stokta yok'}
+            </span>
+            ${stockLines ? `<div class="stock-list">${stockLines}</div>` : ''}
+            ${adminHtml}
+          </div>
+        </article>
+      `;
+
+      if (data.isAdmin) {
+        document.getElementById('sell-form').addEventListener('submit', submitSale);
+      }
+    }
+
+    async function submitSale(event) {
+      event.preventDefault();
+      const token = getTokenFromPath();
+      const button = event.target.querySelector('button[type="submit"]');
+      button.disabled = true;
+      try {
+        const response = await AUTH.apiFetch(`/api/qr/${encodeURIComponent(token)}/sell`, {
+          method: 'POST',
+          body: JSON.stringify({
+            stockLocationId: document.getElementById('sell-location').value,
+            sellPrice: document.getElementById('sell-price').value,
+            note: document.getElementById('sell-note').value.trim() || null,
+          }),
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || 'Satış kaydedilemedi.');
+        showToast('Satış kaydedildi · stok güncellendi');
+        renderCard(payload.data.card);
+      } catch (error) {
+        showToast(error.message);
+        button.disabled = false;
+      }
+    }
+
+    async function loadCard() {
+      const token = getTokenFromPath();
+      if (!token) {
+        contentEl.innerHTML = '<div class="error-box">Geçersiz QR bağlantısı.</div>';
+        return;
+      }
+      try {
+        const response = await fetch(`/api/qr/${encodeURIComponent(token)}`, { credentials: 'same-origin' });
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || 'Kart bulunamadı.');
+        renderCard(payload.data);
+      } catch (error) {
+        contentEl.innerHTML = `<div class="error-box">${escapeHtml(error.message)}</div>`;
+      }
+    }
+
+    loadCard();
+  </script>
+</body>
+</html>

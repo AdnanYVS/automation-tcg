@@ -3,6 +3,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const Database = require('better-sqlite3');
+const { generateQrToken } = require('./services/qrToken');
 
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'automation-tcg.db');
 
@@ -24,6 +25,7 @@ const MAPPING_EXTRA_COLUMNS = [
   { name: 'price_label', ddl: 'TEXT' },
   { name: 'ikas_missing', ddl: 'INTEGER DEFAULT 0' },
   { name: 'ikas_missing_at', ddl: 'TEXT' },
+  { name: 'qr_token', ddl: 'TEXT' },
 ];
 
 function ensureMappingExtraColumns(db) {
@@ -129,6 +131,11 @@ function createTables(db) {
   `);
 
   ensureMappingExtraColumns(db);
+  db.exec(`
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_card_mappings_qr_token
+      ON card_mappings(qr_token)
+      WHERE qr_token IS NOT NULL;
+  `);
 }
 
 function initDatabase() {
@@ -158,9 +165,11 @@ function insertMapping({
   sku = null,
   priceManual = false,
   priceLabel = null,
+  qrToken = null,
 }) {
   const db = getDatabase();
   try {
+    const token = qrToken || generateQrToken();
     const result = db.prepare(`
       INSERT INTO card_mappings (
         ikas_variant_id,
@@ -169,7 +178,8 @@ function insertMapping({
         barcode,
         sku,
         price_manual,
-        price_label
+        price_label,
+        qr_token
       )
       VALUES (
         @ikasVariantId,
@@ -178,7 +188,8 @@ function insertMapping({
         @barcode,
         @sku,
         @priceManual,
-        @priceLabel
+        @priceLabel,
+        @qrToken
       )
     `).run({
       ikasVariantId,
@@ -188,8 +199,9 @@ function insertMapping({
       sku: sku || null,
       priceManual: priceManual ? 1 : 0,
       priceLabel: priceLabel || null,
+      qrToken: token,
     });
-    return { id: result.lastInsertRowid };
+    return { id: result.lastInsertRowid, qrToken: token };
   } finally {
     db.close();
   }
@@ -279,6 +291,41 @@ function findMappingById(id) {
   const db = getDatabase();
   try {
     return db.prepare('SELECT * FROM card_mappings WHERE id = ?').get(id);
+  } finally {
+    db.close();
+  }
+}
+
+function findByQrToken(qrToken) {
+  const db = getDatabase();
+  try {
+    const token = String(qrToken || '').trim();
+    if (!token) return null;
+    return db.prepare('SELECT * FROM card_mappings WHERE qr_token = ?').get(token);
+  } finally {
+    db.close();
+  }
+}
+
+function ensureQrTokenForMapping(mappingId) {
+  const db = getDatabase();
+  try {
+    const existing = db.prepare('SELECT qr_token FROM card_mappings WHERE id = ?').get(mappingId);
+    if (existing?.qr_token) return existing.qr_token;
+
+    let token = generateQrToken();
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const collision = db.prepare('SELECT id FROM card_mappings WHERE qr_token = ?').get(token);
+      if (!collision) break;
+      token = generateQrToken();
+    }
+
+    db.prepare(`
+      UPDATE card_mappings
+      SET qr_token = @token, updated_at = datetime('now')
+      WHERE id = @mappingId
+    `).run({ mappingId, token });
+    return token;
   } finally {
     db.close();
   }
@@ -472,6 +519,25 @@ function countPendingPriceAlerts() {
     return db.prepare(`
       SELECT COUNT(*) AS count FROM price_change_alerts WHERE status = 'pending'
     `).get().count;
+  } finally {
+    db.close();
+  }
+}
+
+/**
+ * Belirtilen günden eski, sonuçlanmış (onaylanmış/reddedilmiş) alert kayıtlarını siler.
+ * Bekleyen (pending) kayıtlara asla dokunmaz.
+ */
+function cleanupResolvedPriceAlerts({ olderThanDays = 90 } = {}) {
+  const days = Math.max(1, Number(olderThanDays) || 90);
+  const db = getDatabase();
+  try {
+    const result = db.prepare(`
+      DELETE FROM price_change_alerts
+      WHERE status != 'pending'
+        AND COALESCE(resolved_at, detected_at) < datetime('now', ?)
+    `).run(`-${days} day`);
+    return result.changes || 0;
   } finally {
     db.close();
   }
@@ -723,6 +789,8 @@ module.exports = {
   findByKartfiyatCardId,
   findByIkasVariantId,
   findMappingById,
+  findByQrToken,
+  ensureQrTokenForMapping,
   getAllMappings,
   getAutoTrackedMappings,
   markMappingIkasMissing,
@@ -734,6 +802,7 @@ module.exports = {
   getPriceChangeAlertById,
   resolvePriceChangeAlert,
   countPendingPriceAlerts,
+  cleanupResolvedPriceAlerts,
   getLatestPriceCheckSummary,
   countAdminUsers,
   findAdminUserByUsername,

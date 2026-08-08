@@ -3,173 +3,224 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Giriş · Card Dünyası Admin</title>
+  <title>Giriş · Card Dünyası</title>
+  <link rel="icon" type="image/png" href="/assets/logo-ball.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0c0f14;
-      --surface: #1a2230;
-      --border: rgba(255, 255, 255, 0.08);
-      --text: #f0f4f8;
-      --muted: #8b9cb3;
-      --accent: #ffcb05;
-      --accent-text: #1a1400;
-      --error: #f87171;
-      --radius: 16px;
-      --radius-sm: 10px;
+      --paper: #F3EDDF;
+      --card: #FDFBF3;
+      --ink: #17130E;
+      --ink-soft: #4A4436;
+      --ink-faint: #8A8069;
+      --yellow: #F3C532;
+      --red: #C24238;
+      --red-soft: #F5DCD8;
+      --radius: 12px;
+      --radius-sm: 8px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Outfit', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: 'Archivo', sans-serif;
+      background: var(--ink);
+      color: var(--ink);
       min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 20px;
+      padding: 24px;
+      background-image: radial-gradient(rgba(243, 237, 223, 0.05) 1px, transparent 1.4px);
+      background-size: 22px 22px;
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 203, 5, 0.08), transparent),
-        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(59, 130, 246, 0.06), transparent);
-      pointer-events: none;
-    }
-
-    .card {
-      position: relative;
-      width: min(420px, 100%);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 32px 28px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-
-    .brand-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent), #ff9500);
+    .frame {
+      width: min(880px, 100%);
       display: grid;
-      place-items: center;
-      font-size: 1.2rem;
+      grid-template-columns: 1fr 1fr;
+      background: var(--card);
+      border: 3px solid var(--ink);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(243, 237, 223, 0.12), 14px 14px 0 rgba(243, 197, 50, 0.16);
+      animation: frameIn 0.4s ease both;
+    }
+
+    @keyframes frameIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .side {
+      background: var(--ink);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      padding: 48px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .side::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(243, 197, 50, 0.1) 1px, transparent 1.6px);
+      background-size: 18px 18px;
+    }
+
+    .side img {
+      width: min(240px, 70%);
+      position: relative;
+      filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.5));
+      animation: logoFloat 5s ease-in-out infinite;
+    }
+
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .side p {
+      position: relative;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(243, 237, 223, 0.55);
+    }
+
+    .form-side {
+      background: var(--card);
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.35rem;
-      font-weight: 800;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.45rem;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      line-height: 1.15;
     }
 
     .subtitle {
-      color: var(--muted);
-      font-size: 0.88rem;
-      margin-top: 4px;
+      color: var(--ink-faint);
+      font-size: 0.85rem;
+      margin: 8px 0 30px;
     }
 
     label {
       display: block;
-      font-size: 0.82rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.64rem;
       font-weight: 600;
-      color: var(--muted);
-      margin-bottom: 8px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 7px;
     }
 
-    .field { margin-bottom: 16px; }
+    .field { margin-bottom: 18px; }
 
     input {
       width: 100%;
-      background: #141a24;
-      border: 1px solid var(--border);
+      background: var(--paper);
+      border: 2px solid var(--ink);
       border-radius: var(--radius-sm);
       padding: 12px 14px;
-      color: var(--text);
+      color: var(--ink);
       font: inherit;
       outline: none;
+      transition: box-shadow 0.12s;
     }
 
-    input:focus {
-      border-color: rgba(255, 203, 5, 0.4);
-      box-shadow: 0 0 0 3px rgba(255, 203, 5, 0.1);
-    }
+    input:focus { box-shadow: 3px 3px 0 var(--ink); }
 
     button {
       width: 100%;
-      margin-top: 8px;
-      background: linear-gradient(135deg, var(--accent), #ffb800);
-      color: var(--accent-text);
-      border: none;
+      margin-top: 10px;
+      background: var(--yellow);
+      color: var(--ink);
+      border: 2px solid var(--ink);
       border-radius: var(--radius-sm);
       padding: 13px 18px;
       font: inherit;
       font-weight: 700;
+      font-size: 0.95rem;
       cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.12s;
     }
 
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    button:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+    button:active:not(:disabled) { transform: none; box-shadow: none; }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
 
     .error {
       display: none;
-      margin-bottom: 14px;
-      padding: 10px 12px;
+      margin-bottom: 16px;
+      padding: 11px 13px;
       border-radius: var(--radius-sm);
-      background: rgba(248, 113, 113, 0.12);
-      border: 1px solid rgba(248, 113, 113, 0.25);
-      color: var(--error);
-      font-size: 0.88rem;
+      background: var(--red-soft);
+      border: 2px solid var(--red);
+      color: var(--red);
+      font-size: 0.85rem;
+      font-weight: 600;
     }
 
     .error.visible { display: block; }
 
     .hint {
-      margin-top: 18px;
-      font-size: 0.78rem;
-      color: var(--muted);
+      margin-top: 26px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.64rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
       text-align: center;
-      line-height: 1.5;
+    }
+
+    @media (max-width: 700px) {
+      .frame { grid-template-columns: 1fr; }
+      .side { padding: 34px 24px; gap: 14px; }
+      .side img { width: 150px; }
+      .form-side { padding: 32px 26px 40px; }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="brand">
-      <div class="brand-icon">🔐</div>
-      <div>
-        <h1>Admin Girişi</h1>
-        <p class="subtitle">Card Dünyası · ikas otomasyon paneli</p>
-      </div>
+  <div class="frame">
+    <div class="side">
+      <img src="/assets/logo-transparent.png" alt="Card Dünyası">
+      <p>Yönetim Paneli</p>
     </div>
 
-    <div class="error" id="error"></div>
+    <div class="form-side">
+      <h1>Tekrar hoş geldin</h1>
+      <p class="subtitle">Devam etmek için hesabınla giriş yap.</p>
 
-    <form id="login-form">
-      <div class="field">
-        <label for="username">Kullanıcı adı</label>
-        <input id="username" name="username" autocomplete="username" required>
-      </div>
-      <div class="field">
-        <label for="password">Şifre</label>
-        <input id="password" name="password" type="password" autocomplete="current-password" required>
-      </div>
-      <button type="submit" id="submit-btn">Giriş Yap</button>
-    </form>
+      <div class="error" id="error"></div>
 
-    <p class="hint">Bu panele yalnızca yetkili kullanıcılar erişebilir.</p>
+      <form id="login-form">
+        <div class="field">
+          <label for="username">Kullanıcı adı</label>
+          <input id="username" name="username" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="password">Şifre</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <button type="submit" id="submit-btn">Giriş Yap</button>
+      </form>
+
+      <p class="hint">Yalnızca yetkili erişim</p>
+    </div>
   </div>
 
   <script>

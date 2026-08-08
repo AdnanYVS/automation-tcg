@@ -815,16 +815,16 @@ async function getVariantStockAtLocation({ productId, variantId, stockLocationId
   return Number(match?.stockCount || 0);
 }
 
-async function incrementVariantStock({
+async function adjustVariantStock({
   productId,
   variantId,
   stockLocationId,
-  incrementBy = 1,
+  delta,
   sku = null,
 }) {
-  const increment = Number(incrementBy);
-  if (!Number.isFinite(increment) || increment <= 0) {
-    throw new Error('incrementBy pozitif bir sayı olmalıdır.');
+  const change = Number(delta);
+  if (!Number.isFinite(change) || change === 0) {
+    throw new Error('delta sıfır olmayan bir sayı olmalıdır.');
   }
 
   const live = await resolveLiveVariant({ productId, variantId, sku });
@@ -835,7 +835,10 @@ async function incrementVariantStock({
     variantId: effectiveVariantId,
     stockLocationId,
   });
-  const newStock = previousStock + increment;
+  const newStock = previousStock + change;
+  if (newStock < 0) {
+    throw new Error(`Stok yetersiz (mevcut: ${previousStock}, istenen düşüş: ${Math.abs(change)}).`);
+  }
 
   const stockResult = await saveVariantStock({
     productId,
@@ -848,9 +851,38 @@ async function incrementVariantStock({
   return {
     previousStock,
     newStock,
-    incrementBy: increment,
+    delta: change,
     variantId: stockResult.variantId || effectiveVariantId,
     variantChanged: live.variantChanged || Boolean(stockResult.variantChanged),
+  };
+}
+
+async function incrementVariantStock({
+  productId,
+  variantId,
+  stockLocationId,
+  incrementBy = 1,
+  sku = null,
+}) {
+  const increment = Number(incrementBy);
+  if (!Number.isFinite(increment) || increment <= 0) {
+    throw new Error('incrementBy pozitif bir sayı olmalıdır.');
+  }
+
+  const result = await adjustVariantStock({
+    productId,
+    variantId,
+    stockLocationId,
+    delta: increment,
+    sku,
+  });
+
+  return {
+    previousStock: result.previousStock,
+    newStock: result.newStock,
+    incrementBy: increment,
+    variantId: result.variantId,
+    variantChanged: result.variantChanged,
   };
 }
 
@@ -1128,6 +1160,7 @@ module.exports = {
   updateProductBrand,
   updateProductTaxonomy,
   listAllProducts,
+  getCachedProductCatalog,
   getProductById,
   listProductsBySku,
   listProductsByBarcode,
@@ -1138,5 +1171,6 @@ module.exports = {
   getVariantStockAtLocation,
   listAllVariantStocks,
   incrementVariantStock,
+  adjustVariantStock,
   listStockLocations,
 };

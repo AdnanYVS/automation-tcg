@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Etiket Yazdır · Card Dünyası</title>
+  <link rel="icon" type="image/png" href="/assets/logo-ball.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #F3EDDF;
+      --card: #FDFBF3;
+      --ink: #17130E;
+      --ink-soft: #4A4436;
+      --ink-faint: #8A8069;
+      --line-soft: rgba(23, 19, 14, 0.16);
+      --yellow: #F3C532;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Archivo', sans-serif;
+      background-color: var(--paper);
+      background-image: radial-gradient(rgba(23, 19, 14, 0.055) 1px, transparent 1.4px);
+      background-size: 22px 22px;
+      color: var(--ink);
+      padding: 24px 16px 48px;
+    }
+
+    .toolbar {
+      max-width: 920px;
+      margin: 0 auto 22px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: end;
+      background: var(--card);
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 6px 6px 0 rgba(23, 19, 14, 0.18);
+    }
+
+    .toolbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 8px;
+      align-self: center;
+    }
+
+    .toolbar-brand img { width: 34px; height: 34px; }
+
+    .toolbar-brand span {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+    }
+
+    label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input {
+      font: inherit;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      width: 110px;
+      outline: none;
+    }
+
+    button {
+      font: inherit;
+      font-weight: 700;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--ink);
+      background: var(--card);
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+
+    button:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
+    button:active { transform: none; box-shadow: none; }
+    #print-btn { background: var(--yellow); }
+
+    .back-link {
+      margin-left: auto;
+      align-self: center;
+      color: var(--ink-faint);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: var(--ink); }
+
+    .labels {
+      max-width: 920px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+      gap: 12px;
+    }
+
+    .label {
+      background: #fff;
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      break-inside: avoid;
+    }
+
+    .label-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin-bottom: 8px;
+      padding-bottom: 7px;
+      border-bottom: 1.5px solid var(--line-soft);
+    }
+
+    .label-brand img { width: 14px; height: 14px; }
+
+    .label-brand span {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.56rem;
+      letter-spacing: 0.1em;
+    }
+
+    .label img.qr { width: 118px; height: 118px; object-fit: contain; }
+
+    .label .name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 8px;
+      line-height: 1.25;
+    }
+
+    .label .price {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.98rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .label .sku {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--ink-faint);
+      margin-top: 4px;
+      word-break: break-all;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--ink-faint);
+      padding: 44px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      grid-column: 1 / -1;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .toolbar, .no-print { display: none !important; }
+      .labels { display: block; }
+      .label {
+        page-break-inside: avoid;
+        margin-bottom: 8px;
+        border: 1px solid #999;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar no-print">
+    <div class="toolbar-brand">
+      <img src="/assets/logo-ball.png" alt="">
+      <span>ETİKET YAZDIR</span>
+    </div>
+    <div>
+      <label for="copies">Basım adedi</label>
+      <input id="copies" type="number" min="1" max="99" value="1">
+    </div>
+    <button type="button" id="render-btn">Etiketleri oluştur</button>
+    <button type="button" id="print-btn">Yazdır</button>
+    <a href="/" class="back-link">← Panele dön</a>
+  </div>
+  <div id="labels" class="labels">
+    <div class="empty">URL'de token veya mappingId parametresi gerekli.</div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    const labelsEl = document.getElementById('labels');
+    const copiesInput = document.getElementById('copies');
+    let labelData = null;
+
+    function getQuery() {
+      return new URLSearchParams(window.location.search);
+    }
+
+    function qrImageUrl(url) {
+      return `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=${encodeURIComponent(url)}`;
+    }
+
+    function formatTry(value) {
+      if (value == null || !Number.isFinite(Number(value))) return '';
+      return `${Number(value).toLocaleString('tr-TR')} ₺`;
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>"']/g, (ch) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+      }[ch]));
+    }
+
+    function renderLabels() {
+      if (!labelData) return;
+      const copies = Math.max(1, Math.min(99, Number(copiesInput.value) || 1));
+      const chunks = [];
+      for (let i = 0; i < copies; i += 1) {
+        chunks.push(`
+          <div class="label">
+            <div class="label-brand">
+              <img src="/assets/logo-ball.png" alt="">
+              <span>CARD DÜNYASI</span>
+            </div>
+            <img class="qr" src="${qrImageUrl(labelData.qrUrl)}" alt="QR">
+            <div class="name">${escapeHtml(labelData.cardName)}</div>
+            <div class="price">${escapeHtml(formatTry(labelData.sellPriceTry))}</div>
+            <div class="sku">${escapeHtml(labelData.sku || labelData.qrToken)}</div>
+          </div>
+        `);
+      }
+      labelsEl.innerHTML = chunks.join('');
+    }
+
+    async function init() {
+      await AUTH.requireAuth();
+      const query = getQuery();
+      const token = query.get('token');
+      const mappingId = query.get('mappingId');
+      if (!token && !mappingId) return;
+
+      const params = new URLSearchParams();
+      if (token) params.set('token', token);
+      if (mappingId) params.set('mappingId', mappingId);
+
+      const response = await AUTH.apiFetch(`/api/qr-labels/preview?${params.toString()}`);
+      const payload = await response.json();
+      if (!response.ok || !payload.success) {
+        labelsEl.innerHTML = `<div class="empty">${escapeHtml(payload.error || 'Yüklenemedi')}</div>`;
+        return;
+      }
+      labelData = payload.data;
+      const defaultCopies = query.get('copies');
+      if (defaultCopies) copiesInput.value = defaultCopies;
+      renderLabels();
+    }
+
+    document.getElementById('render-btn').addEventListener('click', renderLabels);
+    document.getElementById('print-btn').addEventListener('click', () => window.print());
+
+    init();
+  </script>
+</body>
+</html>

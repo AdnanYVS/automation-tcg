@@ -9,6 +9,7 @@ const cardsRouter = require('./routes/cards');
 const pricesRouter = require('./routes/prices');
 const inventoryRouter = require('./routes/inventory');
 const categoryLogosRouter = require('./routes/categoryLogos');
+const qrRouter = require('./routes/qr');
 const authRouter = require('./routes/auth');
 const { requireAuthPage } = require('./middleware/requireAuth');
 const { startPriceCheckerCron } = require('../cron/priceChecker');
@@ -30,12 +31,15 @@ app.use((req, res, next) => {
 
 app.get('/health', (req, res) => res.json({ success: true, status: 'ok' }));
 app.use('/api', authRouter);
+app.use('/api', qrRouter);
 app.use('/api', cardsRouter);
 app.use('/api', pricesRouter);
 app.use('/api', inventoryRouter);
 app.use('/api', categoryLogosRouter);
 
+app.get('/q/:token', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'q.html')));
 app.get('/login.html', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'login.html')));
+app.get('/labels.html', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'labels.html')));
 app.get('/', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
 app.get('/index.html', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
 app.get('/prices.html', requireAuthPage, (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'prices.html')));

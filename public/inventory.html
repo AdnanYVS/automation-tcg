@@ -3,329 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Depo & Satış · Card Dünyası</title>
+  <title>Depo &amp; Satış · Card Dünyası</title>
+  <link rel="icon" type="image/png" href="/assets/logo-ball.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/cd.css">
   <style>
-    :root {
-      --bg: #0c0f14;
-      --surface: #1a2230;
-      --surface-hover: #212b3c;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.14);
-      --text: #f0f4f8;
-      --muted: #8b9cb3;
-      --accent: #ffcb05;
-      --accent-text: #1a1400;
-      --success: #34d399;
-      --error: #f87171;
-      --radius: 16px;
-      --radius-sm: 10px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Outfit', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.5;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 203, 5, 0.08), transparent),
-        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(59, 130, 246, 0.06), transparent);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .app {
-      position: relative;
-      z-index: 1;
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 28px 20px 60px;
-    }
-
-    .header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 20px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-    }
-
-    .brand { display: flex; align-items: center; gap: 14px; }
-
-    .brand-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, var(--accent), #ff9500);
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      font-size: 1.4rem;
-    }
-
-    .brand h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 800;
-    }
-
-    .brand p { font-size: 0.88rem; color: var(--muted); margin-top: 2px; }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .nav-link, .logout-btn, .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
-      text-decoration: none;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--muted);
-    }
-
-    .nav-link:hover, .logout-btn:hover, .btn:hover {
-      color: var(--text);
-      border-color: var(--border-strong);
-      background: var(--surface-hover);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #ffb800);
-      color: var(--accent-text);
-      border-color: transparent;
-    }
-
-    .user-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      font-size: 0.82rem;
-      color: var(--muted);
-    }
-
-    .user-badge strong { color: var(--text); }
-
-    .logout-btn { background: transparent; }
-
-    .main-tabs, .filters {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-
-    .main-tab, .filter-btn {
-      padding: 10px 16px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--muted);
-      font: inherit;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .main-tab.active, .filter-btn.active {
-      color: var(--accent-text);
-      background: var(--accent);
-      border-color: transparent;
-    }
-
-    .filters input, .filters select {
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      font: inherit;
-      min-width: 180px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-    }
-
-    .stat-label {
-      font-size: 0.78rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .stat-value {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-top: 6px;
-    }
-
-    .stat-sub {
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    .panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
-    }
-
-    .panel-header strong { font-size: 1rem; }
-    .panel-meta { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
-
-    .table-wrap { overflow-x: auto; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-
-    th, td {
-      padding: 14px 16px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-    }
-
-    th {
-      font-size: 0.76rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--muted);
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    tr:hover td { background: rgba(255, 255, 255, 0.02); }
-
-    .card-id {
-      display: block;
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .qty-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 28px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: rgba(52, 211, 153, 0.12);
-      color: var(--success);
-      font-weight: 700;
-    }
-
-    .qty-badge.zero {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--muted);
-    }
-
-    .tag {
-      display: inline-flex;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--muted);
-    }
-
-    .tag.manual {
-      background: rgba(255, 203, 5, 0.12);
-      color: var(--accent);
-    }
-
-    .toast {
-      display: none;
-      padding: 12px 16px;
-      border-radius: var(--radius-sm);
-      margin-bottom: 20px;
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-
-    .toast.visible { display: block; }
-    .toast.info { background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.25); color: #93c5fd; }
-    .toast.success { background: rgba(52, 211, 153, 0.12); border: 1px solid rgba(52, 211, 153, 0.25); color: var(--success); }
-    .toast.error { background: rgba(248, 113, 113, 0.12); border: 1px solid rgba(248, 113, 113, 0.25); color: var(--error); }
-
-    .loading-row td, .empty-state {
-      text-align: center;
-      padding: 40px;
-      color: var(--muted);
-    }
-
-    .view-section[hidden] { display: none !important; }
+    #stock-filter-wrap { display: inline-flex; gap: 8px; }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header class="header">
-      <div class="brand">
-        <div class="brand-icon">📦</div>
-        <div>
-          <h1>Depo & Satış</h1>
-          <p>İstanbul / İzmir stokları ve satılan kartlar</p>
-        </div>
-      </div>
-      <div class="header-actions">
-        <a href="/" class="nav-link">← Kart Arama</a>
-        <a href="/prices.html" class="nav-link">Fiyat Takibi</a>
-        <a href="/category-logos.html" class="nav-link">Kategori Logoları</a>
-        <span class="user-badge" id="user-badge" hidden>👤 <strong id="user-name"></strong></span>
+  <header class="cd-topbar">
+    <div class="cd-topbar-inner">
+      <a class="cd-logo" href="/">
+        <img src="/assets/logo-ball.png" alt="Card Dünyası">
+        <span>CARD DÜNYASI</span>
+      </a>
+      <nav class="cd-nav">
+        <a href="/">Kart Arama</a>
+        <a href="/inventory.html" class="active">Depo &amp; Satış</a>
+        <a href="/prices.html">Fiyat Takibi</a>
+        <a href="/category-logos.html">Kategori Logoları</a>
+      </nav>
+      <div class="cd-topbar-right">
+        <span class="user-badge" id="user-badge" hidden><strong id="user-name"></strong></span>
         <button type="button" class="logout-btn" id="logout-btn" hidden>Çıkış</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="cd-shell">
+    <div class="cd-page-head">
+      <div>
+        <h1>Depo <em>&amp; Satış</em></h1>
+        <p class="sub">İstanbul / İzmir stokları, satış geçmişi ve depo hareketleri</p>
+      </div>
+      <div class="cd-page-actions">
+        <button type="button" class="btn" id="sync-mappings-btn" hidden>Eşleşmemişleri içe aktar</button>
         <button type="button" class="btn btn-primary" id="refresh-btn">Yenile</button>
       </div>
-    </header>
+    </div>
 
     <div class="toast" id="toast"></div>
 
@@ -428,6 +146,11 @@
         </div>
       </section>
     </div>
+
+    <footer class="cd-footer">
+      <span>Card Dünyası · Depo Yönetimi</span>
+      <img src="/assets/logo-ball.png" alt="">
+    </footer>
   </div>
 
   <script src="/js/auth.js"></script>
@@ -441,6 +164,7 @@
     const stockFilterAll = document.getElementById('stock-filter-all');
     const stockFilterInstock = document.getElementById('stock-filter-instock');
     const refreshBtn = document.getElementById('refresh-btn');
+    const syncMappingsBtn = document.getElementById('sync-mappings-btn');
     const stockHeadRow = document.getElementById('stock-head-row');
     const stockBody = document.getElementById('stock-body');
     const salesBody = document.getElementById('sales-body');
@@ -508,7 +232,7 @@
       if (currentView === 'stock' && inventoryData) {
         const summary = inventoryData.summary;
         statsEl.innerHTML = `
-          <div class="stat-card"><div class="stat-label">Stoktaki Ürün</div><div class="stat-value">${summary.inStockProducts}</div><div class="stat-sub">${summary.listedProducts} kayıtlı kart</div></div>
+          <div class="stat-card"><div class="stat-label">Stoktaki Ürün</div><div class="stat-value">${summary.inStockProducts}</div><div class="stat-sub">${summary.listedProducts} ikas ürünü · ${summary.mappedProducts} eşleşmeli</div></div>
           <div class="stat-card"><div class="stat-label">Toplam Adet</div><div class="stat-value">${summary.totalUnits}</div><div class="stat-sub">Tüm depolar</div></div>
           ${summary.locationTotals.map((loc) => `
             <div class="stat-card">
@@ -556,10 +280,11 @@
         <th>Kart</th>
         ${locations.map((loc) => `<th>${escapeHtml(loc.name)}</th>`).join('')}
         <th>Toplam</th>
+        <th>QR</th>
       `;
 
       if (!inventoryData.items.length) {
-        stockBody.innerHTML = `<tr class="empty-state"><td colspan="${locations.length + 2}">Bu filtrede stok bulunamadı.</td></tr>`;
+        stockBody.innerHTML = `<tr class="empty-state"><td colspan="${locations.length + 3}">Bu filtrede stok bulunamadı.</td></tr>`;
         return;
       }
 
@@ -567,13 +292,22 @@
         <tr>
           <td>
             <strong>${escapeHtml(item.cardName)}</strong>
-            <span class="card-id">KF #${escapeHtml(item.kartfiyatCardId)}${item.barcode ? ` · ${escapeHtml(item.barcode)}` : ''}</span>
+            <span class="card-id">${item.kartfiyatCardId ? `KF #${escapeHtml(item.kartfiyatCardId)}` : 'KartFiyat eşleşmesi yok'}${item.barcode ? ` · ${escapeHtml(item.barcode)}` : ''}${item.sku ? ` · ${escapeHtml(item.sku)}` : ''}</span>
             ${item.priceManual ? '<span class="tag manual">Manuel fiyat</span>' : ''}
+            ${!item.hasMapping ? '<span class="tag unmapped">Eşleşmemiş</span>' : ''}
           </td>
           ${item.locations.map((loc) => `
             <td><span class="qty-badge ${loc.quantity > 0 ? '' : 'zero'}">${loc.quantity}</span></td>
           `).join('')}
           <td><span class="qty-badge ${item.totalQuantity > 0 ? '' : 'zero'}">${item.totalQuantity}</span></td>
+          <td>
+            ${item.qrToken ? `
+              <div class="qr-links">
+                <a href="/q/${encodeURIComponent(item.qrToken)}" target="_blank" rel="noopener">Kart sayfası</a>
+                <a href="/labels.html?token=${encodeURIComponent(item.qrToken)}&copies=${Math.max(1, item.totalQuantity || 1)}">Etiket yazdır</a>
+              </div>
+            ` : '<span class="card-id">QR yok</span>'}
+          </td>
         </tr>
       `).join('');
     }
@@ -635,6 +369,7 @@
       const payload = await response.json();
       if (!response.ok || !payload.success) throw new Error(payload.error || 'Stok verisi alınamadı.');
       inventoryData = payload.data;
+      syncMappingsBtn.hidden = !(inventoryData.summary?.unmappedProducts > 0);
       renderStats();
       renderStockTable();
     }
@@ -703,7 +438,31 @@
     stockFilterAll.addEventListener('click', () => setStockFilter('all'));
     stockFilterInstock.addEventListener('click', () => setStockFilter('instock'));
     refreshBtn.addEventListener('click', loadCurrentView);
+    syncMappingsBtn.addEventListener('click', syncUnmappedProducts);
     document.getElementById('logout-btn').addEventListener('click', () => AUTH.logout());
+
+    async function syncUnmappedProducts() {
+      syncMappingsBtn.disabled = true;
+      try {
+        showToast('Eşleşmemiş ürünler ikas ile eşleştiriliyor...', 'info');
+        const response = await AUTH.apiFetch('/api/inventory/sync-mappings', {
+          method: 'POST',
+          body: JSON.stringify({ withPrices: false, forceRelink: true }),
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.success) throw new Error(payload.error || 'Eşleştirme başarısız.');
+        const stats = payload.data.mappings;
+        showToast(
+          `Eşleştirme tamam: +${stats.created} yeni, ${stats.updated} güncellendi, ${stats.skippedConflict} çakışma`,
+          'success',
+        );
+        await loadInventory();
+      } catch (error) {
+        showToast(error.message, 'error');
+      } finally {
+        syncMappingsBtn.disabled = false;
+      }
+    }
 
     AUTH.requireAuth().then(async (user) => {
       if (!user) return;

@@ -4,133 +4,51 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kategori Logoları · Card Dünyası</title>
+  <link rel="icon" type="image/png" href="/assets/logo-ball.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/cd.css">
   <style>
-    :root {
-      --bg: #0c0f14;
-      --surface: #1a2230;
-      --surface-hover: #212b3c;
-      --border: rgba(255, 255, 255, 0.08);
-      --text: #f0f4f8;
-      --muted: #8b9cb3;
-      --accent: #ffcb05;
-      --accent-text: #1a1400;
-      --success: #34d399;
-      --error: #f87171;
-      --radius: 16px;
-      --radius-sm: 10px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Outfit', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.5;
-    }
-
-    .app {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 28px 20px 60px;
-    }
-
-    .header {
+    .toolbar {
       display: flex;
-      justify-content: space-between;
-      gap: 20px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 24px;
+      align-items: center;
     }
-
-    .brand { display: flex; gap: 14px; align-items: center; }
-    .brand-icon {
-      width: 48px; height: 48px; border-radius: 14px;
-      background: linear-gradient(135deg, var(--accent), #ff9500);
-      display: grid; place-items: center; font-size: 1.4rem;
-    }
-    .brand h1 { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; }
-    .brand p { color: var(--muted); font-size: 0.88rem; margin-top: 2px; }
-
-    .header-actions, .toolbar, .filters {
-      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
-    }
-
-    .btn, .nav-link, .filter-btn {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 8px 14px;
-      font: inherit;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .btn:hover, .filter-btn:hover, .nav-link:hover { background: var(--surface-hover); }
-    .btn-primary { background: linear-gradient(135deg, var(--accent), #ffb800); color: var(--accent-text); border: none; }
-    .btn-success { background: rgba(52, 211, 153, 0.15); color: var(--success); border-color: rgba(52, 211, 153, 0.3); }
-    .btn-danger { background: rgba(248, 113, 113, 0.12); color: var(--error); border-color: rgba(248, 113, 113, 0.3); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-    }
-
-    .stat-label { color: var(--muted); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em; }
-    .stat-value { font-size: 1.5rem; font-weight: 700; margin-top: 6px; }
-
-    .toast {
-      display: none;
-      padding: 12px 16px;
-      border-radius: var(--radius-sm);
-      margin-bottom: 16px;
-      font-weight: 500;
-    }
-    .toast.visible { display: block; }
-    .toast.info { background: rgba(59, 130, 246, 0.12); color: #93c5fd; }
-    .toast.success { background: rgba(52, 211, 153, 0.12); color: var(--success); }
-    .toast.error { background: rgba(248, 113, 113, 0.12); color: var(--error); }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+      gap: 16px;
     }
 
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--card);
+      border: 2px solid var(--ink);
       border-radius: var(--radius);
       overflow: hidden;
-      transition: border-color 0.15s, transform 0.15s;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
 
-    .card.selected { border-color: rgba(255, 203, 5, 0.5); }
-    .card:hover { transform: translateY(-2px); }
+    .card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0 rgba(23, 19, 14, 0.85);
+    }
+
+    .card.selected {
+      box-shadow: 0 0 0 3px var(--yellow);
+    }
 
     .card-image {
       aspect-ratio: 4 / 3;
-      background: #0a0d12;
+      background: var(--paper-deep);
+      background-image: radial-gradient(rgba(23, 19, 14, 0.06) 1px, transparent 1.3px);
+      background-size: 14px 14px;
       display: grid;
       place-items: center;
       overflow: hidden;
+      border-bottom: 2px solid var(--ink);
     }
 
     .card-image img {
@@ -141,66 +59,72 @@
     }
 
     .card-image .missing {
-      color: var(--muted);
-      font-size: 0.85rem;
+      color: var(--ink-faint);
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
       text-align: center;
       padding: 16px;
     }
 
     .card-body { padding: 14px; }
-    .card-title { font-size: 0.92rem; font-weight: 600; min-height: 2.8em; }
-    .card-meta { color: var(--muted); font-size: 0.78rem; margin-top: 8px; }
+    .card-title { font-size: 0.9rem; font-weight: 700; min-height: 2.7em; line-height: 1.35; }
 
-    .tag {
-      display: inline-flex;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      margin-top: 8px;
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--muted);
+    .card-meta {
+      color: var(--ink-faint);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      margin-top: 7px;
     }
-
-    .tag.pending { color: var(--accent); background: rgba(255, 203, 5, 0.12); }
-    .tag.approved { color: var(--success); background: rgba(52, 211, 153, 0.12); }
-    .tag.rejected { color: var(--error); background: rgba(248, 113, 113, 0.12); }
-    .tag.uploaded { color: #93c5fd; background: rgba(59, 130, 246, 0.12); }
-    .tag.failed { color: var(--error); background: rgba(248, 113, 113, 0.12); }
-    .tag.missing { color: var(--muted); }
 
     .card-check {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: 10px;
-      font-size: 0.82rem;
-      color: var(--muted);
+      margin-top: 11px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      cursor: pointer;
     }
+
+    .card-check input { accent-color: var(--ink); width: 15px; height: 15px; }
 
     .empty {
       text-align: center;
-      color: var(--muted);
+      color: var(--ink-faint);
       padding: 60px 20px;
       grid-column: 1 / -1;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header class="header">
-      <div class="brand">
-        <div class="brand-icon">🖼️</div>
-        <div>
-          <h1>Kategori Logoları</h1>
-          <p>KartFiyat set logolarını önizle, onayla, ikas'a yükle</p>
-        </div>
+  <header class="cd-topbar">
+    <div class="cd-topbar-inner">
+      <a class="cd-logo" href="/">
+        <img src="/assets/logo-ball.png" alt="Card Dünyası">
+        <span>CARD DÜNYASI</span>
+      </a>
+      <nav class="cd-nav">
+        <a href="/">Kart Arama</a>
+        <a href="/inventory.html">Depo &amp; Satış</a>
+        <a href="/prices.html">Fiyat Takibi</a>
+        <a href="/category-logos.html" class="active">Kategori Logoları</a>
+      </nav>
+      <div class="cd-topbar-right">
+        <button type="button" class="logout-btn" id="refresh-btn">Yenile</button>
       </div>
-      <div class="header-actions">
-        <a href="/" class="nav-link">← Kart Arama</a>
-        <button type="button" class="btn" id="refresh-btn">Yenile</button>
+    </div>
+  </header>
+
+  <div class="cd-shell">
+    <div class="cd-page-head">
+      <div>
+        <h1>Kategori <em>Logoları</em></h1>
+        <p class="sub">KartFiyat set logolarını önizle, onayla, ikas'a yükle</p>
       </div>
-    </header>
+    </div>
 
     <div class="toast" id="toast"></div>
 
@@ -224,6 +148,11 @@
     <div class="grid" id="grid">
       <div class="empty">Logolar yükleniyor...</div>
     </div>
+
+    <footer class="cd-footer">
+      <span>Card Dünyası · Kategori Logoları</span>
+      <img src="/assets/logo-ball.png" alt="">
+    </footer>
   </div>
 
   <script src="/js/auth.js"></script>
