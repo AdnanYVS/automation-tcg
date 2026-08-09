@@ -564,6 +564,11 @@ async function resolveLiveProductVariant({
 
   let productChanged = false;
 
+  const kfSkus = candidateSkus.filter((entry) => /^KF-\d+/i.test(entry));
+  const safeSkus = candidateSkus.filter((entry) => !/^\d{1,4}$/.test(entry));
+  // KF varsa yalnız KF (+ barkod); kısa kart no SKU'ları (91, 4) asla fallback olmasın
+  const lookupSkus = kfSkus.length ? kfSkus : safeSkus;
+
   if (!product?.id) {
     let found = null;
     // Önce barkod — en güvenilir
@@ -574,7 +579,7 @@ async function resolveLiveProductVariant({
         indexes: lookupIndexes,
       });
     }
-    for (const candidate of candidateSkus) {
+    for (const candidate of lookupSkus) {
       if (found?.product?.id) break;
       found = await findProductBySkuOrBarcode({
         sku: candidate,
@@ -586,7 +591,7 @@ async function resolveLiveProductVariant({
     if (!found?.product?.id) {
       throw new Error(
         `ikas ürünü bulunamadı: ${productId || '?'}`
-        + (candidateSkus.length ? ` (sku: ${candidateSkus.join(' | ')})` : '')
+        + (lookupSkus.length ? ` (sku: ${lookupSkus.join(' | ')})` : '')
         + (barcode ? ` (barcode: ${barcode})` : '')
         + ' — ürün ikas\'ta silinmiş olabilir veya barkod/SKU eşleşmiyor; yeniden import gerekebilir',
       );
@@ -609,12 +614,12 @@ async function resolveLiveProductVariant({
     };
 
     if (!isTrustedProductResolution(resolved, {
-      sku, skuCandidates: candidateSkus, barcode, productId, variantId,
+      sku, skuCandidates: lookupSkus, barcode, productId, variantId,
     })) {
       throw new Error(
-        `ikas ürün eşleşmesi güvenilir değil: ${productId || '?'}`
-        + ` → ${product.id}/${variant.id} (sku: ${variant.sku || '?'})`
-        + ` — beklenen: ${candidateSkus.filter((entry) => /^KF-/i.test(entry)).join(' | ') || candidateSkus.join(' | ') || '?'}`,
+        `ikas ürünü bulunamadı: ${productId || '?'}`
+        + ` (sku: ${lookupSkus.join(' | ') || '?'})`
+        + ' — ürün ikas\'ta silinmiş olabilir veya barkod/SKU eşleşmiyor; yeniden import gerekebilir',
       );
     }
 
@@ -638,7 +643,7 @@ async function resolveLiveProductVariant({
     variant = pickLiveVariant(product, { preferredVariantId: variantId });
   }
 
-  if (!variant?.id && (candidateSkus.length || barcode)) {
+  if (!variant?.id && (lookupSkus.length || barcode)) {
     let found = null;
     if (barcode) {
       found = await findProductBySkuOrBarcode({
@@ -647,7 +652,7 @@ async function resolveLiveProductVariant({
         indexes: lookupIndexes,
       });
     }
-    for (const candidate of candidateSkus) {
+    for (const candidate of lookupSkus) {
       if (found?.product?.id) break;
       found = await findProductBySkuOrBarcode({
         sku: candidate,
@@ -663,11 +668,12 @@ async function resolveLiveProductVariant({
         variantChanged: true,
       };
       if (!isTrustedProductResolution(resolved, {
-        sku, skuCandidates: candidateSkus, barcode, productId, variantId,
+        sku, skuCandidates: lookupSkus, barcode, productId, variantId,
       })) {
         throw new Error(
-          `ikas ürün eşleşmesi güvenilir değil: ${productId}`
-          + ` → ${found.product.id}/${found.variant.id} (sku: ${found.variant.sku || '?'})`,
+          `ikas ürünü bulunamadı: ${productId}`
+          + ` (sku: ${lookupSkus.join(' | ') || '?'})`
+          + ' — ürün ikas\'ta silinmiş olabilir veya barkod/SKU eşleşmiyor; yeniden import gerekebilir',
         );
       }
       return resolved;
