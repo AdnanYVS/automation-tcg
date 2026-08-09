@@ -518,11 +518,13 @@ function isTrustedProductResolution(live, {
   const preferred = prioritizeSkuCandidates([sku, ...skuCandidates]);
   const kfPreferred = preferred.filter((entry) => /^KF-\d+/i.test(entry));
 
+  // KF- SKU bekleniyorsa yalnız tam KF eşleşmesi güvenilir (barkod tek başına yetmez —
+  // silinen ürünlerin barkodu başka karta taşınmış olabiliyor).
   if (kfPreferred.length) {
-    if (kfPreferred.some((entry) => entry === variantSku)) return true;
-  } else if (preferred.some((entry) => entry === variantSku)) {
-    return true;
+    return kfPreferred.some((entry) => entry === variantSku);
   }
+
+  if (preferred.some((entry) => entry === variantSku)) return true;
 
   const targetBarcode = normalizeBarcodeValue(barcode);
   if (targetBarcode) {
@@ -532,10 +534,6 @@ function isTrustedProductResolution(live, {
     if (hasBarcode) return true;
   }
 
-  // KF beklenirken belirsiz SKU ile bulunan ürünü kabul etme
-  if (kfPreferred.length) return false;
-
-  // Ürün ID aynı kaldıysa kabul
   return Boolean(productId && live.product.id === productId);
 }
 
@@ -571,18 +569,18 @@ async function resolveLiveProductVariant({
 
   if (!product?.id) {
     let found = null;
-    // Önce barkod — en güvenilir
-    if (barcode) {
-      found = await findProductBySkuOrBarcode({
-        barcode,
-        products,
-        indexes: lookupIndexes,
-      });
-    }
+    // KF/güvenli SKU önce; barkod sadece KF yoksa veya SKU bulunamazsa ve KF beklenmiyorsa
     for (const candidate of lookupSkus) {
       if (found?.product?.id) break;
       found = await findProductBySkuOrBarcode({
         sku: candidate,
+        products,
+        indexes: lookupIndexes,
+      });
+    }
+    if (!found?.product?.id && barcode && !kfSkus.length) {
+      found = await findProductBySkuOrBarcode({
+        barcode,
         products,
         indexes: lookupIndexes,
       });
@@ -645,17 +643,17 @@ async function resolveLiveProductVariant({
 
   if (!variant?.id && (lookupSkus.length || barcode)) {
     let found = null;
-    if (barcode) {
-      found = await findProductBySkuOrBarcode({
-        barcode,
-        products,
-        indexes: lookupIndexes,
-      });
-    }
     for (const candidate of lookupSkus) {
       if (found?.product?.id) break;
       found = await findProductBySkuOrBarcode({
         sku: candidate,
+        products,
+        indexes: lookupIndexes,
+      });
+    }
+    if (!found?.product?.id && barcode && !kfSkus.length) {
+      found = await findProductBySkuOrBarcode({
+        barcode,
         products,
         indexes: lookupIndexes,
       });
