@@ -40,10 +40,30 @@ function calculateInventoryValueTry(usdPrice, usdTryRate) {
   return Math.ceil(rawPrice);
 }
 
+/**
+ * Nakit fiyatı = kart (satış) fiyatı × CASH_PRICE_RATIO.
+ * Oran tanımlı değilse null döner (UI "—" gösterir).
+ */
+function getCashPriceRatio() {
+  const raw = process.env.CASH_PRICE_RATIO;
+  if (raw == null || String(raw).trim() === '') return null;
+  const ratio = Number(raw);
+  if (!Number.isFinite(ratio) || ratio <= 0) return null;
+  return ratio;
+}
+
+function calculateCashPriceTry(sellPriceTry, ratio = getCashPriceRatio()) {
+  const sell = Number(sellPriceTry);
+  if (!Number.isFinite(sell) || sell <= 0 || ratio == null) return null;
+  return Math.ceil(sell * Number(ratio));
+}
+
 module.exports = {
   DEFAULT_MULTIPLIERS,
   calculateFinalPriceTry,
   calculateInventoryValueTry,
+  calculateCashPriceTry,
+  getCashPriceRatio,
   getPriceMultiplier,
   getPriceMultiplierForCard,
 };

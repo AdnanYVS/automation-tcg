@@ -98,6 +98,9 @@ const GET_PRODUCT_QUERY = `
       data {
         id
         name
+        metaData {
+          slug
+        }
         variants {
           id
           sku

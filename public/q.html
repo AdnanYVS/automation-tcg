@@ -91,12 +91,63 @@
 
     .meta { color: var(--ink-faint); font-size: 0.88rem; margin-bottom: 16px; }
 
-    .price {
+    .price-block {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .price-row .label {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 1.9rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+
+    .price-row .value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.55rem;
       font-weight: 700;
       color: var(--ink);
-      margin-bottom: 14px;
+      line-height: 1.1;
+    }
+
+    .price-row.cash .value {
+      font-size: 1.25rem;
+      color: var(--ink-soft);
+    }
+
+    .shop-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-bottom: 16px;
+      padding: 13px 16px;
+      border: 2px solid var(--ink);
+      border-radius: var(--radius-sm);
+      background: var(--ink);
+      color: var(--yellow);
+      font: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+
+    .shop-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0 rgba(23, 19, 14, 0.25);
     }
 
     .badge {
@@ -302,7 +353,21 @@
               ${data.setName ? escapeHtml(data.setName) : 'Set bilgisi yok'}
               ${data.priceLabel ? ` · ${escapeHtml(data.priceLabel)}` : ''}
             </div>
-            <div class="price">${formatTry(data.sellPriceTry)}</div>
+            <div class="price-block">
+              <div class="price-row">
+                <span class="label">Kart</span>
+                <span class="value">${formatTry(data.sellPriceTry)}</span>
+              </div>
+              <div class="price-row cash">
+                <span class="label">Nakit</span>
+                <span class="value">${formatTry(data.cashPriceTry)}</span>
+              </div>
+            </div>
+            ${data.productUrl ? `
+              <a class="shop-btn" href="${escapeHtml(data.productUrl)}" target="_blank" rel="noopener noreferrer">
+                Siteye git · Sepete ekle
+              </a>
+            ` : ''}
             <span class="badge ${data.inStock ? 'in-stock' : 'out-stock'}">
               ${data.inStock ? `${data.stock.totalQuantity} adet mevcut` : 'Stokta yok'}
             </span>

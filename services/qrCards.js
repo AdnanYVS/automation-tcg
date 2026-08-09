@@ -9,8 +9,11 @@ const {
   listStockLocations,
   listAllVariantStocks,
   adjustVariantStock,
+  getProductById,
 } = require('./ikas/products');
 const { buildQrUrl } = require('./qrToken');
+const { buildIkasProductUrl } = require('./storefront');
+const { calculateCashPriceTry, getCashPriceRatio } = require('./pricing');
 
 function buildStockSummary(stockRows, mapping, locations) {
   const variantRows = stockRows.filter(
@@ -41,12 +44,22 @@ async function getQrCardPayload(token, { isAdmin = false } = {}) {
     console.warn(`[qr] KartFiyat detayı alınamadı (${mapping.kartfiyat_card_id}):`, error.message);
   }
 
-  const [locations, stockRows] = await Promise.all([
+  const [locations, stockRows, ikasProduct] = await Promise.all([
     listStockLocations(),
     listAllVariantStocks(),
+    mapping.ikas_product_id
+      ? getProductById(mapping.ikas_product_id).catch((error) => {
+        console.warn(`[qr] ikas ürünü alınamadı (${mapping.ikas_product_id}):`, error.message);
+        return null;
+      })
+      : Promise.resolve(null),
   ]);
   const stock = buildStockSummary(stockRows, mapping, locations);
   const qrToken = mapping.qr_token || ensureQrTokenForMapping(mapping.id);
+  const sellPriceTry = mapping.last_try_price;
+  const cashPriceRatio = getCashPriceRatio();
+  const cashPriceTry = calculateCashPriceTry(sellPriceTry, cashPriceRatio);
+  const productSlug = ikasProduct?.metaData?.slug || null;
 
   return {
     qrToken,
@@ -55,12 +68,17 @@ async function getQrCardPayload(token, { isAdmin = false } = {}) {
     kartfiyatCardId: mapping.kartfiyat_card_id,
     cardName: mapping.card_name || card?.name || `Kart #${mapping.kartfiyat_card_id}`,
     priceLabel: mapping.price_label || null,
-    sellPriceTry: mapping.last_try_price,
+    sellPriceTry,
+    cashPriceTry,
+    cashPriceRatio,
     priceManual: Boolean(mapping.price_manual),
     imageUrl: card ? getCardImageUrl(card) : null,
     setName: card?.category?.name || null,
     sku: mapping.sku || null,
     barcode: mapping.barcode || null,
+    ikasProductId: mapping.ikas_product_id || null,
+    productSlug,
+    productUrl: buildIkasProductUrl(productSlug),
     inStock: stock.totalQuantity > 0,
     stock,
     isAdmin,
