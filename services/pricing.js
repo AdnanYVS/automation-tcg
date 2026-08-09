@@ -5,6 +5,12 @@ const DEFAULT_MULTIPLIERS = {
   onepiece: 1.57,
 };
 
+/** Nakit: PC USD × kur × bu çarpan (kart çarpanından düşük). */
+const DEFAULT_CASH_MULTIPLIERS = {
+  pokemon: 1.5,
+  onepiece: 1.2,
+};
+
 function getPriceMultiplier(gameId = 'pokemon') {
   const game = normalizeGameId(gameId);
 
@@ -19,11 +25,22 @@ function getPriceMultiplier(gameId = 'pokemon') {
   );
 }
 
+function getCashMultiplier(gameId = 'pokemon') {
+  const game = normalizeGameId(gameId);
+
+  if (game === 'onepiece') {
+    return Number(process.env.ONEPIECE_CASH_MULTIPLIER || DEFAULT_CASH_MULTIPLIERS.onepiece);
+  }
+
+  return Number(process.env.POKEMON_CASH_MULTIPLIER || DEFAULT_CASH_MULTIPLIERS.pokemon);
+}
+
 function getPriceMultiplierForCard(card, { fallbackGame } = {}) {
   const taxonomy = detectGameFromCard(card, { fallbackGame });
 
   return {
     multiplier: getPriceMultiplier(taxonomy.id),
+    cashMultiplier: getCashMultiplier(taxonomy.id),
     gameId: taxonomy.id,
     gameLabel: taxonomy.brandName,
   };
@@ -41,29 +58,39 @@ function calculateInventoryValueTry(usdPrice, usdTryRate) {
 }
 
 /**
- * Nakit fiyatı = kart (satış) fiyatı × CASH_PRICE_RATIO.
- * Oran tanımlı değilse null döner (UI "—" gösterir).
+ * Nakit fiyatı = PC USD × kur × nakit çarpanı.
+ * USD yoksa kart fiyatından (kartÇarpan / nakitÇarpan) oranı ile tahmin edilir.
  */
-function getCashPriceRatio() {
-  const raw = process.env.CASH_PRICE_RATIO;
-  if (raw == null || String(raw).trim() === '') return null;
-  const ratio = Number(raw);
-  if (!Number.isFinite(ratio) || ratio <= 0) return null;
-  return ratio;
-}
+function calculateCashPriceTry({
+  usdPrice = null,
+  usdTryRate = null,
+  sellPriceTry = null,
+  gameId = 'pokemon',
+} = {}) {
+  const cashMultiplier = getCashMultiplier(gameId);
+  const usd = Number(usdPrice);
+  const rate = Number(usdTryRate);
 
-function calculateCashPriceTry(sellPriceTry, ratio = getCashPriceRatio()) {
+  if (Number.isFinite(usd) && usd > 0 && Number.isFinite(rate) && rate > 0) {
+    return calculateFinalPriceTry(usd, rate, cashMultiplier);
+  }
+
   const sell = Number(sellPriceTry);
-  if (!Number.isFinite(sell) || sell <= 0 || ratio == null) return null;
-  return Math.ceil(sell * Number(ratio));
+  const cardMultiplier = getPriceMultiplier(gameId);
+  if (Number.isFinite(sell) && sell > 0 && cardMultiplier > 0) {
+    return Math.ceil(sell * (cashMultiplier / cardMultiplier));
+  }
+
+  return null;
 }
 
 module.exports = {
   DEFAULT_MULTIPLIERS,
+  DEFAULT_CASH_MULTIPLIERS,
   calculateFinalPriceTry,
   calculateInventoryValueTry,
   calculateCashPriceTry,
-  getCashPriceRatio,
+  getCashMultiplier,
   getPriceMultiplier,
   getPriceMultiplierForCard,
 };

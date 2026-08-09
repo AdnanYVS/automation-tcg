@@ -1,4 +1,4 @@
-const { getCardById, getCardImageUrl } = require('./kartfiyat');
+const { getCardById, getCardImageUrl, getPriceChartingUsd } = require('./kartfiyat');
 const {
   findByQrToken,
   findMappingById,
@@ -13,7 +13,8 @@ const {
 } = require('./ikas/products');
 const { buildQrUrl } = require('./qrToken');
 const { buildIkasProductUrl } = require('./storefront');
-const { calculateCashPriceTry, getCashPriceRatio } = require('./pricing');
+const { calculateCashPriceTry, getPriceMultiplierForCard } = require('./pricing');
+const { getUsdTryRate } = require('./exchangeRate');
 
 function buildStockSummary(stockRows, mapping, locations) {
   const variantRows = stockRows.filter(
@@ -44,7 +45,7 @@ async function getQrCardPayload(token, { isAdmin = false } = {}) {
     console.warn(`[qr] KartFiyat detayı alınamadı (${mapping.kartfiyat_card_id}):`, error.message);
   }
 
-  const [locations, stockRows, ikasProduct] = await Promise.all([
+  const [locations, stockRows, ikasProduct, usdTryRate] = await Promise.all([
     listStockLocations(),
     listAllVariantStocks(),
     mapping.ikas_product_id
@@ -53,12 +54,24 @@ async function getQrCardPayload(token, { isAdmin = false } = {}) {
         return null;
       })
       : Promise.resolve(null),
+    getUsdTryRate().catch((error) => {
+      console.warn('[qr] Kur alınamadı:', error.message);
+      return null;
+    }),
   ]);
   const stock = buildStockSummary(stockRows, mapping, locations);
   const qrToken = mapping.qr_token || ensureQrTokenForMapping(mapping.id);
   const sellPriceTry = mapping.last_try_price;
-  const cashPriceRatio = getCashPriceRatio();
-  const cashPriceTry = calculateCashPriceTry(sellPriceTry, cashPriceRatio);
+  const { gameId, cashMultiplier } = getPriceMultiplierForCard(card);
+  const usdPrice = card
+    ? getPriceChartingUsd(card, { label: mapping.price_label })
+    : mapping.last_usd_price;
+  const cashPriceTry = calculateCashPriceTry({
+    usdPrice: usdPrice || mapping.last_usd_price,
+    usdTryRate,
+    sellPriceTry,
+    gameId,
+  });
   const productSlug = ikasProduct?.metaData?.slug || null;
 
   return {
@@ -70,7 +83,8 @@ async function getQrCardPayload(token, { isAdmin = false } = {}) {
     priceLabel: mapping.price_label || null,
     sellPriceTry,
     cashPriceTry,
-    cashPriceRatio,
+    cashMultiplier,
+    gameId,
     priceManual: Boolean(mapping.price_manual),
     imageUrl: card ? getCardImageUrl(card) : null,
     setName: card?.category?.name || null,
