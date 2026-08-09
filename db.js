@@ -434,21 +434,10 @@ function updateMappingIkasIds({
         } else {
           console.warn(
             `[db] Variant çakışması: mapping #${mappingId} → ${nextVariantId}`
-            + ` zaten #${conflict.id} (${conflict.card_name || conflict.kartfiyat_card_id}) üzerinde`,
+            + ` zaten #${conflict.id} (${conflict.card_name || conflict.kartfiyat_card_id}) üzerinde`
+            + ' — product/variant ID yazılmadı',
           );
-          db.prepare(`
-            UPDATE card_mappings
-            SET ikas_product_id = COALESCE(@ikasProductId, ikas_product_id),
-                sku = COALESCE(@sku, sku),
-                barcode = COALESCE(@barcode, barcode),
-                updated_at = datetime('now')
-            WHERE id = @mappingId
-          `).run({
-            mappingId,
-            ikasProductId,
-            sku: sku || null,
-            barcode: barcode || null,
-          });
+          // Çakışmada product_id/sku yazma: yanlış ürüne bağlanmayı önler
           return {
             applied: false,
             reason: 'variant_conflict',
