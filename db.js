@@ -544,23 +544,30 @@ function upsertPendingPriceAlert({
   }
 }
 
-function getPriceChangeAlerts({ status } = {}) {
+function getPriceChangeAlerts({ status, excludeMissing = true } = {}) {
   const db = getDatabase();
   try {
+    const missingClause = excludeMissing ? 'AND COALESCE(m.ikas_missing, 0) = 0' : '';
+
     if (status) {
       return db.prepare(`
-        SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.sku, m.price_label
+        SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.sku, m.price_label,
+               m.ikas_missing
         FROM price_change_alerts a
         JOIN card_mappings m ON m.id = a.mapping_id
         WHERE a.status = ?
+          ${missingClause}
         ORDER BY a.detected_at DESC
       `).all(status);
     }
 
     return db.prepare(`
-      SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.sku, m.price_label
+      SELECT a.*, m.ikas_variant_id, m.ikas_product_id, m.barcode, m.sku, m.price_label,
+             m.ikas_missing
       FROM price_change_alerts a
       JOIN card_mappings m ON m.id = a.mapping_id
+      WHERE 1 = 1
+        ${missingClause}
       ORDER BY a.detected_at DESC
     `).all();
   } finally {
@@ -601,8 +608,13 @@ function resolvePriceChangeAlert(id, status) {
 function countPendingPriceAlerts() {
   const db = getDatabase();
   try {
+    // ikas'ta olmayan ürünlerin alert'leri bekleyen sayısına dahil edilmez
     return db.prepare(`
-      SELECT COUNT(*) AS count FROM price_change_alerts WHERE status = 'pending'
+      SELECT COUNT(*) AS count
+      FROM price_change_alerts a
+      JOIN card_mappings m ON m.id = a.mapping_id
+      WHERE a.status = 'pending'
+        AND COALESCE(m.ikas_missing, 0) = 0
     `).get().count;
   } finally {
     db.close();

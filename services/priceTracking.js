@@ -130,7 +130,73 @@ async function checkMappingPrice(mapping, { usdTryRate, threshold }) {
   return { status: 'unchanged', cardName, changePercent, tryPrice };
 }
 
+/**
+ * Bekleyen alert'lerden ikas kataloğunda olmayanları temizler.
+ * Fiyat kontrolü ürün varlığını doğrulamadığı için silinen ürünler listede kalabiliyordu.
+ */
+async function purgePendingAlertsNotInIkas() {
+  const pending = getPriceChangeAlerts({ status: 'pending', excludeMissing: false });
+  if (!pending.length) return { checked: 0, rejected: 0 };
+
+  let catalog;
+  try {
+    catalog = await listAllProducts();
+  } catch (error) {
+    console.warn('[price] Orphan alert temizliği atlandı (katalog alınamadı):', error.message);
+    return { checked: 0, rejected: 0, error: error.message };
+  }
+
+  const byId = new Set(catalog.map((product) => product.id));
+  let rejected = 0;
+
+  for (const alert of pending) {
+    if (alert.ikas_missing) {
+      rejected += rejectPendingAlertsForMapping(alert.mapping_id) ? 1 : 0;
+      continue;
+    }
+
+    if (alert.ikas_product_id && byId.has(alert.ikas_product_id)) continue;
+
+    const fallbackSku = buildKartfiyatSku(alert.kartfiyat_card_id, alert.price_label);
+    const found = await findProductBySkuOrBarcode({
+      sku: fallbackSku,
+      barcode: alert.barcode || null,
+      products: catalog,
+      catalogOnly: true,
+    });
+
+    const trusted = found?.variant?.sku
+      && String(found.variant.sku).toUpperCase() === String(fallbackSku).toUpperCase();
+
+    if (trusted) {
+      updateMappingIkasIds({
+        mappingId: alert.mapping_id,
+        ikasProductId: found.product.id,
+        ikasVariantId: found.variant.id,
+        sku: found.variant.sku,
+        clearMissing: true,
+      });
+      continue;
+    }
+
+    markMissingAndRejectAlerts(
+      alert.mapping_id,
+      `ikas kataloğunda yok (sku: ${fallbackSku})`,
+    );
+    rejected += 1;
+  }
+
+  if (rejected) {
+    console.warn(`[price] Listeden temizlenen orphan alert: ${rejected}`);
+  }
+
+  return { checked: pending.length, rejected };
+}
+
 async function runPriceCheck() {
+  // Önce ikas'ta olmayanların eski alert'lerini temizle
+  const purged = await purgePendingAlertsNotInIkas();
+
   const mappings = getAutoTrackedMappings();
   if (!mappings.length) {
     return {
@@ -140,6 +206,7 @@ async function runPriceCheck() {
       unchanged: 0,
       skipped: 0,
       failed: 0,
+      purged: purged.rejected || 0,
       thresholdPercent: THRESHOLD_PERCENT,
     };
   }
@@ -152,6 +219,7 @@ async function runPriceCheck() {
     unchanged: 0,
     skipped: 0,
     failed: 0,
+    purged: purged.rejected || 0,
     thresholdPercent: THRESHOLD_PERCENT,
     checkedAt: new Date().toISOString(),
   };
@@ -408,12 +476,22 @@ async function pruneMissingIkasMappings({ apply = false } = {}) {
   return stats;
 }
 
-function getPriceDashboardData() {
+async function getPriceDashboardData({ purgeOrphans = true } = {}) {
+  let purge = { rejected: 0 };
+  if (purgeOrphans) {
+    try {
+      purge = await purgePendingAlertsNotInIkas();
+    } catch (error) {
+      console.warn('[price] Dashboard orphan temizliği başarısız:', error.message);
+    }
+  }
+
   return {
     pendingCount: countPendingPriceAlerts(),
     summary: getLatestPriceCheckSummary(),
     thresholdPercent: THRESHOLD_PERCENT,
     alerts: getPriceChangeAlerts(),
+    purgedMissing: purge.rejected || 0,
   };
 }
 
@@ -425,6 +503,7 @@ module.exports = {
   rejectAllPendingPriceChanges,
   bulkResolvePendingPriceChanges,
   pruneMissingIkasMappings,
+  purgePendingAlertsNotInIkas,
   getPriceDashboardData,
   calculateChangePercent,
   exceedsThreshold,

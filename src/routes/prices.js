@@ -21,9 +21,9 @@ function normalizeBulkFilter(value) {
   return null;
 }
 
-router.get('/price-changes', (req, res) => {
+router.get('/price-changes', async (req, res) => {
   try {
-    const data = getPriceDashboardData();
+    const data = await getPriceDashboardData({ purgeOrphans: true });
     return res.json({ success: true, data });
   } catch (error) {
     console.error('GET /api/price-changes hatası:', error.message);
@@ -34,7 +34,7 @@ router.get('/price-changes', (req, res) => {
 router.post('/price-changes/check-now', async (req, res) => {
   try {
     const summary = await runPriceCheck();
-    const data = getPriceDashboardData();
+    const data = await getPriceDashboardData({ purgeOrphans: false });
     return res.json({ success: true, data: { summary, ...data } });
   } catch (error) {
     console.error('POST /api/price-changes/check-now hatası:', error.message);

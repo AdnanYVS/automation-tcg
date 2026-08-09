@@ -335,6 +335,12 @@
       dashboardData = payload.data;
       renderStats(dashboardData);
       renderTable(dashboardData.alerts || []);
+      if (dashboardData.purgedMissing > 0) {
+        showToast(
+          `${dashboardData.purgedMissing} kart ikas'ta olmadığı için listeden çıkarıldı.`,
+          'info',
+        );
+      }
     }
 
     function renderPortfolioStats(data) {
