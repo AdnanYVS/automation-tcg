@@ -408,23 +408,34 @@ function updateMappingIkasIds({
       ).get(nextVariantId);
 
       if (conflict && conflict.id !== mappingId) {
-        if (conflict.ikas_missing) {
+        const kfCardId = String(sku || '').match(/^KF-(\d+)/i)?.[1] || null;
+        const conflictOwnsWrongCard = Boolean(
+          kfCardId
+          && String(conflict.kartfiyat_card_id || '') !== String(kfCardId),
+        );
+        const canReclaim = Boolean(conflict.ikas_missing || conflictOwnsWrongCard);
+
+        if (canReclaim) {
           const tombstone = `missing:${conflict.id}:${nextVariantId}`;
           db.prepare(`
             UPDATE card_mappings
-            SET ikas_variant_id = @tombstone, updated_at = datetime('now')
+            SET ikas_variant_id = @tombstone,
+                ikas_missing = 1,
+                ikas_missing_at = COALESCE(ikas_missing_at, datetime('now')),
+                updated_at = datetime('now')
             WHERE id = @conflictId
           `).run({ tombstone, conflictId: conflict.id });
           console.warn(
-            `[db] Variant ${nextVariantId} eksik mapping #${conflict.id} üzerinden serbest bırakıldı`
-            + ` → ${tombstone}`,
+            `[db] Variant ${nextVariantId} mapping #${conflict.id}`
+            + ` (${conflict.card_name || conflict.kartfiyat_card_id}) üzerinden serbest bırakıldı`
+            + ` → ${tombstone}`
+            + (conflictOwnsWrongCard ? ' [yanlış kart sahipliği]' : ' [ikas_missing]'),
           );
         } else {
           console.warn(
             `[db] Variant çakışması: mapping #${mappingId} → ${nextVariantId}`
             + ` zaten #${conflict.id} (${conflict.card_name || conflict.kartfiyat_card_id}) üzerinde`,
           );
-          // Variant yazmadan diğer alanları güncelle
           db.prepare(`
             UPDATE card_mappings
             SET ikas_product_id = COALESCE(@ikasProductId, ikas_product_id),
