@@ -1,4 +1,4 @@
-const { getAllMappings } = require('../db');
+const { getAllMappings, getInventoryEvents } = require('../db');
 const { listStockLocations } = require('./ikas');
 const { listAllOrders, isCountableOrder, isCountableLineItem } = require('./ikas/orders');
 
@@ -28,24 +28,52 @@ function matchesSale(sale, query) {
     sale.kartfiyatCardId,
     sale.barcode,
     sale.orderNumber,
+    sale.note,
+    sale.sourceLabel,
   ].join(' ').toLowerCase();
   return haystack.includes(query);
 }
 
-async function getSalesHistory({
-  locationId = null,
-  search = null,
-  limit = 200,
-} = {}) {
-  const mappings = getAllMappings();
-  const variantIndex = buildVariantIndex(mappings);
-  const [stockLocations, orderResult] = await Promise.all([
-    listStockLocations(),
-    listAllOrders({ stockLocationId: locationId || null }),
-  ]);
-  const locationIndex = buildLocationIndex(stockLocations);
-  const searchQuery = normalizeSearch(search);
+function buildStoreSales({ locationId, locationIndex, limit }) {
+  const events = getInventoryEvents({
+    eventType: 'sale_store',
+    stockLocationId: locationId || null,
+    limit: Math.max(limit, 500),
+  });
 
+  return events.map((event) => {
+    const unitPrice = Number(event.unit_price);
+    const hasUnitPrice = Number.isFinite(unitPrice) && unitPrice > 0;
+    return {
+      source: 'store',
+      sourceLabel: 'Mağaza (QR)',
+      orderId: null,
+      orderNumber: null,
+      orderStatus: null,
+      orderPaymentStatus: null,
+      soldAt: event.created_at,
+      locationId: event.stock_location_id || null,
+      locationName: locationIndex.get(event.stock_location_id) || event.stock_location_id || 'Bilinmiyor',
+      quantity: Number(event.quantity || 0),
+      unitPrice: hasUnitPrice ? unitPrice : null,
+      totalPrice: hasUnitPrice ? unitPrice * Number(event.quantity || 0) : null,
+      lineStatus: null,
+      variantId: event.ikas_variant_id || null,
+      variantName: null,
+      sku: null,
+      barcode: event.barcode || null,
+      kartfiyatCardId: event.kartfiyat_card_id || null,
+      cardName: event.card_name || (event.kartfiyat_card_id ? `Kart #${event.kartfiyat_card_id}` : 'Bilinmeyen ürün'),
+      mappingId: event.mapping_id || null,
+      isMapped: Boolean(event.mapping_id),
+      note: event.note || null,
+      eventId: event.id,
+    };
+  });
+}
+
+async function buildWebSales({ locationId, locationIndex, variantIndex }) {
+  const orderResult = await listAllOrders({ stockLocationId: locationId || null });
   const sales = [];
 
   for (const order of orderResult.orders) {
@@ -63,7 +91,9 @@ async function getSalesHistory({
 
       if (locationId && lineLocationId !== locationId) continue;
 
-      const sale = {
+      sales.push({
+        source: 'web',
+        sourceLabel: 'ikas online',
         orderId: order.id,
         orderNumber: order.orderNumber,
         orderStatus: order.status,
@@ -83,29 +113,51 @@ async function getSalesHistory({
         cardName: mapping?.card_name || lineItem.variant?.name || 'Bilinmeyen ürün',
         mappingId: mapping?.id || null,
         isMapped: Boolean(mapping),
-      };
-
-      if (!matchesSale(sale, searchQuery)) continue;
-      sales.push(sale);
+        note: 'ikas online',
+        eventId: null,
+      });
     }
   }
 
-  sales.sort((left, right) => new Date(right.soldAt) - new Date(left.soldAt));
+  return sales;
+}
+
+async function getSalesHistory({
+  locationId = null,
+  search = null,
+  limit = 200,
+} = {}) {
+  const mappings = getAllMappings();
+  const variantIndex = buildVariantIndex(mappings);
+  const stockLocations = await listStockLocations();
+  const locationIndex = buildLocationIndex(stockLocations);
+  const searchQuery = normalizeSearch(search);
+
+  const [webSales, storeSales] = await Promise.all([
+    buildWebSales({ locationId, locationIndex, variantIndex }),
+    Promise.resolve(buildStoreSales({ locationId, locationIndex, limit })),
+  ]);
+
+  const sales = [...webSales, ...storeSales]
+    .filter((sale) => matchesSale(sale, searchQuery))
+    .sort((left, right) => new Date(right.soldAt) - new Date(left.soldAt));
 
   const limitedSales = sales.slice(0, limit);
   const soldUnits = sales.reduce((sum, sale) => sum + sale.quantity, 0);
-  const soldRevenue = sales.reduce((sum, sale) => sum + sale.totalPrice, 0);
+  const soldRevenue = sales.reduce((sum, sale) => sum + Number(sale.totalPrice || 0), 0);
   const mappedSales = sales.filter((sale) => sale.isMapped);
   const unmappedSales = sales.filter((sale) => !sale.isMapped);
+  const storeCount = sales.filter((sale) => sale.source === 'store').length;
+  const webCount = sales.filter((sale) => sale.source === 'web').length;
 
   const byLocation = stockLocations.map((location) => {
     const locationSales = sales.filter((sale) => sale.locationId === location.id);
     return {
       id: location.id,
       name: location.name,
-      orders: new Set(locationSales.map((sale) => sale.orderId)).size,
+      orders: new Set(locationSales.map((sale) => sale.orderId || `store-${sale.eventId}`)).size,
       units: locationSales.reduce((sum, sale) => sum + sale.quantity, 0),
-      revenue: locationSales.reduce((sum, sale) => sum + sale.totalPrice, 0),
+      revenue: locationSales.reduce((sum, sale) => sum + Number(sale.totalPrice || 0), 0),
     };
   });
 
@@ -123,7 +175,7 @@ async function getSalesHistory({
       isMapped: sale.isMapped,
     };
     existing.totalQuantity += sale.quantity;
-    existing.totalRevenue += sale.totalPrice;
+    existing.totalRevenue += Number(sale.totalPrice || 0);
     if (new Date(sale.soldAt) > new Date(existing.lastSoldAt)) {
       existing.lastSoldAt = sale.soldAt;
     }
@@ -133,12 +185,14 @@ async function getSalesHistory({
   return {
     generatedAt: new Date().toISOString(),
     summary: {
-      totalOrders: new Set(sales.map((sale) => sale.orderId)).size,
+      totalOrders: new Set(sales.map((sale) => sale.orderId || `store-${sale.eventId}`)).size,
       totalLineItems: sales.length,
       soldUnits,
       soldRevenue,
       mappedLineItems: mappedSales.length,
       unmappedLineItems: unmappedSales.length,
+      storeSales: storeCount,
+      webSales: webCount,
       byLocation,
     },
     sales: limitedSales,

@@ -111,6 +111,7 @@ async function recordStoreSale(token, {
     ? parsedPrice
     : mapping.last_try_price;
 
+  const trimmedNote = note ? String(note).trim() : '';
   insertInventoryEvent({
     mappingId: mapping.id,
     kartfiyatCardId: mapping.kartfiyat_card_id,
@@ -118,7 +119,8 @@ async function recordStoreSale(token, {
     stockLocationId,
     quantity: 1,
     eventType: 'sale_store',
-    note: note || (finalPrice ? `Mağaza satışı · ${finalPrice} TRY` : 'Mağaza satışı'),
+    note: trimmedNote || null,
+    unitPrice: finalPrice,
   });
 
   const refreshed = await getQrCardPayload(token, { isAdmin: true });

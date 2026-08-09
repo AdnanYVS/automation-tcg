@@ -101,7 +101,7 @@
         <div class="panel-header">
           <div>
             <strong>Satış Geçmişi</strong>
-            <div class="panel-meta">ikas siparişlerinden çekilen satılan kartlar</div>
+            <div class="panel-meta">Mağaza (QR) ve ikas online satışlar</div>
           </div>
         </div>
         <div class="table-wrap">
@@ -113,12 +113,14 @@
                 <th>Birim</th>
                 <th>Toplam</th>
                 <th>Depo</th>
+                <th>Kaynak</th>
+                <th>Not</th>
                 <th>Sipariş</th>
                 <th>Tarih</th>
               </tr>
             </thead>
             <tbody id="sales-body">
-              <tr class="loading-row"><td colspan="7">Yükleniyor...</td></tr>
+              <tr class="loading-row"><td colspan="9">Yükleniyor...</td></tr>
             </tbody>
           </table>
         </div>
@@ -256,7 +258,7 @@
       if (currentView === 'sales' && salesData) {
         const summary = salesData.summary;
         statsEl.innerHTML = `
-          <div class="stat-card"><div class="stat-label">Sipariş</div><div class="stat-value">${summary.totalOrders}</div><div class="stat-sub">${summary.totalLineItems} satır</div></div>
+          <div class="stat-card"><div class="stat-label">Satış</div><div class="stat-value">${summary.totalLineItems}</div><div class="stat-sub">${summary.storeSales || 0} mağaza · ${summary.webSales || 0} online</div></div>
           <div class="stat-card"><div class="stat-label">Satılan Adet</div><div class="stat-value">${summary.soldUnits}</div><div class="stat-sub">Toplam kart adedi</div></div>
           <div class="stat-card"><div class="stat-label">Ciro</div><div class="stat-value" style="font-size:1.2rem">${formatTry(summary.soldRevenue)}</div><div class="stat-sub">Satış toplamı</div></div>
           ${summary.byLocation.map((loc) => `
@@ -335,11 +337,20 @@
     function renderSalesTable() {
       if (!salesData) return;
       if (!salesData.sales.length) {
-        salesBody.innerHTML = '<tr class="empty-state"><td colspan="7">Henüz satış kaydı yok.</td></tr>';
+        salesBody.innerHTML = '<tr class="empty-state"><td colspan="9">Henüz satış kaydı yok.</td></tr>';
         return;
       }
 
-      salesBody.innerHTML = salesData.sales.map((sale) => `
+      salesBody.innerHTML = salesData.sales.map((sale) => {
+        const isWeb = sale.source === 'web';
+        const sourceTag = isWeb ? 'sale-web' : 'sale-store';
+        const sourceLabel = sale.sourceLabel || (isWeb ? 'ikas online' : 'Mağaza (QR)');
+        const noteText = sale.note || (isWeb ? 'ikas online' : '—');
+        const orderLabel = sale.orderNumber || sale.orderId
+          ? `#${sale.orderNumber || sale.orderId}`
+          : '—';
+
+        return `
         <tr>
           <td>
             <strong>${escapeHtml(sale.cardName)}</strong>
@@ -349,10 +360,13 @@
           <td>${formatTry(sale.unitPrice)}</td>
           <td>${formatTry(sale.totalPrice)}</td>
           <td>${escapeHtml(sale.locationName)}</td>
-          <td>#${escapeHtml(sale.orderNumber || sale.orderId)}</td>
+          <td><span class="tag ${sourceTag}">${escapeHtml(sourceLabel)}</span></td>
+          <td>${escapeHtml(noteText)}</td>
+          <td>${escapeHtml(orderLabel)}</td>
           <td>${formatDate(sale.soldAt)}</td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     }
 
     const EVENT_TYPE_META = {
@@ -425,7 +439,7 @@
       if (filters.locationId) params.set('locationId', filters.locationId);
       if (filters.search) params.set('search', filters.search);
 
-      salesBody.innerHTML = '<tr class="loading-row"><td colspan="7">Satışlar yükleniyor...</td></tr>';
+      salesBody.innerHTML = '<tr class="loading-row"><td colspan="9">Satışlar yükleniyor...</td></tr>';
       const response = await AUTH.apiFetch(`/api/sales-history?${params}`);
       const payload = await response.json();
       if (!response.ok || !payload.success) throw new Error(payload.error || 'Satış verisi alınamadı.');
