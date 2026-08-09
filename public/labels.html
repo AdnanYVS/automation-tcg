@@ -13,11 +13,10 @@
       --paper: #F3EDDF;
       --card: #FDFBF3;
       --ink: #17130E;
-      --ink-soft: #4A4436;
       --ink-faint: #8A8069;
-      --line-soft: rgba(23, 19, 14, 0.16);
       --yellow: #F3C532;
       --radius-sm: 8px;
+      --label-size: 2cm;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -58,6 +57,14 @@
     .toolbar-brand span {
       font-family: 'Archivo Black', sans-serif;
       font-size: 0.85rem;
+      letter-spacing: 0.04em;
+    }
+
+    .toolbar-hint {
+      width: 100%;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--ink-faint);
       letter-spacing: 0.04em;
     }
 
@@ -111,60 +118,45 @@
     .labels {
       max-width: 920px;
       margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
-      gap: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .label {
+      width: var(--label-size);
+      height: var(--label-size);
       background: #fff;
-      border: 2px solid var(--ink);
-      border-radius: 10px;
-      padding: 12px;
-      text-align: center;
-      break-inside: avoid;
-    }
-
-    .label-brand {
+      border: 0.4pt solid #bbb;
+      padding: 1.2mm;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 5px;
-      margin-bottom: 8px;
-      padding-bottom: 7px;
-      border-bottom: 1.5px solid var(--line-soft);
+      justify-content: space-between;
+      text-align: center;
+      overflow: hidden;
+      break-inside: avoid;
+      page-break-inside: avoid;
     }
 
-    .label-brand img { width: 14px; height: 14px; }
-
-    .label-brand span {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 0.56rem;
-      letter-spacing: 0.1em;
+    .label img.qr {
+      width: 14mm;
+      height: 14mm;
+      object-fit: contain;
+      flex: 0 0 auto;
     }
-
-    .label img.qr { width: 118px; height: 118px; object-fit: contain; }
 
     .label .name {
-      font-size: 0.8rem;
+      width: 100%;
+      font-size: 5.5pt;
       font-weight: 700;
-      margin-top: 8px;
-      line-height: 1.25;
-    }
-
-    .label .price {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.98rem;
-      font-weight: 700;
-      margin-top: 4px;
-    }
-
-    .label .sku {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.62rem;
-      color: var(--ink-faint);
-      margin-top: 4px;
-      word-break: break-all;
+      line-height: 1.15;
+      max-height: 3.8mm;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      word-break: break-word;
     }
 
     .empty {
@@ -173,17 +165,29 @@
       padding: 44px;
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.82rem;
-      grid-column: 1 / -1;
+      width: 100%;
     }
 
     @media print {
-      body { background: #fff; padding: 0; }
+      @page { margin: 4mm; size: auto; }
+
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
       .toolbar, .no-print { display: none !important; }
-      .labels { display: block; }
+
+      .labels {
+        max-width: none;
+        gap: 2mm;
+      }
+
       .label {
-        page-break-inside: avoid;
-        margin-bottom: 8px;
-        border: 1px solid #999;
+        width: 2cm;
+        height: 2cm;
+        border: 0.3pt solid #999;
+        box-shadow: none;
       }
     }
   </style>
@@ -201,6 +205,7 @@
     <button type="button" id="render-btn">Etiketleri oluştur</button>
     <button type="button" id="print-btn">Yazdır</button>
     <a href="/" class="back-link">← Panele dön</a>
+    <p class="toolbar-hint">2 × 2 cm · yalnızca QR kod ve kart adı</p>
   </div>
   <div id="labels" class="labels">
     <div class="empty">URL'de token veya mappingId parametresi gerekli.</div>
@@ -217,12 +222,7 @@
     }
 
     function qrImageUrl(url) {
-      return `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=${encodeURIComponent(url)}`;
-    }
-
-    function formatTry(value) {
-      if (value == null || !Number.isFinite(Number(value))) return '';
-      return `${Number(value).toLocaleString('tr-TR')} ₺`;
+      return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=0&data=${encodeURIComponent(url)}`;
     }
 
     function escapeHtml(value) {
@@ -238,14 +238,8 @@
       for (let i = 0; i < copies; i += 1) {
         chunks.push(`
           <div class="label">
-            <div class="label-brand">
-              <img src="/assets/logo-ball.png" alt="">
-              <span>CARD DÜNYASI</span>
-            </div>
             <img class="qr" src="${qrImageUrl(labelData.qrUrl)}" alt="QR">
             <div class="name">${escapeHtml(labelData.cardName)}</div>
-            <div class="price">${escapeHtml(formatTry(labelData.sellPriceTry))}</div>
-            <div class="sku">${escapeHtml(labelData.sku || labelData.qrToken)}</div>
           </div>
         `);
       }
