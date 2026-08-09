@@ -481,6 +481,64 @@ function findProductByBarcodeInCatalog(products, barcode) {
  * Geçersiz/silinmiş productId durumunda SKU veya barkod ile canlı ürün+varyant bulur.
  * Kategori ağacı değişikliği ürün ID'sini değiştirmez; asıl sorun genelde eski mapping ID'leridir.
  */
+/** KF- SKU önce; kısa kart numarası SKU'ları (99, 4 vb.) en sonda — yanlış eşleşmeyi önler. */
+function prioritizeSkuCandidates(candidates = []) {
+  const unique = [...new Set(
+    candidates.map((value) => String(value || '').trim()).filter(Boolean),
+  )];
+
+  const score = (sku) => {
+    if (/^KF-\d+/i.test(sku)) return 0;
+    if (/^\d{8,}$/.test(sku)) return 1;
+    if (/^\d{1,4}$/.test(sku)) return 3;
+    return 2;
+  };
+
+  return unique.sort((left, right) => score(left) - score(right) || left.localeCompare(right));
+}
+
+function isTrustedProductResolution(live, {
+  sku = null,
+  skuCandidates = [],
+  barcode = null,
+  productId = null,
+  variantId = null,
+} = {}) {
+  if (!live?.product?.id || !live?.variant?.id) return false;
+
+  // Orijinal ürün/varyant hâlâ geçerliyse güvenilir
+  if (productId && live.product.id === productId) {
+    if (!variantId || live.variant.id === variantId) return true;
+    const preferred = prioritizeSkuCandidates([sku, ...skuCandidates]);
+    const variantSku = String(live.variant.sku || '').trim();
+    if (preferred.some((entry) => entry === variantSku)) return true;
+  }
+
+  const variantSku = String(live.variant.sku || '').trim();
+  const preferred = prioritizeSkuCandidates([sku, ...skuCandidates]);
+  const kfPreferred = preferred.filter((entry) => /^KF-\d+/i.test(entry));
+
+  if (kfPreferred.length) {
+    if (kfPreferred.some((entry) => entry === variantSku)) return true;
+  } else if (preferred.some((entry) => entry === variantSku)) {
+    return true;
+  }
+
+  const targetBarcode = normalizeBarcodeValue(barcode);
+  if (targetBarcode) {
+    const hasBarcode = (live.variant.barcodeList || []).some(
+      (code) => normalizeBarcodeValue(code) === targetBarcode,
+    );
+    if (hasBarcode) return true;
+  }
+
+  // KF beklenirken belirsiz SKU ile bulunan ürünü kabul etme
+  if (kfPreferred.length) return false;
+
+  // Ürün ID aynı kaldıysa kabul
+  return Boolean(productId && live.product.id === productId);
+}
+
 async function resolveLiveProductVariant({
   productId,
   variantId = null,
@@ -490,11 +548,10 @@ async function resolveLiveProductVariant({
   products = null,
   indexes = null,
 } = {}) {
-  const candidateSkus = [...new Set(
-    [sku, ...(Array.isArray(skuCandidates) ? skuCandidates : [])]
-      .map((value) => String(value || '').trim())
-      .filter(Boolean),
-  )];
+  const candidateSkus = prioritizeSkuCandidates([
+    sku,
+    ...(Array.isArray(skuCandidates) ? skuCandidates : []),
+  ]);
 
   const lookupIndexes = indexes
     || (products?.length ? buildProductIndexes(products) : null)
@@ -509,18 +566,18 @@ async function resolveLiveProductVariant({
 
   if (!product?.id) {
     let found = null;
-    for (const candidate of candidateSkus) {
+    // Önce barkod — en güvenilir
+    if (barcode) {
       found = await findProductBySkuOrBarcode({
-        sku: candidate,
         barcode,
         products,
         indexes: lookupIndexes,
       });
-      if (found?.product?.id) break;
     }
-    if (!found?.product?.id && barcode) {
+    for (const candidate of candidateSkus) {
+      if (found?.product?.id) break;
       found = await findProductBySkuOrBarcode({
-        barcode,
+        sku: candidate,
         products,
         indexes: lookupIndexes,
       });
@@ -544,12 +601,24 @@ async function resolveLiveProductVariant({
       throw new Error(`ikas ürününde aktif varyant bulunamadı: ${product.id}`);
     }
 
-    return {
+    const resolved = {
       product,
       variant,
       productChanged,
       variantChanged: Boolean(variantId && variant.id !== variantId) || productChanged,
     };
+
+    if (!isTrustedProductResolution(resolved, {
+      sku, skuCandidates: candidateSkus, barcode, productId, variantId,
+    })) {
+      throw new Error(
+        `ikas ürün eşleşmesi güvenilir değil: ${productId || '?'}`
+        + ` → ${product.id}/${variant.id} (sku: ${variant.sku || '?'})`
+        + ` — beklenen: ${candidateSkus.filter((entry) => /^KF-/i.test(entry)).join(' | ') || candidateSkus.join(' | ') || '?'}`,
+      );
+    }
+
+    return resolved;
   }
 
   let variant = null;
@@ -571,29 +640,37 @@ async function resolveLiveProductVariant({
 
   if (!variant?.id && (candidateSkus.length || barcode)) {
     let found = null;
-    for (const candidate of candidateSkus) {
+    if (barcode) {
       found = await findProductBySkuOrBarcode({
-        sku: candidate,
         barcode,
         products,
         indexes: lookupIndexes,
       });
-      if (found?.product?.id) break;
     }
-    if (!found?.product?.id && barcode) {
+    for (const candidate of candidateSkus) {
+      if (found?.product?.id) break;
       found = await findProductBySkuOrBarcode({
-        barcode,
+        sku: candidate,
         products,
         indexes: lookupIndexes,
       });
     }
     if (found?.product?.id && found?.variant?.id) {
-      return {
+      const resolved = {
         product: found.product,
         variant: found.variant,
         productChanged: found.product.id !== productId,
         variantChanged: true,
       };
+      if (!isTrustedProductResolution(resolved, {
+        sku, skuCandidates: candidateSkus, barcode, productId, variantId,
+      })) {
+        throw new Error(
+          `ikas ürün eşleşmesi güvenilir değil: ${productId}`
+          + ` → ${found.product.id}/${found.variant.id} (sku: ${found.variant.sku || '?'})`,
+        );
+      }
+      return resolved;
     }
   }
 

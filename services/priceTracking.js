@@ -34,7 +34,9 @@ function exceedsThreshold(changePercent, threshold = THRESHOLD_PERCENT) {
 
 function isMissingProductError(error) {
   const message = error?.message || String(error || '');
-  return /ikas ürünü bulunamadı|INVALID_PRODUCT_ID/i.test(message);
+  // Güvenilir olmayan eşleşme = ürün var ama yanlış SKU ile eşleşti; missing sayma
+  if (/eşleşmesi güvenilir değil/i.test(message)) return false;
+  return /ikas ürünü bulunamadı|INVALID_PRODUCT_ID|ikas'ta silinmiş|yeniden import/i.test(message);
 }
 
 function markMissingAndRejectAlerts(mappingId, reason) {
@@ -175,13 +177,45 @@ async function runPriceCheck() {
   return summary;
 }
 
+function applyMappingIdChanges(idChanges = []) {
+  let applied = 0;
+  let skippedConflict = 0;
+
+  for (const change of idChanges) {
+    if (!change.mappingId) continue;
+    try {
+      const result = updateMappingIkasIds({
+        mappingId: change.mappingId,
+        ikasProductId: change.productId,
+        ikasVariantId: change.variantId,
+        sku: change.sku || null,
+        clearMissing: true,
+      });
+      if (result?.applied === false && result.reason === 'variant_conflict') {
+        skippedConflict += 1;
+        continue;
+      }
+      if (result?.applied !== false) applied += 1;
+    } catch (error) {
+      skippedConflict += 1;
+      console.warn(
+        `[price] Mapping ID güncellenemedi (#${change.mappingId}): ${error.message}`,
+      );
+    }
+  }
+
+  return { applied, skippedConflict };
+}
+
 async function approvePriceChange(alertId) {
   const alert = getPriceChangeAlertById(alertId);
   if (!alert) throw new Error('Fiyat değişikliği kaydı bulunamadı.');
   if (alert.status !== 'pending') throw new Error('Bu kayıt zaten işlenmiş.');
 
+  // KF- SKU her zaman öncelikli — kısa kart numarası (99, 4) yanlış ürüne bağlanmasın
   const fallbackSku = buildKartfiyatSku(alert.kartfiyat_card_id, alert.price_label);
-  const sku = alert.sku || fallbackSku;
+  const sku = fallbackSku;
+  const skuCandidates = [fallbackSku, alert.sku].filter(Boolean);
 
   try {
     const result = await updateVariantPrices([{
@@ -190,20 +224,11 @@ async function approvePriceChange(alertId) {
       variantId: alert.ikas_variant_id,
       sellPrice: alert.new_try_price,
       sku,
-      skuCandidates: [alert.sku, fallbackSku].filter(Boolean),
+      skuCandidates,
       barcode: alert.barcode || null,
     }]);
 
-    for (const change of result?.idChanges || []) {
-      if (!change.mappingId) continue;
-      updateMappingIkasIds({
-        mappingId: change.mappingId,
-        ikasProductId: change.productId,
-        ikasVariantId: change.variantId,
-        sku: change.sku || null,
-        clearMissing: true,
-      });
-    }
+    applyMappingIdChanges(result?.idChanges || []);
 
     updateMappingPriceSnapshot({
       mappingId: alert.mapping_id,

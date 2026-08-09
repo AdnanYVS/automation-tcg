@@ -380,6 +380,12 @@ function updateMappingPriceSnapshot({
   }
 }
 
+/**
+ * ikas ürün/varyant ID güncellemesi.
+ * Aynı variant_id başka mapping'deyse:
+ *  - o mapping ikas_missing ise variant'ı tombstone'a çeker, güncellemeyi uygular
+ *  - aktif başka mapping ise variant_id yazılmaz (UNIQUE patlamaz), { applied:false } döner
+ */
 function updateMappingIkasIds({
   mappingId,
   ikasProductId = null,
@@ -390,6 +396,57 @@ function updateMappingIkasIds({
 }) {
   const db = getDatabase();
   try {
+    const current = db.prepare('SELECT * FROM card_mappings WHERE id = ?').get(mappingId);
+    if (!current) {
+      return { applied: false, reason: 'mapping_not_found' };
+    }
+
+    let nextVariantId = ikasVariantId || null;
+    if (nextVariantId && nextVariantId !== current.ikas_variant_id) {
+      const conflict = db.prepare(
+        'SELECT id, ikas_missing, card_name, kartfiyat_card_id FROM card_mappings WHERE ikas_variant_id = ?',
+      ).get(nextVariantId);
+
+      if (conflict && conflict.id !== mappingId) {
+        if (conflict.ikas_missing) {
+          const tombstone = `missing:${conflict.id}:${nextVariantId}`;
+          db.prepare(`
+            UPDATE card_mappings
+            SET ikas_variant_id = @tombstone, updated_at = datetime('now')
+            WHERE id = @conflictId
+          `).run({ tombstone, conflictId: conflict.id });
+          console.warn(
+            `[db] Variant ${nextVariantId} eksik mapping #${conflict.id} üzerinden serbest bırakıldı`
+            + ` → ${tombstone}`,
+          );
+        } else {
+          console.warn(
+            `[db] Variant çakışması: mapping #${mappingId} → ${nextVariantId}`
+            + ` zaten #${conflict.id} (${conflict.card_name || conflict.kartfiyat_card_id}) üzerinde`,
+          );
+          // Variant yazmadan diğer alanları güncelle
+          db.prepare(`
+            UPDATE card_mappings
+            SET ikas_product_id = COALESCE(@ikasProductId, ikas_product_id),
+                sku = COALESCE(@sku, sku),
+                barcode = COALESCE(@barcode, barcode),
+                updated_at = datetime('now')
+            WHERE id = @mappingId
+          `).run({
+            mappingId,
+            ikasProductId,
+            sku: sku || null,
+            barcode: barcode || null,
+          });
+          return {
+            applied: false,
+            reason: 'variant_conflict',
+            conflictMappingId: conflict.id,
+          };
+        }
+      }
+    }
+
     db.prepare(`
       UPDATE card_mappings
       SET ikas_product_id = COALESCE(@ikasProductId, ikas_product_id),
@@ -403,11 +460,13 @@ function updateMappingIkasIds({
     `).run({
       mappingId,
       ikasProductId,
-      ikasVariantId,
+      ikasVariantId: nextVariantId,
       sku: sku || null,
       barcode: barcode || null,
       clearMissing: clearMissing ? 1 : 0,
     });
+
+    return { applied: true };
   } finally {
     db.close();
   }

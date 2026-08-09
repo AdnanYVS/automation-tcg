@@ -28,13 +28,26 @@ function applyIdChanges(idChanges) {
   let fixed = 0;
   for (const change of idChanges) {
     if (!change.mappingId) continue;
-    updateMappingIkasIds({
-      mappingId: change.mappingId,
-      ikasProductId: change.productId,
-      ikasVariantId: change.variantId,
-      sku: change.sku || null,
-    });
-    fixed += 1;
+    try {
+      const result = updateMappingIkasIds({
+        mappingId: change.mappingId,
+        ikasProductId: change.productId,
+        ikasVariantId: change.variantId,
+        sku: change.sku || null,
+        clearMissing: true,
+      });
+      if (result?.applied === false) {
+        console.warn(
+          `[priceUpdater] ID güncellemesi atlandı mapping=#${change.mappingId}: ${result.reason}`,
+        );
+        continue;
+      }
+      fixed += 1;
+    } catch (error) {
+      console.warn(
+        `[priceUpdater] ID güncellemesi başarısız mapping=#${change.mappingId}: ${error.message}`,
+      );
+    }
   }
   return fixed;
 }
@@ -61,16 +74,14 @@ async function runPriceUpdate() {
         skipped += 1;
         continue;
       }
+      const fallbackSku = buildKartfiyatSku(mapping.kartfiyat_card_id, mapping.price_label);
       variantUpdates.push({
         mappingId: mapping.id,
         productId: mapping.ikas_product_id,
         variantId: mapping.ikas_variant_id,
         sellPrice: calculateFinalPriceTry(usdPrice, usdTryRate, multiplier),
-        sku: mapping.sku || buildKartfiyatSku(mapping.kartfiyat_card_id, mapping.price_label),
-        skuCandidates: [
-          mapping.sku,
-          buildKartfiyatSku(mapping.kartfiyat_card_id, mapping.price_label),
-        ].filter(Boolean),
+        sku: fallbackSku,
+        skuCandidates: [fallbackSku, mapping.sku].filter(Boolean),
         barcode: mapping.barcode || null,
       });
     } catch (error) {
