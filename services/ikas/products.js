@@ -905,17 +905,26 @@ async function adjustVariantStock({
   stockLocationId,
   delta,
   sku = null,
+  skuCandidates = [],
+  barcode = null,
 }) {
   const change = Number(delta);
   if (!Number.isFinite(change) || change === 0) {
     throw new Error('delta sıfır olmayan bir sayı olmalıdır.');
   }
 
-  const live = await resolveLiveVariant({ productId, variantId, sku });
+  const live = await resolveLiveProductVariant({
+    productId,
+    variantId,
+    sku,
+    skuCandidates: skuCandidates.length ? skuCandidates : [sku].filter(Boolean),
+    barcode,
+  });
+  const effectiveProductId = live.product.id;
   const effectiveVariantId = live.variant.id;
 
   const previousStock = await getVariantStockAtLocation({
-    productId,
+    productId: effectiveProductId,
     variantId: effectiveVariantId,
     stockLocationId,
   });
@@ -925,19 +934,21 @@ async function adjustVariantStock({
   }
 
   const stockResult = await saveVariantStock({
-    productId,
+    productId: effectiveProductId,
     variantId: effectiveVariantId,
     stockLocationId,
     stockCount: newStock,
-    sku: sku || live.variant.sku,
+    sku: live.variant.sku || sku,
   });
 
   return {
     previousStock,
     newStock,
     delta: change,
+    productId: effectiveProductId,
     variantId: stockResult.variantId || effectiveVariantId,
-    variantChanged: live.variantChanged || Boolean(stockResult.variantChanged),
+    variantChanged: live.variantChanged || live.productChanged || Boolean(stockResult.variantChanged),
+    productChanged: Boolean(live.productChanged),
   };
 }
 
@@ -947,6 +958,8 @@ async function incrementVariantStock({
   stockLocationId,
   incrementBy = 1,
   sku = null,
+  skuCandidates = [],
+  barcode = null,
 }) {
   const increment = Number(incrementBy);
   if (!Number.isFinite(increment) || increment <= 0) {
@@ -959,14 +972,18 @@ async function incrementVariantStock({
     stockLocationId,
     delta: increment,
     sku,
+    skuCandidates,
+    barcode,
   });
 
   return {
     previousStock: result.previousStock,
     newStock: result.newStock,
     incrementBy: increment,
+    productId: result.productId,
     variantId: result.variantId,
     variantChanged: result.variantChanged,
+    productChanged: result.productChanged,
   };
 }
 

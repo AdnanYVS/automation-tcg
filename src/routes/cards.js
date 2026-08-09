@@ -9,6 +9,7 @@ const {
   getCardImageUrl,
   normalizePriceLabel,
   isGradedPriceLabel,
+  buildKartfiyatSku,
 } = require('../../services/kartfiyat');
 const { getSetCodeRegistry } = require('../../services/kartfiyat/setRegistry');
 const { getOnePieceSetCodeRegistry } = require('../../services/kartfiyat/onepieceSetRegistry');
@@ -245,34 +246,29 @@ router.post('/import-card', async (req, res) => {
       });
     }
 
+    // Otomasyon SKU'su her zaman KF-{cardId} — kart numarası (94) başka ürüne bağlanmasın
+    const automationSku = buildKartfiyatSku(kartfiyatCardId, priceLabel);
+
     const existing = findByKartfiyatCardId(kartfiyatCardId, { priceLabel });
     let brokenExistingMapping = null;
     if (existing?.ikas_product_id && existing?.ikas_variant_id) {
       try {
-        const expectedSku = buildGradedSku(
-          req.body.code || `KF-${kartfiyatCardId}`,
-          priceLabel,
-        );
         const stockResult = await incrementVariantStock({
           productId: existing.ikas_product_id,
           variantId: existing.ikas_variant_id,
           stockLocationId,
           incrementBy: stockCount,
-          sku: expectedSku,
+          sku: automationSku,
+          skuCandidates: [automationSku, existing.sku].filter(Boolean),
         });
 
-        if (stockResult.variantChanged && stockResult.variantId) {
-          updateMappingIkasIds({
-            mappingId: existing.id,
-            ikasVariantId: stockResult.variantId,
-            clearMissing: true,
-          });
-        } else {
-          updateMappingIkasIds({
-            mappingId: existing.id,
-            clearMissing: true,
-          });
-        }
+        updateMappingIkasIds({
+          mappingId: existing.id,
+          ikasProductId: stockResult.productId || existing.ikas_product_id,
+          ikasVariantId: stockResult.variantId || existing.ikas_variant_id,
+          sku: automationSku,
+          clearMissing: true,
+        });
 
         insertInventoryEvent({
           mappingId: existing.id,
@@ -292,7 +288,7 @@ router.post('/import-card', async (req, res) => {
             action: 'stock_incremented',
             mappingId: existing.id,
             kartfiyatCardId,
-            ikasProductId: existing.ikas_product_id,
+            ikasProductId: stockResult.productId || existing.ikas_product_id,
             ikasVariantId: stockResult.variantId || existing.ikas_variant_id,
             stockLocationId,
             previousStock: stockResult.previousStock,
@@ -304,7 +300,7 @@ router.post('/import-card', async (req, res) => {
           },
         });
       } catch (error) {
-        const isMissingProduct = /ürünü bulunamadı|INVALID_VARIANT_ID|varyant bulunamadı/i.test(error.message);
+        const isMissingProduct = /ürünü bulunamadı|INVALID_VARIANT_ID|varyant bulunamadı|eşleşmesi güvenilir değil/i.test(error.message);
         if (!isMissingProduct) {
           throw error;
         }
@@ -321,8 +317,7 @@ router.post('/import-card', async (req, res) => {
     const name = buildGradedProductName(baseName, priceLabel);
     if (!name) return res.status(400).json({ success: false, error: 'Ürün adı bulunamadı.' });
 
-    const baseSku = req.body.code || card.code || `KF-${kartfiyatCardId}`;
-    const sku = buildGradedSku(baseSku, priceLabel);
+    const sku = automationSku;
     const hasManualSellPrice = req.body.sellPrice !== undefined
       && req.body.sellPrice !== null
       && String(req.body.sellPrice).trim() !== '';
@@ -384,8 +379,13 @@ router.post('/import-card', async (req, res) => {
     const barcodeSource = priceLabel ? `${kartfiyatCardId}:${priceLabel}` : kartfiyatCardId;
     const barcode = generateProductBarcode(barcodeSource);
 
-    const ikasMatch = await findProductBySkuOrBarcode({ sku, barcode });
-    if (ikasMatch?.product?.id && ikasMatch?.variant?.id) {
+    // Yalnız KF-SKU tam eşleşmesi kabul — "94" gibi kart no başka ürüne (Clefairy #94) bağlanmasın
+    const ikasMatch = await findProductBySkuOrBarcode({ sku: automationSku });
+    const trustedMatch = ikasMatch?.product?.id
+      && ikasMatch?.variant?.id
+      && String(ikasMatch.variant.sku || '').toUpperCase() === String(automationSku).toUpperCase();
+
+    if (trustedMatch) {
       const ikasProduct = ikasMatch.product;
       const ikasVariant = ikasMatch.variant;
       const dbMapping = brokenExistingMapping || findByKartfiyatCardId(kartfiyatCardId, { priceLabel });
@@ -397,7 +397,7 @@ router.post('/import-card', async (req, res) => {
           mappingId: dbMapping.id,
           ikasProductId: ikasProduct.id,
           ikasVariantId: ikasVariant.id,
-          sku: ikasVariant.sku || sku,
+          sku: automationSku,
           barcode: ikasVariant.barcodeList?.[0] || barcode,
           clearMissing: true,
         });
@@ -409,7 +409,7 @@ router.post('/import-card', async (req, res) => {
           ikasProductId: ikasProduct.id,
           kartfiyatCardId,
           barcode: ikasVariant.barcodeList?.[0] || barcode,
-          sku: ikasVariant.sku || sku,
+          sku: automationSku,
           priceManual: hasManualSellPrice,
           priceLabel,
         });
@@ -441,7 +441,8 @@ router.post('/import-card', async (req, res) => {
         variantId: ikasVariant.id,
         stockLocationId,
         incrementBy: stockCount,
-        sku: ikasVariant.sku || sku,
+        sku: automationSku,
+        skuCandidates: [automationSku],
       });
 
       insertInventoryEvent({
