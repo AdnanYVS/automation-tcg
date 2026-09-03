@@ -26,6 +26,7 @@ async function getAccessToken() {
     const response = await axios.post(OAUTH_URL, params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       timeout: 30000,
+      proxy: false,
     });
 
     const { access_token: accessToken, expires_in: expiresIn } = response.data;

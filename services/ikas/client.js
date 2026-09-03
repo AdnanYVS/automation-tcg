@@ -43,6 +43,7 @@ async function graphqlRequest(query, variables = {}, { maxAttempts } = {}) {
             Authorization: `Bearer ${accessToken}`,
           },
           timeout: Number(process.env.IKAS_GRAPHQL_TIMEOUT_MS || 120000),
+          proxy: false,
         },
       );
 
